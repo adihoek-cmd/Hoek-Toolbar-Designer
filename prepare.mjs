@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+const files=fs.readdirSync('dist',{recursive:true}).filter(f=>fs.statSync('dist/'+f).isFile()&&f!=='sw.js').map(f=>f.replaceAll('\\','/'));
+const version=crypto.createHash('sha256');for(const f of files)version.update(fs.readFileSync('dist/'+f));
+const name='hoek-'+version.digest('hex').slice(0,12);
+fs.writeFileSync('dist/sw.js',`const CACHE=${JSON.stringify(name)},FILES=${JSON.stringify(['./',...files.map(f=>'./'+f)])};
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting())));
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('hoek-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||new URL(e.request.url).origin!==self.location.origin)return;e.respondWith(caches.match(e.request).then(hit=>hit||fetch(e.request).catch(()=>e.request.mode==='navigate'?caches.match('./index.html'):Response.error())))});
+`);console.log('Prepared '+name+' with '+files.length+' files');

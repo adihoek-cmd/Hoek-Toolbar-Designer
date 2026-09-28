@@ -1,0 +1,1967 @@
+{
+  "schema": 1,
+  "packageVersion": "3.9.3",
+  "tab": "Hoek AI C2R",
+  "nodes": [
+    {
+      "id": "bridge-panel",
+      "parent": "ribbon",
+      "type": "panel",
+      "label": "Hoek AI Tools",
+      "source": {
+        "file": "build/src/bridge/ClaudeRevitPlugin.cs"
+      }
+    },
+    {
+      "id": "panel-0",
+      "parent": "ribbon",
+      "type": "panel",
+      "label": "Model",
+      "source": {
+        "name": "Model"
+      }
+    },
+    {
+      "id": "lot-line-walls",
+      "parent": "panel-0",
+      "type": "button",
+      "label": "Lot Line\nWalls",
+      "icon": "assets/lot_line_walls_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "קירות קו גבול — Thin Kav-Gvul walls along property lines flagged P.Line_Lot_Line = Yes, lowest → top level (SEA LEVEL excluded), base/top constrained to levels, pinned, on Shared Levels and Grids. An existing Kav-Gvul type at the wrong thickness is rebuilt thin.",
+      "source": {
+        "id": "lot-line-walls",
+        "label": "Lot Line\nWalls",
+        "icon": "lot_line_walls.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.LotLineWallsCommand",
+        "tooltip": "קירות קו גבול — Thin Kav-Gvul walls along property lines flagged P.Line_Lot_Line = Yes, lowest → top level (SEA LEVEL excluded), base/top constrained to levels, pinned, on Shared Levels and Grids. An existing Kav-Gvul type at the wrong thickness is rebuilt thin.",
+        "params": {
+          "wall_type": "Kav-Gvul",
+          "wall_thickness_cm": 1,
+          "exclude_levels": [
+            "SEA LEVEL"
+          ],
+          "workset": "Shared Levels and Grids",
+          "flag_param": "P.Line_Lot_Line"
+        }
+      }
+    },
+    {
+      "id": "scopebox-views",
+      "parent": "panel-0",
+      "type": "button",
+      "label": "Views by\nScope Box",
+      "icon": "assets/scopebox_views_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "תוכניות לפי Scope Box — For each selected scope box (or all): one plan per level cropped to the box + X/Y sections through its centre.",
+      "source": {
+        "id": "scopebox-views",
+        "label": "Views by\nScope Box",
+        "icon": "scopebox_views.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.ScopeBoxViewsCommand",
+        "tooltip": "תוכניות לפי Scope Box — For each selected scope box (or all): one plan per level cropped to the box + X/Y sections through its centre.",
+        "params": {
+          "plan_view_type": "Floor Plan",
+          "section_view_type": "Building Section",
+          "view_template": "",
+          "plan_name": "{level} - {scopebox}",
+          "section_name": "{scopebox} - Section {axis}",
+          "create_sections": true,
+          "section_depth_cm": 200
+        }
+      }
+    },
+    {
+      "id": "source-1",
+      "parent": "panel-0",
+      "type": "stack",
+      "label": "Stack 3",
+      "icon": "",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "",
+      "source": {
+        "kind": "stack",
+        "items": [
+          {
+            "id": "common-area-fill",
+            "label": "Common Area Fill",
+            "icon": "common_fill.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.CommonAreaFillCommand",
+            "tooltip": "מילוי שטחים משותפים — Grey transparent filled regions on every room in the active plan that is NOT inside an apartment group. Skips rooms already filled.",
+            "params": {
+              "region_type": "HoekAI Common Area",
+              "grey": 200
+            }
+          },
+          {
+            "id": "toposolid",
+            "label": "Toposolid from Survey",
+            "icon": "toposolid.png",
+            "kind": "prompt",
+            "tooltip": "טופוסוליד ממדידה — Site model from a surveyor DWG (ITM). Needs Claude: the DWG import is manual and the coordinate check is a judgement call.",
+            "prompt": "Use the revit-toposolid skill on {doc_title}. The survey DWG is linked/imported already (or tell me what to do). Check the Survey Point and levels against ITM before creating the toposolid, then create property lines from layer likb.",
+            "target": "claude_desktop"
+          },
+          {
+            "id": "dwg-to-model",
+            "label": "DWG → Model",
+            "icon": "dwg_model.png",
+            "kind": "prompt",
+            "tooltip": "DWG למודל — Five-agent pipeline with verification checkpoints; Claude only.",
+            "prompt": "Use the revit-dwg-to-model skill on {doc_title}, active view {active_view} (id {active_view_id}). Start with agent 1 and stop at every verification checkpoint.",
+            "target": "claude_desktop"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common-area-fill",
+      "parent": "source-1",
+      "type": "button",
+      "label": "Common Area Fill",
+      "icon": "assets/common_fill_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "מילוי שטחים משותפים — Grey transparent filled regions on every room in the active plan that is NOT inside an apartment group. Skips rooms already filled.",
+      "source": {
+        "id": "common-area-fill",
+        "label": "Common Area Fill",
+        "icon": "common_fill.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.CommonAreaFillCommand",
+        "tooltip": "מילוי שטחים משותפים — Grey transparent filled regions on every room in the active plan that is NOT inside an apartment group. Skips rooms already filled.",
+        "params": {
+          "region_type": "HoekAI Common Area",
+          "grey": 200
+        }
+      }
+    },
+    {
+      "id": "toposolid",
+      "parent": "source-1",
+      "type": "button",
+      "label": "Toposolid from Survey",
+      "icon": "assets/toposolid_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "טופוסוליד ממדידה — Site model from a surveyor DWG (ITM). Needs Claude: the DWG import is manual and the coordinate check is a judgement call.",
+      "source": {
+        "id": "toposolid",
+        "label": "Toposolid from Survey",
+        "icon": "toposolid.png",
+        "kind": "prompt",
+        "tooltip": "טופוסוליד ממדידה — Site model from a surveyor DWG (ITM). Needs Claude: the DWG import is manual and the coordinate check is a judgement call.",
+        "prompt": "Use the revit-toposolid skill on {doc_title}. The survey DWG is linked/imported already (or tell me what to do). Check the Survey Point and levels against ITM before creating the toposolid, then create property lines from layer likb.",
+        "target": "claude_desktop"
+      }
+    },
+    {
+      "id": "dwg-to-model",
+      "parent": "source-1",
+      "type": "button",
+      "label": "DWG → Model",
+      "icon": "assets/dwg_model_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "DWG למודל — Five-agent pipeline with verification checkpoints; Claude only.",
+      "source": {
+        "id": "dwg-to-model",
+        "label": "DWG → Model",
+        "icon": "dwg_model.png",
+        "kind": "prompt",
+        "tooltip": "DWG למודל — Five-agent pipeline with verification checkpoints; Claude only.",
+        "prompt": "Use the revit-dwg-to-model skill on {doc_title}, active view {active_view} (id {active_view_id}). Start with agent 1 and stop at every verification checkpoint.",
+        "target": "claude_desktop"
+      }
+    },
+    {
+      "id": "bathroom-setup",
+      "parent": "panel-0",
+      "type": "button",
+      "label": "Bathroom\nSetup",
+      "icon": "assets/bathroom_setup_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "הצבת חדר רחצה — בחר חדר (Room) ולחץ על קיר הדלת; הכלי מציע פריסות של דלת, אסלה, כיור ומקלחון/אמבט לפי המרווחים של המשרד (אסלה 80×150, כיור 80×130, מקלחון 80+ עם גישה מלפנים/מהצד/באלכסון, אמבט 160/170). דפדף הבא/הקודם בתצוגה חיה במודל, ואז 'השאר במודל'. מכויל על 202 חדרי רחצה ב־503 וב־437.",
+      "source": {
+        "id": "bathroom-setup",
+        "label": "Bathroom\nSetup",
+        "icon": "bathroom_setup.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.BathroomSetupCommand",
+        "tooltip": "הצבת חדר רחצה — בחר חדר (Room) ולחץ על קיר הדלת; הכלי מציע פריסות של דלת, אסלה, כיור ומקלחון/אמבט לפי המרווחים של המשרד (אסלה 80×150, כיור 80×130, מקלחון 80+ עם גישה מלפנים/מהצד/באלכסון, אמבט 160/170). דפדף הבא/הקודם בתצוגה חיה במודל, ואז 'השאר במודל'. מכויל על 202 חדרי רחצה ב־503 וב־437.",
+        "params": {
+          "door_type": "",
+          "sink_widths": [
+            "120",
+            "100",
+            "80"
+          ]
+        }
+      }
+    },
+    {
+      "id": "panel-1",
+      "parent": "ribbon",
+      "type": "panel",
+      "label": "Apartments",
+      "source": {
+        "name": "Apartments"
+      }
+    },
+    {
+      "id": "source-2",
+      "parent": "panel-1",
+      "type": "stack",
+      "label": "Stack 1",
+      "icon": "",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "",
+      "source": {
+        "kind": "stack",
+        "items": [
+          {
+            "id": "apt-params",
+            "label": "Apartment Parameters",
+            "icon": "apt_params.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.AptParametersCommand",
+            "tooltip": "פרמטרים לדירות — Binds IsApartment (Yes/No), Building, Apt Num, Apt Type to Model Groups (Building + Apt Num also to Rooms), taking the definitions from the office shared-parameter file so GUIDs match other projects.",
+            "params": {
+              "shared_param_file": "W:\\REVIT\\Shared Parameters\\Hoek Shared Parameters.txt"
+            }
+          },
+          {
+            "id": "apt-mark",
+            "label": "Mark Apartments",
+            "icon": "apt_mark.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.MarkApartmentsCommand",
+            "tooltip": "סימון דירות — Set IsApartment = Yes (or No) on the selected model groups, or on every group whose type name contains a pattern (default APT); optionally set Building. Preview by group type before applying.",
+            "params": {
+              "default_pattern": "APT"
+            }
+          },
+          {
+            "id": "apt-num-rooms",
+            "label": "Apt Num → Rooms",
+            "icon": "apt_rooms.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.AptNumToRoomsCommand",
+            "tooltip": "מספר דירה לחדרים — Writes each apartment's Apt Num (and Building) into the rooms inside its footprint on the same level; common-area rooms are left alone. Last stage of the numbering skill.",
+            "params": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "apt-params",
+      "parent": "source-2",
+      "type": "button",
+      "label": "Apartment Parameters",
+      "icon": "assets/apt_params_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "פרמטרים לדירות — Binds IsApartment (Yes/No), Building, Apt Num, Apt Type to Model Groups (Building + Apt Num also to Rooms), taking the definitions from the office shared-parameter file so GUIDs match other projects.",
+      "source": {
+        "id": "apt-params",
+        "label": "Apartment Parameters",
+        "icon": "apt_params.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.AptParametersCommand",
+        "tooltip": "פרמטרים לדירות — Binds IsApartment (Yes/No), Building, Apt Num, Apt Type to Model Groups (Building + Apt Num also to Rooms), taking the definitions from the office shared-parameter file so GUIDs match other projects.",
+        "params": {
+          "shared_param_file": "W:\\REVIT\\Shared Parameters\\Hoek Shared Parameters.txt"
+        }
+      }
+    },
+    {
+      "id": "apt-mark",
+      "parent": "source-2",
+      "type": "button",
+      "label": "Mark Apartments",
+      "icon": "assets/apt_mark_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "סימון דירות — Set IsApartment = Yes (or No) on the selected model groups, or on every group whose type name contains a pattern (default APT); optionally set Building. Preview by group type before applying.",
+      "source": {
+        "id": "apt-mark",
+        "label": "Mark Apartments",
+        "icon": "apt_mark.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.MarkApartmentsCommand",
+        "tooltip": "סימון דירות — Set IsApartment = Yes (or No) on the selected model groups, or on every group whose type name contains a pattern (default APT); optionally set Building. Preview by group type before applying.",
+        "params": {
+          "default_pattern": "APT"
+        }
+      }
+    },
+    {
+      "id": "apt-num-rooms",
+      "parent": "source-2",
+      "type": "button",
+      "label": "Apt Num → Rooms",
+      "icon": "assets/apt_rooms_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "מספר דירה לחדרים — Writes each apartment's Apt Num (and Building) into the rooms inside its footprint on the same level; common-area rooms are left alone. Last stage of the numbering skill.",
+      "source": {
+        "id": "apt-num-rooms",
+        "label": "Apt Num → Rooms",
+        "icon": "apt_rooms.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.AptNumToRoomsCommand",
+        "tooltip": "מספר דירה לחדרים — Writes each apartment's Apt Num (and Building) into the rooms inside its footprint on the same level; common-area rooms are left alone. Last stage of the numbering skill.",
+        "params": {}
+      }
+    },
+    {
+      "id": "source-3",
+      "parent": "panel-1",
+      "type": "stack",
+      "label": "Stack 2",
+      "icon": "",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "",
+      "source": {
+        "kind": "stack",
+        "items": [
+          {
+            "id": "apt-numbering",
+            "label": "Number Apartments",
+            "icon": "apt_number.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.AptNumberingCommand",
+            "tooltip": "מספור דירות — Clockwise from the start apartment, level by level, per building; Diurit gets XX.1 of the nearest main apartment. Shows the full numbering for approval before writing Apt Num."
+          },
+          {
+            "id": "apt-tags",
+            "label": "Tag Apartments",
+            "icon": "apt_tags.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.TagApartmentsCommand",
+            "tooltip": "תיוג דירות — One group tag per apartment in the selected plan views (or the active view): footprint centre nudged to a clear spot, radius scaled to the view scale; only apartments on the view's level; optional layout copy from a reference view; tags sitting on the wrong level's view can be moved.",
+            "params": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "apt-numbering",
+      "parent": "source-3",
+      "type": "button",
+      "label": "Number Apartments",
+      "icon": "assets/apt_number_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "מספור דירות — Clockwise from the start apartment, level by level, per building; Diurit gets XX.1 of the nearest main apartment. Shows the full numbering for approval before writing Apt Num.",
+      "source": {
+        "id": "apt-numbering",
+        "label": "Number Apartments",
+        "icon": "apt_number.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.AptNumberingCommand",
+        "tooltip": "מספור דירות — Clockwise from the start apartment, level by level, per building; Diurit gets XX.1 of the nearest main apartment. Shows the full numbering for approval before writing Apt Num."
+      }
+    },
+    {
+      "id": "apt-tags",
+      "parent": "source-3",
+      "type": "button",
+      "label": "Tag Apartments",
+      "icon": "assets/apt_tags_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "תיוג דירות — One group tag per apartment in the selected plan views (or the active view): footprint centre nudged to a clear spot, radius scaled to the view scale; only apartments on the view's level; optional layout copy from a reference view; tags sitting on the wrong level's view can be moved.",
+      "source": {
+        "id": "apt-tags",
+        "label": "Tag Apartments",
+        "icon": "apt_tags.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.TagApartmentsCommand",
+        "tooltip": "תיוג דירות — One group tag per apartment in the selected plan views (or the active view): footprint centre nudged to a clear spot, radius scaled to the view scale; only apartments on the view's level; optional layout copy from a reference view; tags sitting on the wrong level's view can be moved.",
+        "params": {}
+      }
+    },
+    {
+      "id": "source-4",
+      "parent": "panel-1",
+      "type": "stack",
+      "label": "Stack 3",
+      "icon": "",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "",
+      "source": {
+        "kind": "stack",
+        "items": [
+          {
+            "id": "apt-sale-plan",
+            "label": "Apartment Sale Sheets",
+            "icon": "apt_sheets.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.AptSalePlanCommand",
+            "tooltip": "תוכניות מכר לדירות — 1:50 plan cropped to each apartment type's canonical instance + A4 sheet. Template/title block remembered per project.",
+            "params": {
+              "crop_pad_cm": 50,
+              "annotation_offset_cm": 15,
+              "tb_offset_x_ft": 0.167,
+              "tb_offset_y_ft": 0.0148,
+              "view_prefix": "Sale_",
+              "sheet_prefix": "SALE-"
+            }
+          },
+          {
+            "id": "floor-sale-plan",
+            "label": "Floor Sale Sheets",
+            "icon": "floor_sheets.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.FloorSalePlanCommand",
+            "tooltip": "תוכניות מכר לקומות — Typical-floor 1:100 sale views (duplicate selected views, or new per pattern of apartment types) on sheets. Shows the plan before creating.",
+            "params": {
+              "tb_offset_x_ft": 0.0623,
+              "tb_offset_y_ft": 0.0197,
+              "sheet_prefix": "11.1-"
+            }
+          },
+          {
+            "id": "sale-dimensions",
+            "label": "Sale Dimensions",
+            "icon": "sale_dims.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.SaleDimensionsCommand",
+            "tooltip": "מידות מכר — Place or realign the מידות מכר detail items (50 cm inside the room edge) for all apartment rooms in view or the selection.",
+            "params": {
+              "family": "מידות מכר",
+              "inset_cm": 50,
+              "min_room_cm": 100
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "apt-sale-plan",
+      "parent": "source-4",
+      "type": "button",
+      "label": "Apartment Sale Sheets",
+      "icon": "assets/apt_sheets_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "תוכניות מכר לדירות — 1:50 plan cropped to each apartment type's canonical instance + A4 sheet. Template/title block remembered per project.",
+      "source": {
+        "id": "apt-sale-plan",
+        "label": "Apartment Sale Sheets",
+        "icon": "apt_sheets.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.AptSalePlanCommand",
+        "tooltip": "תוכניות מכר לדירות — 1:50 plan cropped to each apartment type's canonical instance + A4 sheet. Template/title block remembered per project.",
+        "params": {
+          "crop_pad_cm": 50,
+          "annotation_offset_cm": 15,
+          "tb_offset_x_ft": 0.167,
+          "tb_offset_y_ft": 0.0148,
+          "view_prefix": "Sale_",
+          "sheet_prefix": "SALE-"
+        }
+      }
+    },
+    {
+      "id": "floor-sale-plan",
+      "parent": "source-4",
+      "type": "button",
+      "label": "Floor Sale Sheets",
+      "icon": "assets/floor_sheets_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "תוכניות מכר לקומות — Typical-floor 1:100 sale views (duplicate selected views, or new per pattern of apartment types) on sheets. Shows the plan before creating.",
+      "source": {
+        "id": "floor-sale-plan",
+        "label": "Floor Sale Sheets",
+        "icon": "floor_sheets.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.FloorSalePlanCommand",
+        "tooltip": "תוכניות מכר לקומות — Typical-floor 1:100 sale views (duplicate selected views, or new per pattern of apartment types) on sheets. Shows the plan before creating.",
+        "params": {
+          "tb_offset_x_ft": 0.0623,
+          "tb_offset_y_ft": 0.0197,
+          "sheet_prefix": "11.1-"
+        }
+      }
+    },
+    {
+      "id": "sale-dimensions",
+      "parent": "source-4",
+      "type": "button",
+      "label": "Sale Dimensions",
+      "icon": "assets/sale_dims_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "מידות מכר — Place or realign the מידות מכר detail items (50 cm inside the room edge) for all apartment rooms in view or the selection.",
+      "source": {
+        "id": "sale-dimensions",
+        "label": "Sale Dimensions",
+        "icon": "sale_dims.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.SaleDimensionsCommand",
+        "tooltip": "מידות מכר — Place or realign the מידות מכר detail items (50 cm inside the room edge) for all apartment rooms in view or the selection.",
+        "params": {
+          "family": "מידות מכר",
+          "inset_cm": 50,
+          "min_room_cm": 100
+        }
+      }
+    },
+    {
+      "id": "kitchen-layout",
+      "parent": "panel-1",
+      "type": "button",
+      "label": "Kitchen\nLayout",
+      "icon": "assets/kitchen_layout_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "תכנון מטבח — שרטט קו מודל לאורך הקיר ובחר אותו. מקרר / BI / כיור / מדיח / כיריים / עליונים. מדיח צמוד לכיור, משטח עבודה ≥60 (מועדף 100). כשיש שוויון — הכלי שואל.",
+      "source": {
+        "id": "kitchen-layout",
+        "label": "Kitchen\nLayout",
+        "icon": "kitchen_layout.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Kitchen.KitchenLayoutCommand",
+        "tooltip": "תכנון מטבח — שרטט קו מודל לאורך הקיר ובחר אותו. מקרר / BI / כיור / מדיח / כיריים / עליונים. מדיח צמוד לכיור, משטח עבודה ≥60 (מועדף 100). כשיש שוויון — הכלי שואל.",
+        "params": {
+          "min_sink_hob_cm": 60,
+          "pref_sink_hob_cm": 100,
+          "lower_line_style": "Casework",
+          "upper_line_style": "casework-top-dash",
+          "fridge_family": "S_2D_fridge",
+          "dishwasher_family": "S_2D_dish washer"
+        }
+      }
+    },
+    {
+      "id": "panel-2",
+      "parent": "ribbon",
+      "type": "panel",
+      "label": "Annotate",
+      "source": {
+        "name": "Annotate"
+      }
+    },
+    {
+      "id": "source-5",
+      "parent": "panel-2",
+      "type": "stack",
+      "label": "Stack 1",
+      "icon": "",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "",
+      "source": {
+        "kind": "stack",
+        "items": [
+          {
+            "id": "fire-door-tags",
+            "label": "Fire Door Tags",
+            "icon": "fire_door.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.FireDoorTagCommand",
+            "tooltip": "תיוג דלתות אש — Tags every fire-rated door (ISH_Door_Fire_Rate, else type Fire Rating) in the active view / selected views at the leaf centre, no leader, skipping already-tagged doors. Select one existing fire tag first to define the type.",
+            "params": {
+              "tag_family": "Fire Door"
+            }
+          },
+          {
+            "id": "room-dimensions",
+            "label": "Room Dimensions",
+            "icon": "room_dims.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.RoomDimensionsCommand",
+            "tooltip": "מידות חדרים — Two perpendicular internal dimensions per selected rectangular room; other rooms are reported for the Claude path.",
+            "params": {
+              "dimension_type": "",
+              "offset_from_wall_cm": 60
+            }
+          },
+          {
+            "id": "dimension-selected",
+            "label": "Dimension with Claude",
+            "icon": "dims_claude.png",
+            "kind": "prompt",
+            "tooltip": "מידות עם Claude — Walls, openings, mixed selections: face/centerline/core is a judgement call.",
+            "prompt": "Use the revit-auto-dimensions skill. Document: {doc_title}. Active view: {active_view} (id {active_view_id}). Dimension the selected elements (ids: {selection_ids}). Ask before choosing face/centerline/core if the selection is mixed.",
+            "target": "claude_desktop"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fire-door-tags",
+      "parent": "source-5",
+      "type": "button",
+      "label": "Fire Door Tags",
+      "icon": "assets/fire_door_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "תיוג דלתות אש — Tags every fire-rated door (ISH_Door_Fire_Rate, else type Fire Rating) in the active view / selected views at the leaf centre, no leader, skipping already-tagged doors. Select one existing fire tag first to define the type.",
+      "source": {
+        "id": "fire-door-tags",
+        "label": "Fire Door Tags",
+        "icon": "fire_door.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.FireDoorTagCommand",
+        "tooltip": "תיוג דלתות אש — Tags every fire-rated door (ISH_Door_Fire_Rate, else type Fire Rating) in the active view / selected views at the leaf centre, no leader, skipping already-tagged doors. Select one existing fire tag first to define the type.",
+        "params": {
+          "tag_family": "Fire Door"
+        }
+      }
+    },
+    {
+      "id": "room-dimensions",
+      "parent": "source-5",
+      "type": "button",
+      "label": "Room Dimensions",
+      "icon": "assets/room_dims_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "מידות חדרים — Two perpendicular internal dimensions per selected rectangular room; other rooms are reported for the Claude path.",
+      "source": {
+        "id": "room-dimensions",
+        "label": "Room Dimensions",
+        "icon": "room_dims.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.RoomDimensionsCommand",
+        "tooltip": "מידות חדרים — Two perpendicular internal dimensions per selected rectangular room; other rooms are reported for the Claude path.",
+        "params": {
+          "dimension_type": "",
+          "offset_from_wall_cm": 60
+        }
+      }
+    },
+    {
+      "id": "dimension-selected",
+      "parent": "source-5",
+      "type": "button",
+      "label": "Dimension with Claude",
+      "icon": "assets/dims_claude_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "מידות עם Claude — Walls, openings, mixed selections: face/centerline/core is a judgement call.",
+      "source": {
+        "id": "dimension-selected",
+        "label": "Dimension with Claude",
+        "icon": "dims_claude.png",
+        "kind": "prompt",
+        "tooltip": "מידות עם Claude — Walls, openings, mixed selections: face/centerline/core is a judgement call.",
+        "prompt": "Use the revit-auto-dimensions skill. Document: {doc_title}. Active view: {active_view} (id {active_view_id}). Dimension the selected elements (ids: {selection_ids}). Ask before choosing face/centerline/core if the selection is mixed.",
+        "target": "claude_desktop"
+      }
+    },
+    {
+      "id": "panel-3",
+      "parent": "ribbon",
+      "type": "panel",
+      "label": "Lists",
+      "source": {
+        "name": "Lists"
+      }
+    },
+    {
+      "id": "lists",
+      "parent": "panel-3",
+      "type": "dropdown",
+      "label": "Lists\nרשימות",
+      "icon": "assets/lists_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "רשימות אלומיניום / מסגרות / נגרות — every stage of the fabrication lists as a button, in workflow order.",
+      "source": {
+        "kind": "pulldown",
+        "id": "lists",
+        "label": "Lists\nרשימות",
+        "icon": "lists.png",
+        "tooltip": "רשימות אלומיניום / מסגרות / נגרות — every stage of the fabrication lists as a button, in workflow order.",
+        "items": [
+          {
+            "id": "list-setup",
+            "label": "1  Setup Project Standards",
+            "icon": "list_setup.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.AluminiumSetupCommand",
+            "tooltip": "הגדרות אלומיניום — Copy VFT, view templates, filter, viewport types, text type, title blocks, view titles and bound shared parameters from the office standards file; create the LISTS sheet collection.",
+            "params": {
+              "standards_file": "W:\\HoekAI\\Templates\\KRSA-AB-AR_Standards.rvt",
+              "vft": "A6-scp_Aluminum",
+              "templates": [
+                "03.11-Aluminium",
+                "EL_03.11-Aluminium",
+                "SC_03.11-Aluminium"
+              ]
+            }
+          },
+          {
+            "id": "list-survey",
+            "label": "2  Survey (report)",
+            "icon": "list_survey.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.ListSurveyCommand",
+            "tooltip": "סקירת רשימה — Table of every type in the list: מספר פרט, family, type, W/H, count, sheet; plus missing numbers, duplicate numbers, numbered-but-unplaced symbols (the א-10 cluster). Read-only."
+          },
+          {
+            "separator": true
+          },
+          {
+            "id": "list-bind",
+            "label": "3  Bind Legend Parameters",
+            "icon": "list_bind.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.ListBindParamsCommand",
+            "tooltip": "קישור פרמטרים — Resh_SheetNumber/SheetDate/Comments/Glazing/Finish/Edition as TYPE parameters on Windows + Doors (instance binding breaks the workflow)."
+          },
+          {
+            "id": "list-schedules",
+            "label": "4  Schedules + Schedule Sheet",
+            "icon": "list_schedules.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.ListSchedulesCommand",
+            "tooltip": "לוחות — קובץ חלונות + קובץ דלתות for the list (per category, sorted by number, filtered to the list) placed on sheet AL-00 / MA-00 / NA-00."
+          },
+          {
+            "id": "list-sheets",
+            "label": "5  Item Sheets (Sheet Factory)",
+            "icon": "list_sheets.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.ListSheetsCommand",
+            "tooltip": "גליונות פרטים — Per item: duplicate the template legend, swap Front/Back/Plan to the type, A4 (or A3 > 1800 mm) sheet numbered by item, title block filled, LISTS collection, tracking on the type. Create or Update (מהדורה) mode; preview list first."
+          },
+          {
+            "separator": true
+          },
+          {
+            "id": "list-tags",
+            "label": "6  Tag Lists in Plan",
+            "icon": "list_tags.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.CategoryListTagCommand",
+            "tooltip": "תיוג לפי רשימה — Learn tag family/type per (category × list) from a reference plan, show the lookup, tag the active plan (fire tag centred first), optionally bundle each apartment's tags into '<group>-tags'. Railings without a signal are reported, never guessed."
+          },
+          {
+            "id": "cw-sheets",
+            "label": "7  Curtain Wall Sheets (Claude)",
+            "icon": "cw_sheets.png",
+            "kind": "prompt",
+            "tooltip": "גליונות קיר מסך — Elevation + section + plan + two schedules per curtain wall; sections need judgement.",
+            "prompt": "Use the revit-curtain-wall-sheet skill on {doc_title}. Selected walls: {selection_ids}. Confirm the list of Resh_Aluminium_Curtain_Wall walls before creating sheets, one sheet per call.",
+            "target": "claude_desktop"
+          },
+          {
+            "id": "legend-claude",
+            "label": "Full run with Claude",
+            "icon": "legend_claude.png",
+            "kind": "prompt",
+            "tooltip": "רשימת אלומיניום עם Claude — The complete 3-agent workflow with confirmations, for projects that need bootstrap or the office enhanced layout.",
+            "prompt": "Use the revit-window-door-legend skill on {doc_title}. Start with Agent 0 (bootstrap & validation) and stop for confirmation after each agent.",
+            "target": "claude_desktop"
+          }
+        ]
+      }
+    },
+    {
+      "id": "list-setup",
+      "parent": "lists",
+      "type": "button",
+      "label": "1  Setup Project Standards",
+      "icon": "assets/list_setup_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "הגדרות אלומיניום — Copy VFT, view templates, filter, viewport types, text type, title blocks, view titles and bound shared parameters from the office standards file; create the LISTS sheet collection.",
+      "source": {
+        "id": "list-setup",
+        "label": "1  Setup Project Standards",
+        "icon": "list_setup.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.AluminiumSetupCommand",
+        "tooltip": "הגדרות אלומיניום — Copy VFT, view templates, filter, viewport types, text type, title blocks, view titles and bound shared parameters from the office standards file; create the LISTS sheet collection.",
+        "params": {
+          "standards_file": "W:\\HoekAI\\Templates\\KRSA-AB-AR_Standards.rvt",
+          "vft": "A6-scp_Aluminum",
+          "templates": [
+            "03.11-Aluminium",
+            "EL_03.11-Aluminium",
+            "SC_03.11-Aluminium"
+          ]
+        }
+      }
+    },
+    {
+      "id": "list-survey",
+      "parent": "lists",
+      "type": "button",
+      "label": "2  Survey (report)",
+      "icon": "assets/list_survey_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "סקירת רשימה — Table of every type in the list: מספר פרט, family, type, W/H, count, sheet; plus missing numbers, duplicate numbers, numbered-but-unplaced symbols (the א-10 cluster). Read-only.",
+      "source": {
+        "id": "list-survey",
+        "label": "2  Survey (report)",
+        "icon": "list_survey.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.ListSurveyCommand",
+        "tooltip": "סקירת רשימה — Table of every type in the list: מספר פרט, family, type, W/H, count, sheet; plus missing numbers, duplicate numbers, numbered-but-unplaced symbols (the א-10 cluster). Read-only."
+      }
+    },
+    {
+      "id": "source-6",
+      "parent": "lists",
+      "type": "separator",
+      "label": "Separator",
+      "icon": "",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "",
+      "source": {
+        "separator": true
+      }
+    },
+    {
+      "id": "list-bind",
+      "parent": "lists",
+      "type": "button",
+      "label": "3  Bind Legend Parameters",
+      "icon": "assets/list_bind_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "קישור פרמטרים — Resh_SheetNumber/SheetDate/Comments/Glazing/Finish/Edition as TYPE parameters on Windows + Doors (instance binding breaks the workflow).",
+      "source": {
+        "id": "list-bind",
+        "label": "3  Bind Legend Parameters",
+        "icon": "list_bind.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.ListBindParamsCommand",
+        "tooltip": "קישור פרמטרים — Resh_SheetNumber/SheetDate/Comments/Glazing/Finish/Edition as TYPE parameters on Windows + Doors (instance binding breaks the workflow)."
+      }
+    },
+    {
+      "id": "list-schedules",
+      "parent": "lists",
+      "type": "button",
+      "label": "4  Schedules + Schedule Sheet",
+      "icon": "assets/list_schedules_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "לוחות — קובץ חלונות + קובץ דלתות for the list (per category, sorted by number, filtered to the list) placed on sheet AL-00 / MA-00 / NA-00.",
+      "source": {
+        "id": "list-schedules",
+        "label": "4  Schedules + Schedule Sheet",
+        "icon": "list_schedules.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.ListSchedulesCommand",
+        "tooltip": "לוחות — קובץ חלונות + קובץ דלתות for the list (per category, sorted by number, filtered to the list) placed on sheet AL-00 / MA-00 / NA-00."
+      }
+    },
+    {
+      "id": "list-sheets",
+      "parent": "lists",
+      "type": "button",
+      "label": "5  Item Sheets (Sheet Factory)",
+      "icon": "assets/list_sheets_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "גליונות פרטים — Per item: duplicate the template legend, swap Front/Back/Plan to the type, A4 (or A3 > 1800 mm) sheet numbered by item, title block filled, LISTS collection, tracking on the type. Create or Update (מהדורה) mode; preview list first.",
+      "source": {
+        "id": "list-sheets",
+        "label": "5  Item Sheets (Sheet Factory)",
+        "icon": "list_sheets.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.ListSheetsCommand",
+        "tooltip": "גליונות פרטים — Per item: duplicate the template legend, swap Front/Back/Plan to the type, A4 (or A3 > 1800 mm) sheet numbered by item, title block filled, LISTS collection, tracking on the type. Create or Update (מהדורה) mode; preview list first."
+      }
+    },
+    {
+      "id": "source-7",
+      "parent": "lists",
+      "type": "separator",
+      "label": "Separator",
+      "icon": "",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "",
+      "source": {
+        "separator": true
+      }
+    },
+    {
+      "id": "list-tags",
+      "parent": "lists",
+      "type": "button",
+      "label": "6  Tag Lists in Plan",
+      "icon": "assets/list_tags_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "תיוג לפי רשימה — Learn tag family/type per (category × list) from a reference plan, show the lookup, tag the active plan (fire tag centred first), optionally bundle each apartment's tags into '<group>-tags'. Railings without a signal are reported, never guessed.",
+      "source": {
+        "id": "list-tags",
+        "label": "6  Tag Lists in Plan",
+        "icon": "list_tags.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.CategoryListTagCommand",
+        "tooltip": "תיוג לפי רשימה — Learn tag family/type per (category × list) from a reference plan, show the lookup, tag the active plan (fire tag centred first), optionally bundle each apartment's tags into '<group>-tags'. Railings without a signal are reported, never guessed."
+      }
+    },
+    {
+      "id": "cw-sheets",
+      "parent": "lists",
+      "type": "button",
+      "label": "7  Curtain Wall Sheets (Claude)",
+      "icon": "assets/cw_sheets_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "גליונות קיר מסך — Elevation + section + plan + two schedules per curtain wall; sections need judgement.",
+      "source": {
+        "id": "cw-sheets",
+        "label": "7  Curtain Wall Sheets (Claude)",
+        "icon": "cw_sheets.png",
+        "kind": "prompt",
+        "tooltip": "גליונות קיר מסך — Elevation + section + plan + two schedules per curtain wall; sections need judgement.",
+        "prompt": "Use the revit-curtain-wall-sheet skill on {doc_title}. Selected walls: {selection_ids}. Confirm the list of Resh_Aluminium_Curtain_Wall walls before creating sheets, one sheet per call.",
+        "target": "claude_desktop"
+      }
+    },
+    {
+      "id": "legend-claude",
+      "parent": "lists",
+      "type": "button",
+      "label": "Full run with Claude",
+      "icon": "assets/legend_claude_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "רשימת אלומיניום עם Claude — The complete 3-agent workflow with confirmations, for projects that need bootstrap or the office enhanced layout.",
+      "source": {
+        "id": "legend-claude",
+        "label": "Full run with Claude",
+        "icon": "legend_claude.png",
+        "kind": "prompt",
+        "tooltip": "רשימת אלומיניום עם Claude — The complete 3-agent workflow with confirmations, for projects that need bootstrap or the office enhanced layout.",
+        "prompt": "Use the revit-window-door-legend skill on {doc_title}. Start with Agent 0 (bootstrap & validation) and stop for confirmation after each agent.",
+        "target": "claude_desktop"
+      }
+    },
+    {
+      "id": "panel-4",
+      "parent": "ribbon",
+      "type": "panel",
+      "label": "Mamad",
+      "source": {
+        "name": "Mamad"
+      }
+    },
+    {
+      "id": "mamad-check",
+      "parent": "panel-4",
+      "type": "button",
+      "label": "Mamad\nCheck",
+      "icon": "assets/mamad_check_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "בדיקת מרחבים מוגנים — קריאה בלבד. שטח, גובה, נפח, רוחב, קירות חוץ, עובי קירות, אחוז בטון בהיקף, דלת וחלון הדף, שרוולים ומערכת סינון וגובהיהם. לפי mamad_rules v1.2.",
+      "source": {
+        "id": "mamad-check",
+        "label": "Mamad\nCheck",
+        "icon": "mamad_check.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Mamad.MamadCheckCommand",
+        "tooltip": "בדיקת מרחבים מוגנים — קריאה בלבד. שטח, גובה, נפח, רוחב, קירות חוץ, עובי קירות, אחוז בטון בהיקף, דלת וחלון הדף, שרוולים ומערכת סינון וגובהיהם. לפי mamad_rules v1.2."
+      }
+    },
+    {
+      "id": "panel-5",
+      "parent": "ribbon",
+      "type": "panel",
+      "label": "Export & QC",
+      "source": {
+        "name": "Export & QC"
+      }
+    },
+    {
+      "id": "publish-sheets",
+      "parent": "panel-5",
+      "type": "button",
+      "label": "Publish\nSheets",
+      "icon": "assets/publish_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "הדפסה וייצוא גיליונות — ProSheets-style publisher: pick sheets (search, sheet sets, all/none/invert), name files with a pattern ({Number}_{Name}_{Rev}, any sheet parameter), export PDF (native, per sheet or combined) / DWG (export setup) / DWFX, print to a printer with a print setting, save the selection as a sheet set. Settings remembered per project.",
+      "source": {
+        "id": "publish-sheets",
+        "label": "Publish\nSheets",
+        "icon": "publish.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.PublishSheetsCommand",
+        "tooltip": "הדפסה וייצוא גיליונות — ProSheets-style publisher: pick sheets (search, sheet sets, all/none/invert), name files with a pattern ({Number}_{Name}_{Rev}, any sheet parameter), export PDF (native, per sheet or combined) / DWG (export setup) / DWFX, print to a printer with a print setting, save the selection as a sheet set. Settings remembered per project.",
+        "params": {}
+      }
+    },
+    {
+      "id": "publish-views",
+      "parent": "panel-5",
+      "type": "button",
+      "label": "Publish\nViews",
+      "icon": "assets/publish_views_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "ייצוא מבטים — תוכניות, חתכים, חזיתות, פרטים, מקרא, תלת-ממד ולוחות. PDF / DWG / DWFX. גודל דף: אוטומטי (גיליון ISO הקטן ביותר שמחזיק את המבט בקנה המידה שלו), A0–A4 קבוע, או התאמה לדף. הגודל שכל מבט יקבל מוצג ברשימה לפני הייצוא.",
+      "source": {
+        "id": "publish-views",
+        "label": "Publish\nViews",
+        "icon": "publish_views.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.PublishViewsCommand",
+        "tooltip": "ייצוא מבטים — תוכניות, חתכים, חזיתות, פרטים, מקרא, תלת-ממד ולוחות. PDF / DWG / DWFX. גודל דף: אוטומטי (גיליון ISO הקטן ביותר שמחזיק את המבט בקנה המידה שלו), A0–A4 קבוע, או התאמה לדף. הגודל שכל מבט יקבל מוצג ברשימה לפני הייצוא."
+      }
+    },
+    {
+      "id": "schedule-xlsx",
+      "parent": "panel-5",
+      "type": "button",
+      "label": "Schedule\nto Excel",
+      "icon": "assets/schedule_xlsx_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "לוח לאקסל — Active schedule (or selected schedules) to a formatted RTL .xlsx via the HoekAI venv; numbers from element parameters, not display text.",
+      "source": {
+        "id": "schedule-xlsx",
+        "label": "Schedule\nto Excel",
+        "icon": "schedule_xlsx.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.ScheduleToXlsxCommand",
+        "tooltip": "לוח לאקסל — Active schedule (or selected schedules) to a formatted RTL .xlsx via the HoekAI venv; numbers from element parameters, not display text.",
+        "params": {
+          "python": "C:\\HoekAI\\venv\\Scripts\\python.exe",
+          "script": "C:\\HoekAI\\scripts\\schedule_to_xlsx.py",
+          "output_dir": "{doc_dir}\\Exports",
+          "open_after": true
+        }
+      }
+    },
+    {
+      "id": "source-8",
+      "parent": "panel-5",
+      "type": "stack",
+      "label": "Stack 4",
+      "icon": "",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "",
+      "source": {
+        "kind": "stack",
+        "items": [
+          {
+            "id": "robot-check",
+            "label": "Robot Export Check",
+            "icon": "robot_check.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.RobotExportCheckCommand",
+            "tooltip": "בדיקת ייצוא לרובוט — Scans the active/selected sheets for everything that hides robot colours in DWFX: masking regions, images, shadows, scope boxes, annotation crop, fill overrides, links, CAD hatches. Read-only report."
+          },
+          {
+            "id": "audit-view",
+            "label": "Annotation Audit",
+            "icon": "audit.png",
+            "kind": "prompt",
+            "tooltip": "בדיקת אנוטציה — Untagged / undimensioned elements in the active view (revit-element-audit).",
+            "prompt": "Use the revit-element-audit skill on view '{active_view}' (id {active_view_id}) in {doc_title}. Report untagged and undimensioned windows, doors and rooms. Do not tag anything yet.",
+            "target": "claude_desktop"
+          },
+          {
+            "id": "verify-install",
+            "label": "Verify Install",
+            "icon": "verify.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.VerifyInstallCommand",
+            "tooltip": "בדיקת התקנה — Which build is this station really on.",
+            "params": {
+              "package_root": "\\\\fs2016\\Autocad\\HoekAI\\current"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "robot-check",
+      "parent": "source-8",
+      "type": "button",
+      "label": "Robot Export Check",
+      "icon": "assets/robot_check_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "בדיקת ייצוא לרובוט — Scans the active/selected sheets for everything that hides robot colours in DWFX: masking regions, images, shadows, scope boxes, annotation crop, fill overrides, links, CAD hatches. Read-only report.",
+      "source": {
+        "id": "robot-check",
+        "label": "Robot Export Check",
+        "icon": "robot_check.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.RobotExportCheckCommand",
+        "tooltip": "בדיקת ייצוא לרובוט — Scans the active/selected sheets for everything that hides robot colours in DWFX: masking regions, images, shadows, scope boxes, annotation crop, fill overrides, links, CAD hatches. Read-only report."
+      }
+    },
+    {
+      "id": "audit-view",
+      "parent": "source-8",
+      "type": "button",
+      "label": "Annotation Audit",
+      "icon": "assets/audit_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "בדיקת אנוטציה — Untagged / undimensioned elements in the active view (revit-element-audit).",
+      "source": {
+        "id": "audit-view",
+        "label": "Annotation Audit",
+        "icon": "audit.png",
+        "kind": "prompt",
+        "tooltip": "בדיקת אנוטציה — Untagged / undimensioned elements in the active view (revit-element-audit).",
+        "prompt": "Use the revit-element-audit skill on view '{active_view}' (id {active_view_id}) in {doc_title}. Report untagged and undimensioned windows, doors and rooms. Do not tag anything yet.",
+        "target": "claude_desktop"
+      }
+    },
+    {
+      "id": "verify-install",
+      "parent": "source-8",
+      "type": "button",
+      "label": "Verify Install",
+      "icon": "assets/verify_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "בדיקת התקנה — Which build is this station really on.",
+      "source": {
+        "id": "verify-install",
+        "label": "Verify Install",
+        "icon": "verify.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.VerifyInstallCommand",
+        "tooltip": "בדיקת התקנה — Which build is this station really on.",
+        "params": {
+          "package_root": "\\\\fs2016\\Autocad\\HoekAI\\current"
+        }
+      }
+    },
+    {
+      "id": "source-9",
+      "parent": "panel-5",
+      "type": "stack",
+      "label": "Stack 5",
+      "icon": "",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "",
+      "source": {
+        "kind": "stack",
+        "items": [
+          {
+            "id": "color-tabs",
+            "label": "Colour Tabs",
+            "icon": "color_tabs.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.ColorTabsCommand",
+            "tooltip": "צביעת טאבים לפי מודל — Toggle: each open model gets its own colour on the view tabs (active tab darker). Per-user setting. Paints Revit's tab controls directly (no API) - fail-quiet.",
+            "params": {},
+            "always": true
+          },
+          {
+            "id": "registry",
+            "label": "Project Settings",
+            "icon": "registry.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.RegistryCommand",
+            "tooltip": "הגדרות פרויקט — What the buttons remembered for this model (templates, title blocks, list signal, publish settings). Forget a key or all.",
+            "params": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "color-tabs",
+      "parent": "source-9",
+      "type": "button",
+      "label": "Colour Tabs",
+      "icon": "assets/color_tabs_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "צביעת טאבים לפי מודל — Toggle: each open model gets its own colour on the view tabs (active tab darker). Per-user setting. Paints Revit's tab controls directly (no API) - fail-quiet.",
+      "source": {
+        "id": "color-tabs",
+        "label": "Colour Tabs",
+        "icon": "color_tabs.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.ColorTabsCommand",
+        "tooltip": "צביעת טאבים לפי מודל — Toggle: each open model gets its own colour on the view tabs (active tab darker). Per-user setting. Paints Revit's tab controls directly (no API) - fail-quiet.",
+        "params": {},
+        "always": true
+      }
+    },
+    {
+      "id": "registry",
+      "parent": "source-9",
+      "type": "button",
+      "label": "Project Settings",
+      "icon": "assets/registry_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "הגדרות פרויקט — What the buttons remembered for this model (templates, title blocks, list signal, publish settings). Forget a key or all.",
+      "source": {
+        "id": "registry",
+        "label": "Project Settings",
+        "icon": "registry.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Commands.RegistryCommand",
+        "tooltip": "הגדרות פרויקט — What the buttons remembered for this model (templates, title blocks, list signal, publish settings). Forget a key or all.",
+        "params": {}
+      }
+    },
+    {
+      "id": "stairs-check",
+      "parent": "panel-5",
+      "type": "button",
+      "label": "Stairs\nCheck",
+      "icon": "assets/stairs_check_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "בדיקת מדרגות — קריאה בלבד. 2R+T בטווח 61–63, גובה ראש 210 מעל קו האף, רום אחיד במהלך, עד 18 רומים. גרמים נבחרים או כל הגרמים. דוח HTML + JSON ל-\\\\fs2016\\Autocad\\HoekAI\\reports\\{project}. אומת על 437: 63/63 תקינים.",
+      "source": {
+        "id": "stairs-check",
+        "label": "Stairs\nCheck",
+        "icon": "stairs_check.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.StairsTools.StairsCheckCommand",
+        "tooltip": "בדיקת מדרגות — קריאה בלבד. 2R+T בטווח 61–63, גובה ראש 210 מעל קו האף, רום אחיד במהלך, עד 18 רומים. גרמים נבחרים או כל הגרמים. דוח HTML + JSON ל-\\\\fs2016\\Autocad\\HoekAI\\reports\\{project}. אומת על 437: 63/63 תקינים.",
+        "params": {
+          "two_rt_min": 61,
+          "two_rt_max": 63,
+          "head_min_cm": 210,
+          "risers_max": 18
+        }
+      }
+    },
+    {
+      "id": "standards-audit",
+      "parent": "panel-5",
+      "type": "button",
+      "label": "Standards\nAudit",
+      "icon": "assets/standards_audit_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "בדיקת תקן — קריאה בלבד. שמות חדרים מול רשימת התקן (תווים בלתי נראים, קיצורים, ממ\"ד - ייעוד, קוד טיפוס → Room_Type) ובדיקת IsApartment. דוח HTML + JSON.",
+      "source": {
+        "id": "standards-audit",
+        "label": "Standards\nAudit",
+        "icon": "standards_audit.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Standards.StandardsAuditCommand",
+        "tooltip": "בדיקת תקן — קריאה בלבד. שמות חדרים מול רשימת התקן (תווים בלתי נראים, קיצורים, ממ\"ד - ייעוד, קוד טיפוס → Room_Type) ובדיקת IsApartment. דוח HTML + JSON."
+      }
+    },
+    {
+      "id": "standards-fix",
+      "parent": "panel-5",
+      "type": "button",
+      "label": "Standards\nFix",
+      "icon": "assets/standards_fix_64.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "תיקון תקן — בחירת סעיפים. חדרים מחוץ לקבוצות ובקבוצות עם מופע יחיד מתוקנים אוטומטית (Ctrl+Z אחד מבטל). לדירות חוזרות נפתחת רשימת עבודה צפה לעריכת קבוצה — רוויט לא מאפשר לשנות אותן מתוסף.",
+      "source": {
+        "id": "standards-fix",
+        "label": "Standards\nFix",
+        "icon": "standards_fix.png",
+        "kind": "command",
+        "command": "HoekAI.Ribbon.Standards.StandardsFixCommand",
+        "tooltip": "תיקון תקן — בחירת סעיפים. חדרים מחוץ לקבוצות ובקבוצות עם מופע יחיד מתוקנים אוטומטית (Ctrl+Z אחד מבטל). לדירות חוזרות נפתחת רשימת עבודה צפה לעריכת קבוצה — רוויט לא מאפשר לשנות אותן מתוסף."
+      }
+    },
+    {
+      "id": "HoekAIStatus",
+      "parent": "bridge-panel",
+      "type": "button",
+      "label": "Hoek AI Status",
+      "icon": "assets/HoekLogo_32.png",
+      "status": "testing",
+      "priority": "normal",
+      "notes": "",
+      "fix": "",
+      "fixedVersion": "",
+      "tooltip": "Connection server status",
+      "source": {
+        "command": "ClaudeRevitPlugin.ShowServerStatusCommand",
+        "file": "build/src/bridge/ClaudeRevitPlugin.cs",
+        "externalToManifest": true
+      }
+    }
+  ],
+  "manifest": {
+    "$schema": "hoekai-toolbar-manifest/v1",
+    "tab": "Hoek AI C2R",
+    "read_at": "startup",
+    "comment": "Panels join the tab the bridge plugin creates. Office manifest: \\\\fs2016\\Autocad\\HoekAI\\toolbar\\toolbar.manifest.json; per-user additions in C:\\HoekAI\\toolbar.user.json (same shape; 'hide': [ids] removes office buttons). Kinds: command | prompt | stack{items: 2-3} | pulldown{items, {separator:true}}. Labels English, Hebrew office term leads each tooltip. Edit -> restart Revit; no rebuild.",
+    "panels": [
+      {
+        "name": "Model",
+        "buttons": [
+          {
+            "id": "lot-line-walls",
+            "label": "Lot Line\nWalls",
+            "icon": "lot_line_walls.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.LotLineWallsCommand",
+            "tooltip": "קירות קו גבול — Thin Kav-Gvul walls along property lines flagged P.Line_Lot_Line = Yes, lowest → top level (SEA LEVEL excluded), base/top constrained to levels, pinned, on Shared Levels and Grids. An existing Kav-Gvul type at the wrong thickness is rebuilt thin.",
+            "params": {
+              "wall_type": "Kav-Gvul",
+              "wall_thickness_cm": 1,
+              "exclude_levels": [
+                "SEA LEVEL"
+              ],
+              "workset": "Shared Levels and Grids",
+              "flag_param": "P.Line_Lot_Line"
+            }
+          },
+          {
+            "id": "scopebox-views",
+            "label": "Views by\nScope Box",
+            "icon": "scopebox_views.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.ScopeBoxViewsCommand",
+            "tooltip": "תוכניות לפי Scope Box — For each selected scope box (or all): one plan per level cropped to the box + X/Y sections through its centre.",
+            "params": {
+              "plan_view_type": "Floor Plan",
+              "section_view_type": "Building Section",
+              "view_template": "",
+              "plan_name": "{level} - {scopebox}",
+              "section_name": "{scopebox} - Section {axis}",
+              "create_sections": true,
+              "section_depth_cm": 200
+            }
+          },
+          {
+            "kind": "stack",
+            "items": [
+              {
+                "id": "common-area-fill",
+                "label": "Common Area Fill",
+                "icon": "common_fill.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.CommonAreaFillCommand",
+                "tooltip": "מילוי שטחים משותפים — Grey transparent filled regions on every room in the active plan that is NOT inside an apartment group. Skips rooms already filled.",
+                "params": {
+                  "region_type": "HoekAI Common Area",
+                  "grey": 200
+                }
+              },
+              {
+                "id": "toposolid",
+                "label": "Toposolid from Survey",
+                "icon": "toposolid.png",
+                "kind": "prompt",
+                "tooltip": "טופוסוליד ממדידה — Site model from a surveyor DWG (ITM). Needs Claude: the DWG import is manual and the coordinate check is a judgement call.",
+                "prompt": "Use the revit-toposolid skill on {doc_title}. The survey DWG is linked/imported already (or tell me what to do). Check the Survey Point and levels against ITM before creating the toposolid, then create property lines from layer likb.",
+                "target": "claude_desktop"
+              },
+              {
+                "id": "dwg-to-model",
+                "label": "DWG → Model",
+                "icon": "dwg_model.png",
+                "kind": "prompt",
+                "tooltip": "DWG למודל — Five-agent pipeline with verification checkpoints; Claude only.",
+                "prompt": "Use the revit-dwg-to-model skill on {doc_title}, active view {active_view} (id {active_view_id}). Start with agent 1 and stop at every verification checkpoint.",
+                "target": "claude_desktop"
+              }
+            ]
+          },
+          {
+            "id": "bathroom-setup",
+            "label": "Bathroom\nSetup",
+            "icon": "bathroom_setup.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.BathroomSetupCommand",
+            "tooltip": "הצבת חדר רחצה — בחר חדר (Room) ולחץ על קיר הדלת; הכלי מציע פריסות של דלת, אסלה, כיור ומקלחון/אמבט לפי המרווחים של המשרד (אסלה 80×150, כיור 80×130, מקלחון 80+ עם גישה מלפנים/מהצד/באלכסון, אמבט 160/170). דפדף הבא/הקודם בתצוגה חיה במודל, ואז 'השאר במודל'. מכויל על 202 חדרי רחצה ב־503 וב־437.",
+            "params": {
+              "door_type": "",
+              "sink_widths": [
+                "120",
+                "100",
+                "80"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Apartments",
+        "buttons": [
+          {
+            "kind": "stack",
+            "items": [
+              {
+                "id": "apt-params",
+                "label": "Apartment Parameters",
+                "icon": "apt_params.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.AptParametersCommand",
+                "tooltip": "פרמטרים לדירות — Binds IsApartment (Yes/No), Building, Apt Num, Apt Type to Model Groups (Building + Apt Num also to Rooms), taking the definitions from the office shared-parameter file so GUIDs match other projects.",
+                "params": {
+                  "shared_param_file": "W:\\REVIT\\Shared Parameters\\Hoek Shared Parameters.txt"
+                }
+              },
+              {
+                "id": "apt-mark",
+                "label": "Mark Apartments",
+                "icon": "apt_mark.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.MarkApartmentsCommand",
+                "tooltip": "סימון דירות — Set IsApartment = Yes (or No) on the selected model groups, or on every group whose type name contains a pattern (default APT); optionally set Building. Preview by group type before applying.",
+                "params": {
+                  "default_pattern": "APT"
+                }
+              },
+              {
+                "id": "apt-num-rooms",
+                "label": "Apt Num → Rooms",
+                "icon": "apt_rooms.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.AptNumToRoomsCommand",
+                "tooltip": "מספר דירה לחדרים — Writes each apartment's Apt Num (and Building) into the rooms inside its footprint on the same level; common-area rooms are left alone. Last stage of the numbering skill.",
+                "params": {}
+              }
+            ]
+          },
+          {
+            "kind": "stack",
+            "items": [
+              {
+                "id": "apt-numbering",
+                "label": "Number Apartments",
+                "icon": "apt_number.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.AptNumberingCommand",
+                "tooltip": "מספור דירות — Clockwise from the start apartment, level by level, per building; Diurit gets XX.1 of the nearest main apartment. Shows the full numbering for approval before writing Apt Num."
+              },
+              {
+                "id": "apt-tags",
+                "label": "Tag Apartments",
+                "icon": "apt_tags.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.TagApartmentsCommand",
+                "tooltip": "תיוג דירות — One group tag per apartment in the selected plan views (or the active view): footprint centre nudged to a clear spot, radius scaled to the view scale; only apartments on the view's level; optional layout copy from a reference view; tags sitting on the wrong level's view can be moved.",
+                "params": {}
+              }
+            ]
+          },
+          {
+            "kind": "stack",
+            "items": [
+              {
+                "id": "apt-sale-plan",
+                "label": "Apartment Sale Sheets",
+                "icon": "apt_sheets.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.AptSalePlanCommand",
+                "tooltip": "תוכניות מכר לדירות — 1:50 plan cropped to each apartment type's canonical instance + A4 sheet. Template/title block remembered per project.",
+                "params": {
+                  "crop_pad_cm": 50,
+                  "annotation_offset_cm": 15,
+                  "tb_offset_x_ft": 0.167,
+                  "tb_offset_y_ft": 0.0148,
+                  "view_prefix": "Sale_",
+                  "sheet_prefix": "SALE-"
+                }
+              },
+              {
+                "id": "floor-sale-plan",
+                "label": "Floor Sale Sheets",
+                "icon": "floor_sheets.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.FloorSalePlanCommand",
+                "tooltip": "תוכניות מכר לקומות — Typical-floor 1:100 sale views (duplicate selected views, or new per pattern of apartment types) on sheets. Shows the plan before creating.",
+                "params": {
+                  "tb_offset_x_ft": 0.0623,
+                  "tb_offset_y_ft": 0.0197,
+                  "sheet_prefix": "11.1-"
+                }
+              },
+              {
+                "id": "sale-dimensions",
+                "label": "Sale Dimensions",
+                "icon": "sale_dims.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.SaleDimensionsCommand",
+                "tooltip": "מידות מכר — Place or realign the מידות מכר detail items (50 cm inside the room edge) for all apartment rooms in view or the selection.",
+                "params": {
+                  "family": "מידות מכר",
+                  "inset_cm": 50,
+                  "min_room_cm": 100
+                }
+              }
+            ]
+          },
+          {
+            "id": "kitchen-layout",
+            "label": "Kitchen\nLayout",
+            "icon": "kitchen_layout.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Kitchen.KitchenLayoutCommand",
+            "tooltip": "תכנון מטבח — שרטט קו מודל לאורך הקיר ובחר אותו. מקרר / BI / כיור / מדיח / כיריים / עליונים. מדיח צמוד לכיור, משטח עבודה ≥60 (מועדף 100). כשיש שוויון — הכלי שואל.",
+            "params": {
+              "min_sink_hob_cm": 60,
+              "pref_sink_hob_cm": 100,
+              "lower_line_style": "Casework",
+              "upper_line_style": "casework-top-dash",
+              "fridge_family": "S_2D_fridge",
+              "dishwasher_family": "S_2D_dish washer"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Annotate",
+        "buttons": [
+          {
+            "kind": "stack",
+            "items": [
+              {
+                "id": "fire-door-tags",
+                "label": "Fire Door Tags",
+                "icon": "fire_door.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.FireDoorTagCommand",
+                "tooltip": "תיוג דלתות אש — Tags every fire-rated door (ISH_Door_Fire_Rate, else type Fire Rating) in the active view / selected views at the leaf centre, no leader, skipping already-tagged doors. Select one existing fire tag first to define the type.",
+                "params": {
+                  "tag_family": "Fire Door"
+                }
+              },
+              {
+                "id": "room-dimensions",
+                "label": "Room Dimensions",
+                "icon": "room_dims.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.RoomDimensionsCommand",
+                "tooltip": "מידות חדרים — Two perpendicular internal dimensions per selected rectangular room; other rooms are reported for the Claude path.",
+                "params": {
+                  "dimension_type": "",
+                  "offset_from_wall_cm": 60
+                }
+              },
+              {
+                "id": "dimension-selected",
+                "label": "Dimension with Claude",
+                "icon": "dims_claude.png",
+                "kind": "prompt",
+                "tooltip": "מידות עם Claude — Walls, openings, mixed selections: face/centerline/core is a judgement call.",
+                "prompt": "Use the revit-auto-dimensions skill. Document: {doc_title}. Active view: {active_view} (id {active_view_id}). Dimension the selected elements (ids: {selection_ids}). Ask before choosing face/centerline/core if the selection is mixed.",
+                "target": "claude_desktop"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Lists",
+        "buttons": [
+          {
+            "kind": "pulldown",
+            "id": "lists",
+            "label": "Lists\nרשימות",
+            "icon": "lists.png",
+            "tooltip": "רשימות אלומיניום / מסגרות / נגרות — every stage of the fabrication lists as a button, in workflow order.",
+            "items": [
+              {
+                "id": "list-setup",
+                "label": "1  Setup Project Standards",
+                "icon": "list_setup.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.AluminiumSetupCommand",
+                "tooltip": "הגדרות אלומיניום — Copy VFT, view templates, filter, viewport types, text type, title blocks, view titles and bound shared parameters from the office standards file; create the LISTS sheet collection.",
+                "params": {
+                  "standards_file": "W:\\HoekAI\\Templates\\KRSA-AB-AR_Standards.rvt",
+                  "vft": "A6-scp_Aluminum",
+                  "templates": [
+                    "03.11-Aluminium",
+                    "EL_03.11-Aluminium",
+                    "SC_03.11-Aluminium"
+                  ]
+                }
+              },
+              {
+                "id": "list-survey",
+                "label": "2  Survey (report)",
+                "icon": "list_survey.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.ListSurveyCommand",
+                "tooltip": "סקירת רשימה — Table of every type in the list: מספר פרט, family, type, W/H, count, sheet; plus missing numbers, duplicate numbers, numbered-but-unplaced symbols (the א-10 cluster). Read-only."
+              },
+              {
+                "separator": true
+              },
+              {
+                "id": "list-bind",
+                "label": "3  Bind Legend Parameters",
+                "icon": "list_bind.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.ListBindParamsCommand",
+                "tooltip": "קישור פרמטרים — Resh_SheetNumber/SheetDate/Comments/Glazing/Finish/Edition as TYPE parameters on Windows + Doors (instance binding breaks the workflow)."
+              },
+              {
+                "id": "list-schedules",
+                "label": "4  Schedules + Schedule Sheet",
+                "icon": "list_schedules.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.ListSchedulesCommand",
+                "tooltip": "לוחות — קובץ חלונות + קובץ דלתות for the list (per category, sorted by number, filtered to the list) placed on sheet AL-00 / MA-00 / NA-00."
+              },
+              {
+                "id": "list-sheets",
+                "label": "5  Item Sheets (Sheet Factory)",
+                "icon": "list_sheets.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.ListSheetsCommand",
+                "tooltip": "גליונות פרטים — Per item: duplicate the template legend, swap Front/Back/Plan to the type, A4 (or A3 > 1800 mm) sheet numbered by item, title block filled, LISTS collection, tracking on the type. Create or Update (מהדורה) mode; preview list first."
+              },
+              {
+                "separator": true
+              },
+              {
+                "id": "list-tags",
+                "label": "6  Tag Lists in Plan",
+                "icon": "list_tags.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.CategoryListTagCommand",
+                "tooltip": "תיוג לפי רשימה — Learn tag family/type per (category × list) from a reference plan, show the lookup, tag the active plan (fire tag centred first), optionally bundle each apartment's tags into '<group>-tags'. Railings without a signal are reported, never guessed."
+              },
+              {
+                "id": "cw-sheets",
+                "label": "7  Curtain Wall Sheets (Claude)",
+                "icon": "cw_sheets.png",
+                "kind": "prompt",
+                "tooltip": "גליונות קיר מסך — Elevation + section + plan + two schedules per curtain wall; sections need judgement.",
+                "prompt": "Use the revit-curtain-wall-sheet skill on {doc_title}. Selected walls: {selection_ids}. Confirm the list of Resh_Aluminium_Curtain_Wall walls before creating sheets, one sheet per call.",
+                "target": "claude_desktop"
+              },
+              {
+                "id": "legend-claude",
+                "label": "Full run with Claude",
+                "icon": "legend_claude.png",
+                "kind": "prompt",
+                "tooltip": "רשימת אלומיניום עם Claude — The complete 3-agent workflow with confirmations, for projects that need bootstrap or the office enhanced layout.",
+                "prompt": "Use the revit-window-door-legend skill on {doc_title}. Start with Agent 0 (bootstrap & validation) and stop for confirmation after each agent.",
+                "target": "claude_desktop"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Mamad",
+        "buttons": [
+          {
+            "id": "mamad-check",
+            "label": "Mamad\nCheck",
+            "icon": "mamad_check.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Mamad.MamadCheckCommand",
+            "tooltip": "בדיקת מרחבים מוגנים — קריאה בלבד. שטח, גובה, נפח, רוחב, קירות חוץ, עובי קירות, אחוז בטון בהיקף, דלת וחלון הדף, שרוולים ומערכת סינון וגובהיהם. לפי mamad_rules v1.2."
+          }
+        ]
+      },
+      {
+        "name": "Export & QC",
+        "buttons": [
+          {
+            "id": "publish-sheets",
+            "label": "Publish\nSheets",
+            "icon": "publish.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.PublishSheetsCommand",
+            "tooltip": "הדפסה וייצוא גיליונות — ProSheets-style publisher: pick sheets (search, sheet sets, all/none/invert), name files with a pattern ({Number}_{Name}_{Rev}, any sheet parameter), export PDF (native, per sheet or combined) / DWG (export setup) / DWFX, print to a printer with a print setting, save the selection as a sheet set. Settings remembered per project.",
+            "params": {}
+          },
+          {
+            "id": "publish-views",
+            "label": "Publish\nViews",
+            "icon": "publish_views.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.PublishViewsCommand",
+            "tooltip": "ייצוא מבטים — תוכניות, חתכים, חזיתות, פרטים, מקרא, תלת-ממד ולוחות. PDF / DWG / DWFX. גודל דף: אוטומטי (גיליון ISO הקטן ביותר שמחזיק את המבט בקנה המידה שלו), A0–A4 קבוע, או התאמה לדף. הגודל שכל מבט יקבל מוצג ברשימה לפני הייצוא."
+          },
+          {
+            "id": "schedule-xlsx",
+            "label": "Schedule\nto Excel",
+            "icon": "schedule_xlsx.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Commands.ScheduleToXlsxCommand",
+            "tooltip": "לוח לאקסל — Active schedule (or selected schedules) to a formatted RTL .xlsx via the HoekAI venv; numbers from element parameters, not display text.",
+            "params": {
+              "python": "C:\\HoekAI\\venv\\Scripts\\python.exe",
+              "script": "C:\\HoekAI\\scripts\\schedule_to_xlsx.py",
+              "output_dir": "{doc_dir}\\Exports",
+              "open_after": true
+            }
+          },
+          {
+            "kind": "stack",
+            "items": [
+              {
+                "id": "robot-check",
+                "label": "Robot Export Check",
+                "icon": "robot_check.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.RobotExportCheckCommand",
+                "tooltip": "בדיקת ייצוא לרובוט — Scans the active/selected sheets for everything that hides robot colours in DWFX: masking regions, images, shadows, scope boxes, annotation crop, fill overrides, links, CAD hatches. Read-only report."
+              },
+              {
+                "id": "audit-view",
+                "label": "Annotation Audit",
+                "icon": "audit.png",
+                "kind": "prompt",
+                "tooltip": "בדיקת אנוטציה — Untagged / undimensioned elements in the active view (revit-element-audit).",
+                "prompt": "Use the revit-element-audit skill on view '{active_view}' (id {active_view_id}) in {doc_title}. Report untagged and undimensioned windows, doors and rooms. Do not tag anything yet.",
+                "target": "claude_desktop"
+              },
+              {
+                "id": "verify-install",
+                "label": "Verify Install",
+                "icon": "verify.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.VerifyInstallCommand",
+                "tooltip": "בדיקת התקנה — Which build is this station really on.",
+                "params": {
+                  "package_root": "\\\\fs2016\\Autocad\\HoekAI\\current"
+                }
+              }
+            ]
+          },
+          {
+            "kind": "stack",
+            "items": [
+              {
+                "id": "color-tabs",
+                "label": "Colour Tabs",
+                "icon": "color_tabs.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.ColorTabsCommand",
+                "tooltip": "צביעת טאבים לפי מודל — Toggle: each open model gets its own colour on the view tabs (active tab darker). Per-user setting. Paints Revit's tab controls directly (no API) - fail-quiet.",
+                "params": {},
+                "always": true
+              },
+              {
+                "id": "registry",
+                "label": "Project Settings",
+                "icon": "registry.png",
+                "kind": "command",
+                "command": "HoekAI.Ribbon.Commands.RegistryCommand",
+                "tooltip": "הגדרות פרויקט — What the buttons remembered for this model (templates, title blocks, list signal, publish settings). Forget a key or all.",
+                "params": {}
+              }
+            ]
+          },
+          {
+            "id": "stairs-check",
+            "label": "Stairs\nCheck",
+            "icon": "stairs_check.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.StairsTools.StairsCheckCommand",
+            "tooltip": "בדיקת מדרגות — קריאה בלבד. 2R+T בטווח 61–63, גובה ראש 210 מעל קו האף, רום אחיד במהלך, עד 18 רומים. גרמים נבחרים או כל הגרמים. דוח HTML + JSON ל-\\\\fs2016\\Autocad\\HoekAI\\reports\\{project}. אומת על 437: 63/63 תקינים.",
+            "params": {
+              "two_rt_min": 61,
+              "two_rt_max": 63,
+              "head_min_cm": 210,
+              "risers_max": 18
+            }
+          },
+          {
+            "id": "standards-audit",
+            "label": "Standards\nAudit",
+            "icon": "standards_audit.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Standards.StandardsAuditCommand",
+            "tooltip": "בדיקת תקן — קריאה בלבד. שמות חדרים מול רשימת התקן (תווים בלתי נראים, קיצורים, ממ\"ד - ייעוד, קוד טיפוס → Room_Type) ובדיקת IsApartment. דוח HTML + JSON."
+          },
+          {
+            "id": "standards-fix",
+            "label": "Standards\nFix",
+            "icon": "standards_fix.png",
+            "kind": "command",
+            "command": "HoekAI.Ribbon.Standards.StandardsFixCommand",
+            "tooltip": "תיקון תקן — בחירת סעיפים. חדרים מחוץ לקבוצות ובקבוצות עם מופע יחיד מתוקנים אוטומטית (Ctrl+Z אחד מבטל). לדירות חוזרות נפתחת רשימת עבודה צפה לעריכת קבוצה — רוויט לא מאפשר לשנות אותן מתוסף."
+          }
+        ]
+      }
+    ],
+    "prompt_targets": {
+      "claude_desktop": {
+        "comment": "clipboard_focus today; 'pane' when the dockable panel ships",
+        "mode": "clipboard_focus",
+        "process_name": "Claude"
+      }
+    },
+    "tokens": [
+      "{doc_title}",
+      "{doc_dir}",
+      "{active_view}",
+      "{active_view_id}",
+      "{selection_ids}",
+      "{selection_count}",
+      "{level}",
+      "{scopebox}",
+      "{axis}"
+    ],
+    "version_note": "3.9.3: + standards-fix, Mamad panel (mamad-check). 3.9.2: standards-audit, kitchen-layout. 3.9.1: stairs-check"
+  }
+}
