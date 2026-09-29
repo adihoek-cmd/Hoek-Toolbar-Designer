@@ -3,7 +3,7 @@ import vm from 'node:vm';
 import assert from 'node:assert/strict';
 import {catalog} from './dist/icon-catalog.js';
 import {choiceKey, choicesHTML} from './dist/icon-options.js';
-const seed=JSON.parse(fs.readFileSync('dist/seed.json','utf8'));
+const seed=JSON.parse(fs.readFileSync('dist/baseline-original.json','utf8'));
 const targets=seed.nodes.filter(n=>['button','dropdown'].includes(n.type));
 assert.equal(Object.keys(catalog).length,40);
 const js=fs.readFileSync('dist/app.js','utf8');

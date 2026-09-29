@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
-const seed=JSON.parse(fs.readFileSync('dist/seed.json','utf8'));
-const source=JSON.parse(fs.readFileSync('dist/source-manifest.json','utf8'));
+const seed=JSON.parse(fs.readFileSync('dist/baseline-original.json','utf8'));
+const source=seed.manifest;
 const nodes=new Map(seed.nodes.map(n=>[n.id,n]));
 let commands=0;
 function check(items){for(const item of items){if(item.items)check(item.items);else if(!item.separator){commands++;assert.deepEqual(nodes.get(item.id).source,item);assert.ok(fs.existsSync('dist/'+nodes.get(item.id).icon));}}}
