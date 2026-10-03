@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "packageVersion": "3.9.3",
-  "packageRevision": "3.9.3-reconciled-cdc8147710",
+  "packageVersion": "3.9.5",
+  "packageRevision": "3.9.5-62555a6d4020",
   "tab": "Hoek AI C2R",
   "nodes": [
     {
@@ -55,7 +55,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -69,29 +69,49 @@
       "notes": "",
       "fix": "",
       "fixedVersion": "",
-      "tooltip": "תוכניות לפי Scope Box — For each selected scope box (or all): one plan per level cropped to the box + X/Y sections through its centre.",
+      "tooltip": "תוכניות לפי Scope Box — Select one or more scope boxes: a plan for every level that actually carries construction inside the box, cropped to it, plus X/Y sections through its centre. A box with no construction produces nothing.",
       "source": {
         "id": "scopebox-views",
         "label": "Views by\nScope Box",
         "icon": "scopebox-views.png",
         "kind": "command",
         "command": "HoekAI.Ribbon.Commands.ScopeBoxViewsCommand",
-        "tooltip": "תוכניות לפי Scope Box — For each selected scope box (or all): one plan per level cropped to the box + X/Y sections through its centre.",
+        "tooltip": "תוכניות לפי Scope Box — Select one or more scope boxes: a plan for every level that actually carries construction inside the box, cropped to it, plus X/Y sections through its centre. A box with no construction produces nothing.",
         "params": {
           "plan_view_type": "Floor Plan",
           "section_view_type": "Building Section",
           "view_template": "",
-          "plan_name": "{level} - {scopebox}",
-          "section_name": "{scopebox} - Section {axis}",
+          "plan_name": "{scopebox}-{level}",
+          "section_name": "{scopebox}-Section {axis}",
           "create_sections": true,
-          "section_depth_cm": 200
+          "section_depth_cm": 200,
+          "construction_categories": [
+            "OST_Walls",
+            "OST_Floors",
+            "OST_Columns",
+            "OST_StructuralColumns",
+            "OST_StructuralFraming",
+            "OST_Stairs",
+            "OST_Roofs"
+          ],
+          "min_elements_per_level": 1,
+          "level_filter_use_box_z": false,
+          "level_filter_box_z_pad_cm": 0,
+          "level_filter_xy_tolerance_cm": 0,
+          "count_multi_level_elements": true,
+          "exclude_levels": [
+            "SEA LEVEL"
+          ],
+          "views_per_transaction": 10
         }
       },
       "packageIcon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAATBSURBVFhH7ZV9TJV1FMe/v+flAnIvXA1E8Zr34WUgMJjJVEw2IXwpwy3RZTMwykYtcZZl4JzTuZYN2kwsCkmKdIIREd1MU8xlQ20LxfmuKagQV1Dwgi/ce5/n9Adwg58IF+y//GzPH88533Oes/M7v/MAj3nMI+DvH6H394/Q8/ahIPAGNxH1PuYMh9p51aF2XtX7mDMAiLzIHRhvGAy9UYkXBCGPNC3mqehoDYyxmtpaxgThpKZpyzvarhzmY/4TvEaZxul9lWKDUdGUoFhnwdYd1FzXRi31t6m0uJJCw6Y6DUaFfEYGWXx9J5j5+IfhRtsidAaj93IRUoUkiZPTFr/ECj7ZLMRERYGxrgYGmc14edEiQZYk1NTWhqjE3tR5GGW7v/4YbDYnn7E3Ax6Bwagks652T0iIj6cNWe+z8SYTL+tDY5MVuXl5+N5igcDY3xppWe1tdcW8rod+C/D2Dhot6mgXERKDzWZtfVaWMCNuGi8bkN+PHMX6TR9pf9VdEUSB/eroxOI7dy7f4HX93gJRpllESARAsoecr5iVOALFDuVRzEqc7CHlAyBVowRRpln8d/CwDhiM5lSAFUdOnIjTZ89CFMVLquZY0d5a/zMAEBEDEAdgHB8LACUl5ZMO/Vadfu/e/TGmwHF0vbGBTZ8+ZWvG62m7AVQzxlQ+pg8GoznVYFTo6KHjVFH6C0XHzOyecOVAgCk8iogqafjsJyLX8Pd7BL2ZMW0q9pV/J65b/R68PL0SoiMjTwBI5nVDIAlAYs/LoAUAgCxJSF+yBAd//EFIfu5ZN67uoLiObsAZ2F9RjhAlqI9PN0KGwc+rjw0Amq/dQu3Bs2i+dgtEBP/xoxA9MxwBZj9eCgDpjLGv4G4HBqL9ZgeKssvw8dJCtDS0IjA0AKawMWhtsmHzsiIUvluK283tfJiLRyrAWteCnLRC+PoZsMGyEi9mz4MpbAzGBo/GwtVzscGyEqMnPIGc1G1ouGjlw4FHKaD9Zgc+y9yJOa/FY8GqOdB5yih4pwQlH1hQlrMXn761A5JOxPzMJMzPfAb5K3aizWrj0wy/gOJ1FYidG4WnF0wGAFw+eQ0t11uRXfoGsnZl4H5HJ84fuwwAmDIvBjNSYrE9u4zL8pACNA12ANjyeQGszQ9sTwCA6lQh6STXu6ZqEEQBjDEwxiCIAjSVXH7ZQ4LqfHD/9FvAHZtUQUCOZd9ex8znk7X87UWw2+19NGkbX0B1eQ3++KkWABA86UnoR45AblohcpcWggkM4dO6btDxA2dw8JsjePXDhX1yDIqPT3CIz8igbw1GhSZGTHd+va2MbM13XSvt+oUmWjM7lyq3VpG900GqqtKZ6ot06vAFcjqc5LQ7ac8XhygrKYfqTzf03oav9Hyj3z3A4+2rJMmikKdqWvjqVZm0du3brri2Gzbs3rQH9acbMHl2FAJDA8AEhsZLVvy57xQCQwKweM08jBpr7J3StQfcKqCLCJ3B9+6KlJTkjUVfbvHkvY2XrDhR1b2ItK5FFJMQDlP4WF6K3gUMmXPnLi7r3cth4jqCfodwIMLCQs7ztmHQxBvchojE7l/qcDlMRHJPviHMwL90/88TASi8bxCuAqhijDl4x/+XfwDT2ZxIBCvTwgAAAABJRU5ErkJggg==",
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "בחירה מפורשת של Scope Boxes; קומות מסוננות לפי אלמנטי בנייה בתחום. לא נמצא סינון מפורש לפי Phase בקוד שנבדק. נדרשת בדיקת Revit מול הכוונה לבנייה מוצעת.",
+        "updatedIn": "3.9.5",
+        "needsRetest": true
       }
     },
     {
@@ -115,18 +135,25 @@
             "plan_id": "960c814b-0880-41df-a4ad-f0d53964d666",
             "label": "Sections by\nScope Box",
             "icon": "sections-scopebox.png",
-            "kind": "planned",
-            "tooltip": "בעת בחירת scopebox הכלי יבצע שני חתכים ניצבים לscopebox אחרי שהמשתמש בחר את סוג החתך שנבחר ואת הטמפלט שלו. החתך יהיה לכל גובה התיבה ורחב ממנה ב 1מ'",
-            "prompt": "בעת בחירת scopebox הכלי יבצע שני חתכים ניצבים לscopebox אחרי שהמשתמש בחר את סוג החתך שנבחר ואת הטמפלט שלו. החתך יהיה לכל גובה התיבה ורחב ממנה ב 1מ'\n\n(מתוך NEW-BUTTON-BRIEFS — אושר בעיצוב, טרם מומש.)"
+            "kind": "command",
+            "tooltip": "חתכים לפי Scope Box — שני חתכים ניצבים דרך מרכז התיבה, לכל גובהה, רחבים ממנה ב-1 מ' (סה\"כ). סוג חתך ותבנית מדיאלוג.",
+            "command": "HoekAI.Ribbon.Commands.SectionsByScopeBoxCommand",
+            "params": {
+              "extra_width_cm": 100
+            }
           },
           {
             "id": "floor-by-room",
             "plan_id": "c2a08bd7-af13-4eb7-89b7-c3534091c3f5",
             "label": "Floor by\nroom",
             "icon": "floor-by-room.png",
-            "kind": "planned",
-            "tooltip": "כפתור שייצר רצפה בתחום חדר נבחר. יתחיל בבקשה לבחור חדר או חדרים. אחר כך חלון שישאל מה המשפחה של הרצפה שרוצים, ברירת מחדל תהיה רצפה של ריצוף בלבד בעובי 2סמ (יש משפחה מתאימה ב krsa), ותהיה אופציה של מפלס הרצפה, האם מפלס המבט, או להתאים את הרצ",
-            "prompt": "כפתור שייצר רצפה בתחום חדר נבחר. יתחיל בבקשה לבחור חדר או חדרים. אחר כך חלון שישאל מה המשפחה של הרצפה שרוצים, ברירת מחדל תהיה רצפה של ריצוף בלבד בעובי 2סמ (יש משפחה מתאימה ב krsa), ותהיה אופציה של מפלס הרצפה, האם מפלס המבט, או להתאים את הרצפה למפלס הדלת שמובילה לאותו חדר. הכלי אז ייצר רצפה בתחום החדר בסוג ובמפלס שנבחר וימקם גם  annotations של מפלס יחסי לקומה על גבי הרצפה/רצפות שנוצרו\n\n(מתוך NEW-BUTTON-BRIEFS — אושר בעיצוב, טרם מומש.)"
+            "kind": "command",
+            "tooltip": "רצפה לפי חדר — בחר חדר/ים, סוג רצפה (ברירת מחדל ריצוף 2 ס\"מ; נוצר אם חסר), מפלס החדר או לפי הדלת שמובילה אליו, ומפלס יחסי על כל רצפה.",
+            "command": "HoekAI.Ribbon.Commands.FloorByRoomCommand",
+            "params": {
+              "floor_type": "",
+              "spot_type": "EL_Relative_Up"
+            }
           }
         ],
         "plan_id": "72d0923e-4d8e-415a-8c04-c7de859e6515"
@@ -139,26 +166,31 @@
       "type": "button",
       "label": "Sections by\nScope Box",
       "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGySURBVFhH7ZbBThNhEMd/swSMsoubpnjw0m3AQKuPAL0Y41G9cYEzD8ABnkAOPABnuHBDjwa4AI8gpY1RqweTFmJaWiCBsOOhbbL9ujXdphEP+0vmsPP/JzuZ+TIZiIm5Z8RMAExOZu3r26uXqIyZGgCiNw9HHx2cneUbDODvkMwEYNmuVxRk2hSCKPqlUS3NAkT0+8F8VwGO480wIgWUFYu7XVMH8Bl5h7DBnc4CRPHX66ViULOCHwA6qs2caKVW+/ktLBCttL1R/R0/C+uAnUhlxLfy6XFvbf7JvJo6wFHlSL5flt6r5WcBxLfyoEv1amnb9AI4rrcIsqWWn238/nEa1LoqavP88YvXIOth0dSGQ88Cjs8Pd0R5FRbH54c7pn9Qeo6g35bSGoE7NrH85unbr6YX4OOvD1PVm4vNSCOIylwyt6DCXljMJXMLpr/N0Ao4qX3+BLoaFk2tT+xEKuO4aW22ORzH9RYdN612IpWJ6je1oXVgUHo+wngPxHsgKvEe6Ndval1v4F8fJF0FtE6ygiDPTCGIcZJF8f/9JKPPI3P8wfV+uVy+ZAB/TMx/xR/oMYVq2eYUYAAAAABJRU5ErkJggg==",
-      "status": "idea",
+      "status": "testing",
       "priority": "normal",
       "notes": "",
       "fix": "",
       "fixedVersion": "",
-      "tooltip": "בעת בחירת scopebox הכלי יבצע שני חתכים ניצבים לscopebox אחרי שהמשתמש בחר את סוג החתך שנבחר ואת הטמפלט שלו. החתך יהיה לכל גובה התיבה ורחב ממנה ב 1מ'",
+      "tooltip": "חתכים לפי Scope Box — שני חתכים ניצבים דרך מרכז התיבה, לכל גובהה, רחבים ממנה ב-1 מ' (סה\"כ). סוג חתך ותבנית מדיאלוג.",
       "source": {
         "id": "sections-scopebox",
         "plan_id": "960c814b-0880-41df-a4ad-f0d53964d666",
         "label": "Sections by\nScope Box",
         "icon": "sections-scopebox.png",
-        "kind": "planned",
-        "tooltip": "בעת בחירת scopebox הכלי יבצע שני חתכים ניצבים לscopebox אחרי שהמשתמש בחר את סוג החתך שנבחר ואת הטמפלט שלו. החתך יהיה לכל גובה התיבה ורחב ממנה ב 1מ'",
-        "prompt": "בעת בחירת scopebox הכלי יבצע שני חתכים ניצבים לscopebox אחרי שהמשתמש בחר את סוג החתך שנבחר ואת הטמפלט שלו. החתך יהיה לכל גובה התיבה ורחב ממנה ב 1מ'\n\n(מתוך NEW-BUTTON-BRIEFS — אושר בעיצוב, טרם מומש.)"
+        "kind": "command",
+        "tooltip": "חתכים לפי Scope Box — שני חתכים ניצבים דרך מרכז התיבה, לכל גובהה, רחבים ממנה ב-1 מ' (סה\"כ). סוג חתך ותבנית מדיאלוג.",
+        "command": "HoekAI.Ribbon.Commands.SectionsByScopeBoxCommand",
+        "params": {
+          "extra_width_cm": 100
+        }
       },
       "packageIcon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGySURBVFhH7ZbBThNhEMd/swSMsoubpnjw0m3AQKuPAL0Y41G9cYEzD8ABnkAOPABnuHBDjwa4AI8gpY1RqweTFmJaWiCBsOOhbbL9ujXdphEP+0vmsPP/JzuZ+TIZiIm5Z8RMAExOZu3r26uXqIyZGgCiNw9HHx2cneUbDODvkMwEYNmuVxRk2hSCKPqlUS3NAkT0+8F8VwGO480wIgWUFYu7XVMH8Bl5h7DBnc4CRPHX66ViULOCHwA6qs2caKVW+/ktLBCttL1R/R0/C+uAnUhlxLfy6XFvbf7JvJo6wFHlSL5flt6r5WcBxLfyoEv1amnb9AI4rrcIsqWWn238/nEa1LoqavP88YvXIOth0dSGQ88Cjs8Pd0R5FRbH54c7pn9Qeo6g35bSGoE7NrH85unbr6YX4OOvD1PVm4vNSCOIylwyt6DCXljMJXMLpr/N0Ao4qX3+BLoaFk2tT+xEKuO4aW22ORzH9RYdN612IpWJ6je1oXVgUHo+wngPxHsgKvEe6Ndval1v4F8fJF0FtE6ygiDPTCGIcZJF8f/9JKPPI3P8wfV+uVy+ZAB/TMx/xR/oMYVq2eYUYAAAAABJRU5ErkJggg==",
       "implementation": {
-        "state": "planned",
+        "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "מציג תיאור בלבד; הפעולה עדיין לא מומשה."
+        "detail": "קיבל פקודה בחבילה במקום כפתור תכנון. יש לבדוק תוצאה ב-Revit.",
+        "updatedIn": "3.9.5",
+        "needsRetest": true
       }
     },
     {
@@ -167,26 +199,32 @@
       "type": "button",
       "label": "Floor by\nroom",
       "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAKBSURBVFhH7ZZLaxNhFIbfM0NV7JRkJ7hK0FUrJGkRcSXUevkFghWtG4UmxGpFQTAdYotXbMXQFopQKdiCP0C8bsSNlLZpUelC2q4qrkxMI2g687qwA8lnkplYujLPbt4z5+NhON9wgDp1/ndEDRx2+gMhHXJSzf8FC5z6kVmZV3NUEzD8gUGBXCSQUWu1IICf4IO1zEqvWquK4Q8OGb5gXs0dekKmPxq63qLmKoYvmDf8wSE1d9DUwCsFjfdE9PlY2OxUa7XgKtATMv3RiPmouzXRVpyLJqMU5gBMbEbCVcAW7BbirFBed4cT+518eCY5S/LoZiVcBVLp5Cdq6ARhaNBeRdsSB5zaaLp/WrfsdgqzACaikb7Tpd3uuAoAwMhs8ik0OUWwUSztRbFEamFgTrfsDgqzQhmvVcKTALZQwpNA1yFzBzYkBNIFwIAtz4tnIrUwMEfyOIU5oYx7nQlXgXjYbG78zmw03HcHAIbTyUkAZ4TSJCIviyVG0/3TxYMZD5vNJYeVwVVAI1ZBLInI1VjEvAsvEsIOCh5rxGrJYWWo8isODoE4v5Zdbryw79ouq2HbGwAtJAdH0jcuA0C01TwBm08EkqduHxuZ6X//1zm+YB6CsbXM8iW1Bi9fAAAefrj1VS/8Ogzgo4j0RsN99+EymF7xJIAtlPAsgA2JglY4QnLxj4R5G2VuR6zNbFV7K1GTAACMzdz8sq6vt5NcFKA3vje+Hcpg0ma32leJmgWwIdFAOUhakdTn1E8nH04nJ0kr1GDLldKOylS5BeUXEiGnctmVmPPc5Au8o0jF++62kFQUqLiSibzNfVt65jwavsA5EdlT+lIp1VayOnXq/AYAAjk0Zex2ygAAAABJRU5ErkJggg==",
-      "status": "idea",
+      "status": "testing",
       "priority": "normal",
       "notes": "",
       "fix": "",
       "fixedVersion": "",
-      "tooltip": "כפתור שייצר רצפה בתחום חדר נבחר. יתחיל בבקשה לבחור חדר או חדרים. אחר כך חלון שישאל מה המשפחה של הרצפה שרוצים, ברירת מחדל תהיה רצפה של ריצוף בלבד בעובי 2סמ (יש משפחה מתאימה ב krsa), ותהיה אופציה של מפלס הרצפה, האם מפלס המבט, או להתאים את הרצ",
+      "tooltip": "רצפה לפי חדר — בחר חדר/ים, סוג רצפה (ברירת מחדל ריצוף 2 ס\"מ; נוצר אם חסר), מפלס החדר או לפי הדלת שמובילה אליו, ומפלס יחסי על כל רצפה.",
       "source": {
         "id": "floor-by-room",
         "plan_id": "c2a08bd7-af13-4eb7-89b7-c3534091c3f5",
         "label": "Floor by\nroom",
         "icon": "floor-by-room.png",
-        "kind": "planned",
-        "tooltip": "כפתור שייצר רצפה בתחום חדר נבחר. יתחיל בבקשה לבחור חדר או חדרים. אחר כך חלון שישאל מה המשפחה של הרצפה שרוצים, ברירת מחדל תהיה רצפה של ריצוף בלבד בעובי 2סמ (יש משפחה מתאימה ב krsa), ותהיה אופציה של מפלס הרצפה, האם מפלס המבט, או להתאים את הרצ",
-        "prompt": "כפתור שייצר רצפה בתחום חדר נבחר. יתחיל בבקשה לבחור חדר או חדרים. אחר כך חלון שישאל מה המשפחה של הרצפה שרוצים, ברירת מחדל תהיה רצפה של ריצוף בלבד בעובי 2סמ (יש משפחה מתאימה ב krsa), ותהיה אופציה של מפלס הרצפה, האם מפלס המבט, או להתאים את הרצפה למפלס הדלת שמובילה לאותו חדר. הכלי אז ייצר רצפה בתחום החדר בסוג ובמפלס שנבחר וימקם גם  annotations של מפלס יחסי לקומה על גבי הרצפה/רצפות שנוצרו\n\n(מתוך NEW-BUTTON-BRIEFS — אושר בעיצוב, טרם מומש.)"
+        "kind": "command",
+        "tooltip": "רצפה לפי חדר — בחר חדר/ים, סוג רצפה (ברירת מחדל ריצוף 2 ס\"מ; נוצר אם חסר), מפלס החדר או לפי הדלת שמובילה אליו, ומפלס יחסי על כל רצפה.",
+        "command": "HoekAI.Ribbon.Commands.FloorByRoomCommand",
+        "params": {
+          "floor_type": "",
+          "spot_type": "EL_Relative_Up"
+        }
       },
       "packageIcon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAKBSURBVFhH7ZZLaxNhFIbfM0NV7JRkJ7hK0FUrJGkRcSXUevkFghWtG4UmxGpFQTAdYotXbMXQFopQKdiCP0C8bsSNlLZpUelC2q4qrkxMI2g687qwA8lnkplYujLPbt4z5+NhON9wgDp1/ndEDRx2+gMhHXJSzf8FC5z6kVmZV3NUEzD8gUGBXCSQUWu1IICf4IO1zEqvWquK4Q8OGb5gXs0dekKmPxq63qLmKoYvmDf8wSE1d9DUwCsFjfdE9PlY2OxUa7XgKtATMv3RiPmouzXRVpyLJqMU5gBMbEbCVcAW7BbirFBed4cT+518eCY5S/LoZiVcBVLp5Cdq6ARhaNBeRdsSB5zaaLp/WrfsdgqzACaikb7Tpd3uuAoAwMhs8ik0OUWwUSztRbFEamFgTrfsDgqzQhmvVcKTALZQwpNA1yFzBzYkBNIFwIAtz4tnIrUwMEfyOIU5oYx7nQlXgXjYbG78zmw03HcHAIbTyUkAZ4TSJCIviyVG0/3TxYMZD5vNJYeVwVVAI1ZBLInI1VjEvAsvEsIOCh5rxGrJYWWo8isODoE4v5Zdbryw79ouq2HbGwAtJAdH0jcuA0C01TwBm08EkqduHxuZ6X//1zm+YB6CsbXM8iW1Bi9fAAAefrj1VS/8Ogzgo4j0RsN99+EymF7xJIAtlPAsgA2JglY4QnLxj4R5G2VuR6zNbFV7K1GTAACMzdz8sq6vt5NcFKA3vje+Hcpg0ma32leJmgWwIdFAOUhakdTn1E8nH04nJ0kr1GDLldKOylS5BeUXEiGnctmVmPPc5Au8o0jF++62kFQUqLiSibzNfVt65jwavsA5EdlT+lIp1VayOnXq/AYAAjk0Zex2ygAAAABJRU5ErkJggg==",
       "implementation": {
-        "state": "planned",
+        "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "מציג תיאור בלבד; הפעולה עדיין לא מומשה."
+        "detail": "קיבל פקודה בחבילה במקום כפתור תכנון. יש לבדוק תוצאה ב-Revit.",
+        "updatedIn": "3.9.5",
+        "needsRetest": true
       }
     },
     {
@@ -324,7 +362,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -358,9 +396,10 @@
             "icon": "apt-params.png",
             "kind": "command",
             "command": "HoekAI.Ribbon.Commands.AptParametersCommand",
-            "tooltip": "פרמטרים לדירות — Binds IsApartment (Yes/No), Building, Apt Num, Apt Type to Model Groups (Building + Apt Num also to Rooms), taking the definitions from the office shared-parameter file so GUIDs match other projects.",
+            "tooltip": "פרמטרים לדירות — Binds IsApartment (Yes/No), Building, Apt Num, Apt Type, Apt Area, Apt_Balcony Area, Apt_BalconyArea-NOT-ABOVE, Area-Sale and Direction to Model Groups (Building + Apt Num also to Rooms), taking the definitions from the office shared-parameter file so GUIDs match other projects.",
             "params": {
-              "shared_param_file": "W:\\REVIT\\Shared Parameters\\Hoek Shared Parameters.txt"
+              "shared_param_file": "W:\\REVIT\\Shared Parameters\\Hoek Shared Parameters.txt",
+              "allow_local_definitions": false
             }
           },
           {
@@ -399,23 +438,26 @@
       "notes": "",
       "fix": "",
       "fixedVersion": "",
-      "tooltip": "פרמטרים לדירות — Binds IsApartment (Yes/No), Building, Apt Num, Apt Type to Model Groups (Building + Apt Num also to Rooms), taking the definitions from the office shared-parameter file so GUIDs match other projects.",
+      "tooltip": "פרמטרים לדירות — Binds IsApartment (Yes/No), Building, Apt Num, Apt Type, Apt Area, Apt_Balcony Area, Apt_BalconyArea-NOT-ABOVE, Area-Sale and Direction to Model Groups (Building + Apt Num also to Rooms), taking the definitions from the office shared-parameter file so GUIDs match other projects.",
       "source": {
         "id": "apt-params",
         "label": "Apartment Parameters",
         "icon": "apt-params.png",
         "kind": "command",
         "command": "HoekAI.Ribbon.Commands.AptParametersCommand",
-        "tooltip": "פרמטרים לדירות — Binds IsApartment (Yes/No), Building, Apt Num, Apt Type to Model Groups (Building + Apt Num also to Rooms), taking the definitions from the office shared-parameter file so GUIDs match other projects.",
+        "tooltip": "פרמטרים לדירות — Binds IsApartment (Yes/No), Building, Apt Num, Apt Type, Apt Area, Apt_Balcony Area, Apt_BalconyArea-NOT-ABOVE, Area-Sale and Direction to Model Groups (Building + Apt Num also to Rooms), taking the definitions from the office shared-parameter file so GUIDs match other projects.",
         "params": {
-          "shared_param_file": "W:\\REVIT\\Shared Parameters\\Hoek Shared Parameters.txt"
+          "shared_param_file": "W:\\REVIT\\Shared Parameters\\Hoek Shared Parameters.txt",
+          "allow_local_definitions": false
         }
       },
       "packageIcon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAPySURBVFhH7ZRdTBxVFMf/d5bZXZidnRnWZSldFmYriwGBCrKlLRUqsTZF4wZtQks1xUS0NsYUH1pfjOmDPjQNxsTGamIfTI2JManaRI2i1BoKbFu6ohHQLuXDUinIx+6WZWFnfCCQ5bITxq/EB37JeZj/+Z97T+49d4B11vkHOBwOzuFwcLT+V2BoQS+cKBdHY5a+aMzSx4lyMZ3Xy99qgJfctQZC2kVRyJREIdNAyCVectfSvv8Ei5DbZJXkhdLSmoVAR6/6o79f9W7ZHbdK7rhFyD1K+/9NDBZBfpMXZXXPnv3KwE+/qeOD0+r44LQ69PMt1ffYQYUXZZUX5XeAMpYu1sJAC8mw2fJ51mT9GAQH9j3xON547XWSajYv51mWRe2uXSQ2P4/L3dfKzKmz28wm4dO5uenoioWSsGYDguCSFZA2wpCKV48dJc2HD4NhVo8OwzCorKhApiMD3168KIOQvcYU8YtYbGqC9iZCaCERXsrZamBSPjMajdJbJ04wO3fsoC1J+b6jE4eam5XZaHRmIb7gC0/duEB7ltA8AV6UDzCEOacoquVgw77Rp+rr+wGM6gmX0zk6OT1FrnRfsxsI02A0iwOx6NQP9B6a8IJ8nBdlpbrKF0+35ykWUW5JzL+w+WX785tfOdRU1qQ5bBZRbkm35ynV1b44L8oKL8jHaQ+SXQHHuTMYVr15T57Hf/a9d9/3Vj/YUlNV3Xe65eSlJc/5060l/s8DW+pe3H2+ZGfBzZUrLPLskZe2tl5oy+9q++ZIw9PPPNn7S3+5Mk+yIpHgWKIvJfEDACKR4BjHubP8/i/HPEUuWKVNJ51ZG4pUVS2KRuYAAGmWxRfAmtlHZsOrB93MmeDM2gBFUaOeItcpAKc4zp1Bb45kJ0BjlTbNNjbsN3vtXrSfu0ynk7LNdz+6bnfhzNkPojOT11PpfCKr35MG7uJsFG73oHC7B46cuwAArgLnspYY7uJsulyTVVegRV6pjLxSGQDw3Ued+H1wHFV7vbj7vlzcHp5A+ydX8XDjAzBzpsWC1pX1Wug+gUQkhwBDigFWmwUA0Nt5HVe/7sFI/y3auia6G4hG5hAMDCEYGAInpKH+2KMIT95BMDCEidEpAMBocAzBwBCWhlUPuoewJK0EV77qodNJKXuoCIE7AV1DqLuB5+ob0ecP0mkAwEDPMH7tvoHSmnth2yghv9yNtz88o6sB3Vdgz7ahsq48aeQUbAQAFFZ6UFlXDnu2jS7XRFcDoXAIwyMjmmGysbA5RcyzsWUtFA7RyyRFxxW4Z1RV5WldD4SQ0Mxk0ErriazZAJ+eU6HGGf1/lgSIQRkO/THYQevrrPO/4k91ymjj7aQzlwAAAABJRU5ErkJggg==",
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "נוספו חמשת פרמטרי הדירה לקבוצות כמופעים; שמות Balcony לפי קוד החבילה (בבקשה הישנה: Balconey). הגדרות משרד כברירת מחדל; אי-התאמה בסוג הקישור מדווחת ללא המרה. יש לאמת שמות ו-GUID מול קובץ המשרד.",
+        "updatedIn": "3.9.5",
+        "needsRetest": true
       }
     },
     {
@@ -445,7 +487,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -473,7 +515,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -507,7 +549,11 @@
             "kind": "command",
             "command": "HoekAI.Ribbon.Commands.TagApartmentsCommand",
             "tooltip": "תיוג דירות — One group tag per apartment in the selected plan views (or the active view): footprint centre nudged to a clear spot, radius scaled to the view scale; only apartments on the view's level; optional layout copy from a reference view; tags sitting on the wrong level's view can be moved.",
-            "params": {}
+            "params": {
+              "tag_family": "ApartmentModelGroupInforamation",
+              "tag_type": "5-Apt Name+ Areas + Building",
+              "tag_family_file": "W:\\HoekAI\\families\\ApartmentModelGroupInforamation.rfa"
+            }
           }
         ],
         "plan_id": "source-3"
@@ -538,7 +584,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -560,13 +606,17 @@
         "kind": "command",
         "command": "HoekAI.Ribbon.Commands.TagApartmentsCommand",
         "tooltip": "תיוג דירות — One group tag per apartment in the selected plan views (or the active view): footprint centre nudged to a clear spot, radius scaled to the view scale; only apartments on the view's level; optional layout copy from a reference view; tags sitting on the wrong level's view can be moved.",
-        "params": {}
+        "params": {
+          "tag_family": "ApartmentModelGroupInforamation",
+          "tag_type": "5-Apt Name+ Areas + Building",
+          "tag_family_file": "W:\\HoekAI\\families\\ApartmentModelGroupInforamation.rfa"
+        }
       },
       "packageIcon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAALoSURBVFhH7ZVNSFRRGIbfc8UfyovTMChR6NxcmEHSJougpJKKoj+yn0lEs4VB9LcoMEgsaWFBTmFSLcIyi5BCJGihbpQoSNpEVESERoswB/wZZ7zOnLeFznA94+g4Rht94ONyv/fc77x89/AdYJFFFjpCTYRYmmYUauB2CBF1DSCyJ578riphSEqITu/gjw5VQjQDqfasXCG1TySHIURQ1UMIQAcAAsOqFoZMEELoTJBrRgZ6v6jytOg2Z4luM5hqz8pVNSt6mrNLT3N2qXkrqfasXN1mULc5S1QNADQ18b9ZNBCXAZKC5KayUpejrNTlIHk4Wrx+9XznwQO7cfPG1XySm0kmqPUimOkQktRItjF+2q0m4unARgB7AcD0mRgd8kUESfUbK4UAtoVepp8Dy5yXBEWtAN8S8Fq18rLj6e6663njY+O4WFCLgBmwygCAnPxVqHC7kJSSqEohTgghGhFnBwAAwYCEAFD/oXpK3Ompgi1dx93TTzA2aqqfxcYsZ6CIJH0jfp7fUEOSbL3dzppD9ez/OUCSDAaDfHzlJW+VP6TfOzb1BExQFqoXdwesfOz6Ct+QH7++/QYAaJqG4ur9cKywoeFM84yd+CcGTrldOFq5B2sLcsK5WE3MywABSCnhWGlH3tbV0LSp5UIm7MvTcP/CM5j+8Sk65mMgeUkSstdloqmqFVJKVQ6jaRqKq/ahv8+D7pb3qhy/ASEEKtwuDP0ZQWPlC8jg9CaklGi+1oYMw4EtR9arcvwGACApJREVbhe8gz40Xo40IaVEU1Urhj1eVNQdQ2Jy5FyY1gA19gAgguJdqs3wWOPEybON1rXRTMSyOaIZGPH0fpbEDgE0COCBNQwjs11dr5oImIGYNke0UTwTJIsAtKh5ADD947h37in6+zzIMBwzbR4exXNm8kqNypjPZMejNzT9pipZ2aXWjRmSCZNXarx0kwy3Zc6/AJMmJq9UQ9VmoQ9ApxAiciItWP4CEY80cCYh2hAAAAAASUVORK5CYII=",
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -664,7 +714,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -696,7 +746,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -728,7 +778,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -742,23 +792,27 @@
       "notes": "",
       "fix": "",
       "fixedVersion": "",
-      "tooltip": "תכנון מטבח — שרטט קו מודל לאורך כל קיר (אחד לריצה ישרה, שניים לפינה L) ובחר אותם. מקרר / BI / כיור / מדיח / כיריים / עליונים. מדיח צמוד לכיור, הפינה נשארת משטח, משטח עבודה ≥60 (מועדף 100). מציב משפחות; טקסט קטן רק ל-BI.",
+      "tooltip": "תכנון מטבח — שרטט קו מודל לאורך כל קיר (אחד לריצה ישרה, שניים לפינה L) ובחר אותם. מקרר / BI / כיור / מדיח / כיריים / עליונים. מדיח צמוד לכיור, הפינה נשארת משטח, משטח עבודה ≥60 (מועדף 100). כיור וכיריים ≥45 מהקצוות ומה-BI, כל מכשיר ≥10 מהפינה. מציב משפחות; טקסט קטן רק ל-BI.",
       "source": {
         "id": "kitchen-layout",
         "label": "Kitchen\nLayout",
         "icon": "kitchen-layout.png",
         "kind": "command",
         "command": "HoekAI.Ribbon.Kitchen.KitchenLayoutCommand",
-        "tooltip": "תכנון מטבח — שרטט קו מודל לאורך כל קיר (אחד לריצה ישרה, שניים לפינה L) ובחר אותם. מקרר / BI / כיור / מדיח / כיריים / עליונים. מדיח צמוד לכיור, הפינה נשארת משטח, משטח עבודה ≥60 (מועדף 100). מציב משפחות; טקסט קטן רק ל-BI.",
+        "tooltip": "תכנון מטבח — שרטט קו מודל לאורך כל קיר (אחד לריצה ישרה, שניים לפינה L) ובחר אותם. מקרר / BI / כיור / מדיח / כיריים / עליונים. מדיח צמוד לכיור, הפינה נשארת משטח, משטח עבודה ≥60 (מועדף 100). כיור וכיריים ≥45 מהקצוות ומה-BI, כל מכשיר ≥10 מהפינה. מציב משפחות; טקסט קטן רק ל-BI.",
         "params": {
           "min_sink_hob_cm": 60,
           "pref_sink_hob_cm": 100,
+          "end_clear_cm": 45,
+          "end_clear_min_cm": 3,
+          "corner_clear_cm": 10,
+          "upper_over_fridge_depth_cm": 45,
           "lower_line_style": "Casework",
           "upper_line_style": "casework-top-dash",
           "fridge_family": "H 2d fridge1|S_2D_fridge",
           "dishwasher_family": "DW2|S_2D_dish washer",
           "sink_family": "H-Kitchen sink|S_2D_kitchen sink",
-          "hob_family": "H 2d stove",
+          "hob_family": "H 2d stove|S_2D_stove",
           "bi_text_type": "1 mm"
         }
       },
@@ -766,7 +820,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -794,14 +848,16 @@
             "120",
             "100",
             "80"
-          ]
+          ],
+          "tile_margin": 3,
+          "toilet_concealed_type": ""
         }
       },
       "packageIcon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAMMSURBVFhH7ZVNSBRxGMafd2ZX091xV9eStS2dlKgORXgIOhQEFogdMjpUB4sOnY069QFlUZfyEIZZ9HGIOiQeUtAgRS3NrMyKvjDMjLaDLtjutNnu/N8Oqaz/zd3ZjW7+YGDmeZ4XHob/OwMssIBVfL4sh0MvkOV/RZGFeEozNbfekGPYg4od39ye0tfZ7uJ1cipdkhbQXNETRHSwevce9fiRw/Dk5q6yq7Z7Xq83W87+F1yekk87qw7w+Ogkj49O8t1bray5dXa4VmyRs+mQ9A2wQIGvsHD2eUNZGZb7lj4mm/l1TjBNSBZkcnJLwvv37ll0/MhhjLwaw8cXn8YeNg9cYsEcm2OQEVX8lxufNUZi9WQkfQOxtF3vQk/TwDIWOAvQudiLgIt24U35cKZUYFdNRTsxykHYTozymXuw2AqIjfWDJ5/KM8mwXICZzXyf55Bg08/MTQwsoVCghxnXQMq2+sHaPnnGCpYLEOhqfnHOG1LJR6AMEOtTrjyNgMVg1uW8VSwVME0zIqCeBAAwvk/L37VIKAxGBDSrpYylAiOfx54vKXb6AaB+sLaPBDZElG8N51+eN5jN9TZBNfKMVeLWUNMKPYpt0RAU0gBAmEJTFIqCKCxnU0JwUER/rgsGv07EynEFnHlFq0kob7Zs2oSVpSWynRYfhj+io7sbrIg1ocDo21hv3gIXzpzGjspK2U6L5pYWHDp67K8FLJ2B/0lcARP2IACEjB+ylTZBwwAAmDDjtiWuQDgw7FdVJdD7pF+20qb3cT9UVZkIB774ZS+uwJ+1F1faH3RwT29aH7c5dD/qxf3OTjaj5hUAQvZVWQAAzVHQD+aqlrb2vIwMO+lFRcjOypJjCZkIBHDz9h0cPVUrmMV7u5pRHQ5P/JJzcVswg9NZulixmTcYqACAzMxMYbfZ5vyC5yMSjdLU1JQCAETUKiK2faHQh3E5h0QFZnC6dAPASyJ0yV4imLEZwNrQ5IhD9lLC6dINp1uvk/VkON163XT5hPztEMoMQfA7WUzKn5khWV5gAZnf/2gg0XJ7MoYAAAAASUVORK5CYII=",
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -838,7 +894,9 @@
       "implementation": {
         "state": "partial",
         "verifiedInRevit": false,
-        "detail": "מימוש קיים; כללי מרפסת שירות ושירותי אורחים עדיין פתוחים."
+        "detail": "קוד הצבת דלתות עודכן, כולל כיוון דלת ממ״ד. אין כאן אימות שכל דרישות המשרד נסגרו.",
+        "updatedIn": "3.9.5",
+        "needsRetest": true
       }
     },
     {
@@ -930,7 +988,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -961,7 +1019,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -1138,7 +1196,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -1165,7 +1223,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -1209,7 +1267,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -1236,7 +1294,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -1263,7 +1321,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -1307,7 +1365,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -1449,7 +1507,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -1480,7 +1538,7 @@
       "implementation": {
         "state": "partial",
         "verifiedInRevit": false,
-        "detail": "אבזור שרוולים וסינון קיים; הצבת דלת וחלון לפי נקודות טרם מומשה."
+        "detail": "קוד אבזור ממ״ד קיים; השלמת דרישות ההצבה צריכה בדיקה."
       }
     },
     {
@@ -1508,7 +1566,7 @@
       "implementation": {
         "state": "planned",
         "verifiedInRevit": false,
-        "detail": "מציג תיאור בלבד; הפעולה עדיין לא מומשה."
+        "detail": "עדיין כפתור תכנון; אין פקודה בחבילה."
       }
     },
     {
@@ -1535,18 +1593,28 @@
             "plan_id": "26e5b14b-c881-498e-ba59-cb077f206e6d",
             "label": "Annotate Shelter 100",
             "icon": "shelter-annot-100.png",
-            "kind": "planned",
-            "tooltip": "סורק מבטים בגליון פעיל ומשלים תיוג נדרש במרחבים מוגנים. \nבשלב הראשון תיוג הדלתות ושרטוט משפך של 45 מעלות מהדלת החוצה בקו מרוסק detail line ובאורך של 8מ'",
-            "prompt": "סורק מבטים בגליון פעיל ומשלים תיוג נדרש במרחבים מוגנים. \nבשלב הראשון תיוג הדלתות ושרטוט משפך של 45 מעלות מהדלת החוצה בקו מרוסק detail line ובאורך של 8מ'\n\n(מתוך NEW-BUTTON-BRIEFS — אושר בעיצוב, טרם מומש.)"
+            "kind": "command",
+            "tooltip": "תיוג ממ\"ד 1:100 — במבטי הגליון הפעיל (או התוכנית הפעילה): תגית לכל דלת ממ\"ד ומשפך מקווקו החוצה מהדלת, 45° לכל צד, 8 מ'.",
+            "command": "HoekAI.Ribbon.Mamad.ShelterAnnotate100Command",
+            "params": {
+              "door_tag": "A_Tag_Decription:A_Tag_Decription 2mm",
+              "fan_line_style": "Black_Thin_Dash",
+              "fan_half_angle_deg": 45,
+              "fan_length_cm": 800
+            }
           },
           {
             "id": "shelter-annot-50",
             "plan_id": "8c855a65-4a87-4dae-bcbd-439c0a2c6e6c",
             "label": "Annotate shelter 50",
             "icon": "shelter-annot-50.png",
-            "kind": "planned",
-            "tooltip": "מתייג ומשלים מידות לפי תקנות פקער למבט של מרחב מוגן. אפשר גם לבחור מספר מבטים לתיוג יחד.",
-            "prompt": "מתייג ומשלים מידות לפי תקנות פקער למבט של מרחב מוגן. אפשר גם לבחור מספר מבטים לתיוג יחד.\n\n(מתוך NEW-BUTTON-BRIEFS — אושר בעיצוב, טרם מומש.)"
+            "kind": "command",
+            "tooltip": "תיוג ומידות ממ\"ד 1:50 — כמו גליון 1-02.3 ב-KRSA: תגית תיאור לכל אביזר, מידות פנים, עובי קירות ושרשראות אביזרים לאורך הקירות. מבט אחד או כמה.",
+            "command": "HoekAI.Ribbon.Mamad.ShelterAnnotate50Command",
+            "params": {
+              "desc_tag": "A_Tag_Decription:A_Tag_Decription 1.6mm",
+              "dim_type": "2 cm  Rounded"
+            }
           }
         ]
       },
@@ -1558,26 +1626,34 @@
       "type": "button",
       "label": "Annotate Shelter 100",
       "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOySURBVFhH7ZRtaFtVGMf/J68tva+xdS4KadasuJkymd2K3Ra3li1KqzCHfthgyhhjrFDFzX2wIKIVlMnAtsIEQdkmZAGlX4rUii/gSrVlW7rErqhb24m0S2fvTZvevPTe4wdp1pykjRm6fekPzofznOc8z49zz7nAKqvcZwgbAABedj1DDRPHxlfCRKkai431AaDs2krkCAhClYeajF/Z+L+BUto1p461FiORI8A5XBuIYfql7fhx+Bt2scvL8sm58zgbCBQtYWYDtlKpglDSsre5CXW1tRAFAfqCjnQ6DVmWUVFeDlEQcsbO7dugxmYRCoe32kvktamE0sPWzoeJDbCc7voIWxob4WtqRu3OBvR83cemAAAIIXjz5Ot4ef9+ADjCS+4z+U6YpaDAuWAQvvp6dJ06hUecTgS+/IJNyXA3EgUFEskk1lVWomnPbjgcMpLJFJuSRbESBQU2eb04Hwzi8R0+XB4OYZP3MTYlh2Iklr2E/sYGbKiuxvYn6yAKIqo9VWjy+3HowAHYrFZ2Ww6EEDy1rR4ziopQOPyEzS47Uknlq5w8NrD4DE+/2469zc3sctFomoZdzz5Hp6JRaqThjMdvTC1dL/gJ8hGPaUhp6cx8flbDQurOXNd1zClxJBIJHG5tpVPRKCgxWtjmAGBhA4WYuRXDp29cwO6DO1DjexRDvcP4/sIAQIGX3tkHTizDxyc+h67rmJifQH9kEJQYx+Zmxs+wtZDvBMw6NAAYGBwCpdk/MyUaw2dtQdAlP7mL3UN4/tWnsbF+PS59E0H4x1E4nBJC+mXKxyXYif3ocs2RT0BVx8coRWewuxtvvfd+lkQZX4pjHQfheEi6kx+dBe8og1jOQY3GcHtyBpdGQui/8hPMxIQXqvblXLyl5AgAwJx64xVK0XE2EEBbe3tGwlpihb3UlpVrsZihpw2kEmmYrWb09PXS29N/odRS8hoAlMxb4lkbGHKe4SKppNJrs8tyeGSk7tb0NBp8PhDyz6O58m0Ezqo1WOMqx/XhCSS1FK5fvYmLo/009HsYXqkmWiN5v6OAp/Pq2x+wtZeyrABWkNBmNax1PwjhAQ6ujQ/j2s+/YSAyiN5IH5QFpWWzvHkAFFsIIScHJ3/4k61bLIQT3R/ykpseOXyCRscUOj2uZsYfo1PUv+dFg5fcBie7jrKb/yvyStyr5otkSdy8NnlPmy9COLGyk5fc1LN+qyHI6wxedB9ik/5vCCe6O3jJrd+P5hk4zlPBxlZZ5W74G8QomueyBrDGAAAAAElFTkSuQmCC",
-      "status": "idea",
+      "status": "testing",
       "priority": "normal",
       "notes": "",
       "fix": "",
       "fixedVersion": "",
-      "tooltip": "סורק מבטים בגליון פעיל ומשלים תיוג נדרש במרחבים מוגנים. \nבשלב הראשון תיוג הדלתות ושרטוט משפך של 45 מעלות מהדלת החוצה בקו מרוסק detail line ובאורך של 8מ'",
+      "tooltip": "תיוג ממ\"ד 1:100 — במבטי הגליון הפעיל (או התוכנית הפעילה): תגית לכל דלת ממ\"ד ומשפך מקווקו החוצה מהדלת, 45° לכל צד, 8 מ'.",
       "source": {
         "id": "shelter-annot-100",
         "plan_id": "26e5b14b-c881-498e-ba59-cb077f206e6d",
         "label": "Annotate Shelter 100",
         "icon": "shelter-annot-100.png",
-        "kind": "planned",
-        "tooltip": "סורק מבטים בגליון פעיל ומשלים תיוג נדרש במרחבים מוגנים. \nבשלב הראשון תיוג הדלתות ושרטוט משפך של 45 מעלות מהדלת החוצה בקו מרוסק detail line ובאורך של 8מ'",
-        "prompt": "סורק מבטים בגליון פעיל ומשלים תיוג נדרש במרחבים מוגנים. \nבשלב הראשון תיוג הדלתות ושרטוט משפך של 45 מעלות מהדלת החוצה בקו מרוסק detail line ובאורך של 8מ'\n\n(מתוך NEW-BUTTON-BRIEFS — אושר בעיצוב, טרם מומש.)"
+        "kind": "command",
+        "tooltip": "תיוג ממ\"ד 1:100 — במבטי הגליון הפעיל (או התוכנית הפעילה): תגית לכל דלת ממ\"ד ומשפך מקווקו החוצה מהדלת, 45° לכל צד, 8 מ'.",
+        "command": "HoekAI.Ribbon.Mamad.ShelterAnnotate100Command",
+        "params": {
+          "door_tag": "A_Tag_Decription:A_Tag_Decription 2mm",
+          "fan_line_style": "Black_Thin_Dash",
+          "fan_half_angle_deg": 45,
+          "fan_length_cm": 800
+        }
       },
       "packageIcon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOySURBVFhH7ZRtaFtVGMf/J68tva+xdS4KadasuJkymd2K3Ra3li1KqzCHfthgyhhjrFDFzX2wIKIVlMnAtsIEQdkmZAGlX4rUii/gSrVlW7rErqhb24m0S2fvTZvevPTe4wdp1pykjRm6fekPzofznOc8z49zz7nAKqvcZwgbAABedj1DDRPHxlfCRKkai431AaDs2krkCAhClYeajF/Z+L+BUto1p461FiORI8A5XBuIYfql7fhx+Bt2scvL8sm58zgbCBQtYWYDtlKpglDSsre5CXW1tRAFAfqCjnQ6DVmWUVFeDlEQcsbO7dugxmYRCoe32kvktamE0sPWzoeJDbCc7voIWxob4WtqRu3OBvR83cemAAAIIXjz5Ot4ef9+ADjCS+4z+U6YpaDAuWAQvvp6dJ06hUecTgS+/IJNyXA3EgUFEskk1lVWomnPbjgcMpLJFJuSRbESBQU2eb04Hwzi8R0+XB4OYZP3MTYlh2Iklr2E/sYGbKiuxvYn6yAKIqo9VWjy+3HowAHYrFZ2Ww6EEDy1rR4ziopQOPyEzS47Uknlq5w8NrD4DE+/2469zc3sctFomoZdzz5Hp6JRaqThjMdvTC1dL/gJ8hGPaUhp6cx8flbDQurOXNd1zClxJBIJHG5tpVPRKCgxWtjmAGBhA4WYuRXDp29cwO6DO1DjexRDvcP4/sIAQIGX3tkHTizDxyc+h67rmJifQH9kEJQYx+Zmxs+wtZDvBMw6NAAYGBwCpdk/MyUaw2dtQdAlP7mL3UN4/tWnsbF+PS59E0H4x1E4nBJC+mXKxyXYif3ocs2RT0BVx8coRWewuxtvvfd+lkQZX4pjHQfheEi6kx+dBe8og1jOQY3GcHtyBpdGQui/8hPMxIQXqvblXLyl5AgAwJx64xVK0XE2EEBbe3tGwlpihb3UlpVrsZihpw2kEmmYrWb09PXS29N/odRS8hoAlMxb4lkbGHKe4SKppNJrs8tyeGSk7tb0NBp8PhDyz6O58m0Ezqo1WOMqx/XhCSS1FK5fvYmLo/009HsYXqkmWiN5v6OAp/Pq2x+wtZeyrABWkNBmNax1PwjhAQ6ujQ/j2s+/YSAyiN5IH5QFpWWzvHkAFFsIIScHJ3/4k61bLIQT3R/ykpseOXyCRscUOj2uZsYfo1PUv+dFg5fcBie7jrKb/yvyStyr5otkSdy8NnlPmy9COLGyk5fc1LN+qyHI6wxedB9ik/5vCCe6O3jJrd+P5hk4zlPBxlZZ5W74G8QomueyBrDGAAAAAElFTkSuQmCC",
       "implementation": {
-        "state": "planned",
+        "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "מציג תיאור בלבד; הפעולה עדיין לא מומשה."
+        "detail": "קיבל פקודת אנוטציה בחבילה במקום כפתור תכנון. יש לבדוק ב-Revit.",
+        "updatedIn": "3.9.5",
+        "needsRetest": true
       }
     },
     {
@@ -1586,26 +1662,32 @@
       "type": "button",
       "label": "Annotate shelter 50",
       "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOfSURBVFhH7ZRfaFNXHMe/52bmj7m5NzdrEEtne2tbcHY6aGdn1UxbNIxWQQaDVRjDBRkW+zCnL4OxBweOQje1UxnbHqYbJczRqdVpFedgrrOCNGRrx8qSYp2JN5rcNl1umuWePZR29uS2NcXpSz9wXn6/3/n9Ppx7zgUWWOAJQ9gAADik4pepzvFsfDY4StWRkXA3AMrmZiNHQBCWl1FO/4ONPwyU0vakGm7JRyJHgHcVryA699u7e/fCW7eJTc/IZydO4suOjrwlTGzAbHO6CSXN2xsbUFNdDVEQkP0ni0wmA0mS4C4ogCgIOWvj+nVQR0bRFwyusVilpeNaoovtbQTHBlja2j/BC/X18DQ0onpjHboudrMlAABCCN7bvw9vNDUBwC6HUz5udMIscwqc8Pvhqa1Fe2srigoL0fHtKbZkivlIzCmgpdMoLSlBw5bNcLkkpNPjbMk08pWYU2B1ZSVO+v14foMHNwN9WF25ki3JIR+JGS+ht74OKyoqsH5tDURBREXZcjR4vdi5YwfMixax23IghOCldbWIJ1T0BYNVZovkGk8nzufUsYHJZ9j2wQFsb2xk03mTSqWwaes2GlUUqmdQODYWij6Yn/MTGJFKajh9tHtqjSXGkEpq6Pr0Mr5pO4fY7fsAAE3T4GtpoVFFASV6Mzsc8xWIhBQM9AzCxlth460Ax+HK19cQux2HzW7FqY/OQ9M0vLlnD712vReU6LuT8aHjbB8YCZiySAFAT+8NUGr8M7vz511Y7BZkM1mUrloGu2BDKDiMZ18sR5V3Ff4ajMLX3EJ/7r0BUPhmGg4jAVUdClOKI/7OTrx/8ENDCc7EoahiKYQCHl8d6ER0SMHfIylY7RbANFEf6OsH1alvVA19we5/kJxXAADj6cT3ZoskBX4N1tyNxVDn8YCQ/+6r+5mnUV4lQ35uGQJXB+BcIiISUlBQJKH16MdU1CQSVANvx+ODx6Y1NsBQABMSF8wWSQr29+dInDl2CdfP3gTHEQSuDqC+qRaj95O4ePoH3LuTIDbT4tBP4e9eY3saMaMAZpEoWVmEeFRFJKxg8+sb4C6WcPDzNnpvOEHcNneP6yn7K79Efpx4Co8AwovyIYdTprt871AlnKCxIXVqDf8epd4tr+oOp6zzUvFb7OZHhaHE4xo+yTSJWwORxzp8EsKLJUccTpmWla/RBalUd4jyTrbo/4bwonzY4ZSzT2L4FDxf5mZjCywwH/4FMaaUrwUWpNsAAAAASUVORK5CYII=",
-      "status": "idea",
+      "status": "testing",
       "priority": "normal",
       "notes": "",
       "fix": "",
       "fixedVersion": "",
-      "tooltip": "מתייג ומשלים מידות לפי תקנות פקער למבט של מרחב מוגן. אפשר גם לבחור מספר מבטים לתיוג יחד.",
+      "tooltip": "תיוג ומידות ממ\"ד 1:50 — כמו גליון 1-02.3 ב-KRSA: תגית תיאור לכל אביזר, מידות פנים, עובי קירות ושרשראות אביזרים לאורך הקירות. מבט אחד או כמה.",
       "source": {
         "id": "shelter-annot-50",
         "plan_id": "8c855a65-4a87-4dae-bcbd-439c0a2c6e6c",
         "label": "Annotate shelter 50",
         "icon": "shelter-annot-50.png",
-        "kind": "planned",
-        "tooltip": "מתייג ומשלים מידות לפי תקנות פקער למבט של מרחב מוגן. אפשר גם לבחור מספר מבטים לתיוג יחד.",
-        "prompt": "מתייג ומשלים מידות לפי תקנות פקער למבט של מרחב מוגן. אפשר גם לבחור מספר מבטים לתיוג יחד.\n\n(מתוך NEW-BUTTON-BRIEFS — אושר בעיצוב, טרם מומש.)"
+        "kind": "command",
+        "tooltip": "תיוג ומידות ממ\"ד 1:50 — כמו גליון 1-02.3 ב-KRSA: תגית תיאור לכל אביזר, מידות פנים, עובי קירות ושרשראות אביזרים לאורך הקירות. מבט אחד או כמה.",
+        "command": "HoekAI.Ribbon.Mamad.ShelterAnnotate50Command",
+        "params": {
+          "desc_tag": "A_Tag_Decription:A_Tag_Decription 1.6mm",
+          "dim_type": "2 cm  Rounded"
+        }
       },
       "packageIcon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOfSURBVFhH7ZRfaFNXHMe/52bmj7m5NzdrEEtne2tbcHY6aGdn1UxbNIxWQQaDVRjDBRkW+zCnL4OxBweOQje1UxnbHqYbJczRqdVpFedgrrOCNGRrx8qSYp2JN5rcNl1umuWePZR29uS2NcXpSz9wXn6/3/n9Ppx7zgUWWOAJQ9gAADik4pepzvFsfDY4StWRkXA3AMrmZiNHQBCWl1FO/4ONPwyU0vakGm7JRyJHgHcVryA699u7e/fCW7eJTc/IZydO4suOjrwlTGzAbHO6CSXN2xsbUFNdDVEQkP0ni0wmA0mS4C4ogCgIOWvj+nVQR0bRFwyusVilpeNaoovtbQTHBlja2j/BC/X18DQ0onpjHboudrMlAABCCN7bvw9vNDUBwC6HUz5udMIscwqc8Pvhqa1Fe2srigoL0fHtKbZkivlIzCmgpdMoLSlBw5bNcLkkpNPjbMk08pWYU2B1ZSVO+v14foMHNwN9WF25ki3JIR+JGS+ht74OKyoqsH5tDURBREXZcjR4vdi5YwfMixax23IghOCldbWIJ1T0BYNVZovkGk8nzufUsYHJZ9j2wQFsb2xk03mTSqWwaes2GlUUqmdQODYWij6Yn/MTGJFKajh9tHtqjSXGkEpq6Pr0Mr5pO4fY7fsAAE3T4GtpoVFFASV6Mzsc8xWIhBQM9AzCxlth460Ax+HK19cQux2HzW7FqY/OQ9M0vLlnD712vReU6LuT8aHjbB8YCZiySAFAT+8NUGr8M7vz511Y7BZkM1mUrloGu2BDKDiMZ18sR5V3Ff4ajMLX3EJ/7r0BUPhmGg4jAVUdClOKI/7OTrx/8ENDCc7EoahiKYQCHl8d6ER0SMHfIylY7RbANFEf6OsH1alvVA19we5/kJxXAADj6cT3ZoskBX4N1tyNxVDn8YCQ/+6r+5mnUV4lQ35uGQJXB+BcIiISUlBQJKH16MdU1CQSVANvx+ODx6Y1NsBQABMSF8wWSQr29+dInDl2CdfP3gTHEQSuDqC+qRaj95O4ePoH3LuTIDbT4tBP4e9eY3saMaMAZpEoWVmEeFRFJKxg8+sb4C6WcPDzNnpvOEHcNneP6yn7K79Efpx4Co8AwovyIYdTprt871AlnKCxIXVqDf8epd4tr+oOp6zzUvFb7OZHhaHE4xo+yTSJWwORxzp8EsKLJUccTpmWla/RBalUd4jyTrbo/4bwonzY4ZSzT2L4FDxf5mZjCywwH/4FMaaUrwUWpNsAAAAASUVORK5CYII=",
       "implementation": {
-        "state": "planned",
+        "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "מציג תיאור בלבד; הפעולה עדיין לא מומשה."
+        "detail": "קיבל פקודת אנוטציה בחבילה במקום כפתור תכנון. יש לבדוק ב-Revit.",
+        "updatedIn": "3.9.5",
+        "needsRetest": true
       }
     },
     {
@@ -1642,7 +1724,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -1669,7 +1751,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -1780,7 +1862,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -1836,7 +1918,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -1865,7 +1947,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -1898,7 +1980,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -1928,7 +2010,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -2050,7 +2132,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -2077,7 +2159,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -2182,7 +2264,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -2229,7 +2311,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -2256,7 +2338,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -2288,7 +2370,7 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "קוד קיים בחבילה; לא אומת כאן ב-Revit."
+        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
       }
     },
     {
@@ -2342,15 +2424,33 @@
             "icon": "scopebox-views.png",
             "kind": "command",
             "command": "HoekAI.Ribbon.Commands.ScopeBoxViewsCommand",
-            "tooltip": "תוכניות לפי Scope Box — For each selected scope box (or all): one plan per level cropped to the box + X/Y sections through its centre.",
+            "tooltip": "תוכניות לפי Scope Box — Select one or more scope boxes: a plan for every level that actually carries construction inside the box, cropped to it, plus X/Y sections through its centre. A box with no construction produces nothing.",
             "params": {
               "plan_view_type": "Floor Plan",
               "section_view_type": "Building Section",
               "view_template": "",
-              "plan_name": "{level} - {scopebox}",
-              "section_name": "{scopebox} - Section {axis}",
+              "plan_name": "{scopebox}-{level}",
+              "section_name": "{scopebox}-Section {axis}",
               "create_sections": true,
-              "section_depth_cm": 200
+              "section_depth_cm": 200,
+              "construction_categories": [
+                "OST_Walls",
+                "OST_Floors",
+                "OST_Columns",
+                "OST_StructuralColumns",
+                "OST_StructuralFraming",
+                "OST_Stairs",
+                "OST_Roofs"
+              ],
+              "min_elements_per_level": 1,
+              "level_filter_use_box_z": false,
+              "level_filter_box_z_pad_cm": 0,
+              "level_filter_xy_tolerance_cm": 0,
+              "count_multi_level_elements": true,
+              "exclude_levels": [
+                "SEA LEVEL"
+              ],
+              "views_per_transaction": 10
             }
           },
           {
@@ -2362,18 +2462,25 @@
                 "plan_id": "960c814b-0880-41df-a4ad-f0d53964d666",
                 "label": "Sections by\nScope Box",
                 "icon": "sections-scopebox.png",
-                "kind": "planned",
-                "tooltip": "בעת בחירת scopebox הכלי יבצע שני חתכים ניצבים לscopebox אחרי שהמשתמש בחר את סוג החתך שנבחר ואת הטמפלט שלו. החתך יהיה לכל גובה התיבה ורחב ממנה ב 1מ'",
-                "prompt": "בעת בחירת scopebox הכלי יבצע שני חתכים ניצבים לscopebox אחרי שהמשתמש בחר את סוג החתך שנבחר ואת הטמפלט שלו. החתך יהיה לכל גובה התיבה ורחב ממנה ב 1מ'\n\n(מתוך NEW-BUTTON-BRIEFS — אושר בעיצוב, טרם מומש.)"
+                "kind": "command",
+                "tooltip": "חתכים לפי Scope Box — שני חתכים ניצבים דרך מרכז התיבה, לכל גובהה, רחבים ממנה ב-1 מ' (סה\"כ). סוג חתך ותבנית מדיאלוג.",
+                "command": "HoekAI.Ribbon.Commands.SectionsByScopeBoxCommand",
+                "params": {
+                  "extra_width_cm": 100
+                }
               },
               {
                 "id": "floor-by-room",
                 "plan_id": "c2a08bd7-af13-4eb7-89b7-c3534091c3f5",
                 "label": "Floor by\nroom",
                 "icon": "floor-by-room.png",
-                "kind": "planned",
-                "tooltip": "כפתור שייצר רצפה בתחום חדר נבחר. יתחיל בבקשה לבחור חדר או חדרים. אחר כך חלון שישאל מה המשפחה של הרצפה שרוצים, ברירת מחדל תהיה רצפה של ריצוף בלבד בעובי 2סמ (יש משפחה מתאימה ב krsa), ותהיה אופציה של מפלס הרצפה, האם מפלס המבט, או להתאים את הרצ",
-                "prompt": "כפתור שייצר רצפה בתחום חדר נבחר. יתחיל בבקשה לבחור חדר או חדרים. אחר כך חלון שישאל מה המשפחה של הרצפה שרוצים, ברירת מחדל תהיה רצפה של ריצוף בלבד בעובי 2סמ (יש משפחה מתאימה ב krsa), ותהיה אופציה של מפלס הרצפה, האם מפלס המבט, או להתאים את הרצפה למפלס הדלת שמובילה לאותו חדר. הכלי אז ייצר רצפה בתחום החדר בסוג ובמפלס שנבחר וימקם גם  annotations של מפלס יחסי לקומה על גבי הרצפה/רצפות שנוצרו\n\n(מתוך NEW-BUTTON-BRIEFS — אושר בעיצוב, טרם מומש.)"
+                "kind": "command",
+                "tooltip": "רצפה לפי חדר — בחר חדר/ים, סוג רצפה (ברירת מחדל ריצוף 2 ס\"מ; נוצר אם חסר), מפלס החדר או לפי הדלת שמובילה אליו, ומפלס יחסי על כל רצפה.",
+                "command": "HoekAI.Ribbon.Commands.FloorByRoomCommand",
+                "params": {
+                  "floor_type": "",
+                  "spot_type": "EL_Relative_Up"
+                }
               }
             ],
             "plan_id": "72d0923e-4d8e-415a-8c04-c7de859e6515"
@@ -2430,9 +2537,10 @@
                 "icon": "apt-params.png",
                 "kind": "command",
                 "command": "HoekAI.Ribbon.Commands.AptParametersCommand",
-                "tooltip": "פרמטרים לדירות — Binds IsApartment (Yes/No), Building, Apt Num, Apt Type to Model Groups (Building + Apt Num also to Rooms), taking the definitions from the office shared-parameter file so GUIDs match other projects.",
+                "tooltip": "פרמטרים לדירות — Binds IsApartment (Yes/No), Building, Apt Num, Apt Type, Apt Area, Apt_Balcony Area, Apt_BalconyArea-NOT-ABOVE, Area-Sale and Direction to Model Groups (Building + Apt Num also to Rooms), taking the definitions from the office shared-parameter file so GUIDs match other projects.",
                 "params": {
-                  "shared_param_file": "W:\\REVIT\\Shared Parameters\\Hoek Shared Parameters.txt"
+                  "shared_param_file": "W:\\REVIT\\Shared Parameters\\Hoek Shared Parameters.txt",
+                  "allow_local_definitions": false
                 }
               },
               {
@@ -2477,7 +2585,11 @@
                 "kind": "command",
                 "command": "HoekAI.Ribbon.Commands.TagApartmentsCommand",
                 "tooltip": "תיוג דירות — One group tag per apartment in the selected plan views (or the active view): footprint centre nudged to a clear spot, radius scaled to the view scale; only apartments on the view's level; optional layout copy from a reference view; tags sitting on the wrong level's view can be moved.",
-                "params": {}
+                "params": {
+                  "tag_family": "ApartmentModelGroupInforamation",
+                  "tag_type": "5-Apt Name+ Areas + Building",
+                  "tag_family_file": "W:\\HoekAI\\families\\ApartmentModelGroupInforamation.rfa"
+                }
               }
             ],
             "plan_id": "source-3"
@@ -2537,16 +2649,20 @@
             "icon": "kitchen-layout.png",
             "kind": "command",
             "command": "HoekAI.Ribbon.Kitchen.KitchenLayoutCommand",
-            "tooltip": "תכנון מטבח — שרטט קו מודל לאורך כל קיר (אחד לריצה ישרה, שניים לפינה L) ובחר אותם. מקרר / BI / כיור / מדיח / כיריים / עליונים. מדיח צמוד לכיור, הפינה נשארת משטח, משטח עבודה ≥60 (מועדף 100). מציב משפחות; טקסט קטן רק ל-BI.",
+            "tooltip": "תכנון מטבח — שרטט קו מודל לאורך כל קיר (אחד לריצה ישרה, שניים לפינה L) ובחר אותם. מקרר / BI / כיור / מדיח / כיריים / עליונים. מדיח צמוד לכיור, הפינה נשארת משטח, משטח עבודה ≥60 (מועדף 100). כיור וכיריים ≥45 מהקצוות ומה-BI, כל מכשיר ≥10 מהפינה. מציב משפחות; טקסט קטן רק ל-BI.",
             "params": {
               "min_sink_hob_cm": 60,
               "pref_sink_hob_cm": 100,
+              "end_clear_cm": 45,
+              "end_clear_min_cm": 3,
+              "corner_clear_cm": 10,
+              "upper_over_fridge_depth_cm": 45,
               "lower_line_style": "Casework",
               "upper_line_style": "casework-top-dash",
               "fridge_family": "H 2d fridge1|S_2D_fridge",
               "dishwasher_family": "DW2|S_2D_dish washer",
               "sink_family": "H-Kitchen sink|S_2D_kitchen sink",
-              "hob_family": "H 2d stove",
+              "hob_family": "H 2d stove|S_2D_stove",
               "bi_text_type": "1 mm"
             }
           },
@@ -2563,7 +2679,9 @@
                 "120",
                 "100",
                 "80"
-              ]
+              ],
+              "tile_margin": 3,
+              "toilet_concealed_type": ""
             }
           },
           {
@@ -2776,18 +2894,28 @@
                 "plan_id": "26e5b14b-c881-498e-ba59-cb077f206e6d",
                 "label": "Annotate Shelter 100",
                 "icon": "shelter-annot-100.png",
-                "kind": "planned",
-                "tooltip": "סורק מבטים בגליון פעיל ומשלים תיוג נדרש במרחבים מוגנים. \nבשלב הראשון תיוג הדלתות ושרטוט משפך של 45 מעלות מהדלת החוצה בקו מרוסק detail line ובאורך של 8מ'",
-                "prompt": "סורק מבטים בגליון פעיל ומשלים תיוג נדרש במרחבים מוגנים. \nבשלב הראשון תיוג הדלתות ושרטוט משפך של 45 מעלות מהדלת החוצה בקו מרוסק detail line ובאורך של 8מ'\n\n(מתוך NEW-BUTTON-BRIEFS — אושר בעיצוב, טרם מומש.)"
+                "kind": "command",
+                "tooltip": "תיוג ממ\"ד 1:100 — במבטי הגליון הפעיל (או התוכנית הפעילה): תגית לכל דלת ממ\"ד ומשפך מקווקו החוצה מהדלת, 45° לכל צד, 8 מ'.",
+                "command": "HoekAI.Ribbon.Mamad.ShelterAnnotate100Command",
+                "params": {
+                  "door_tag": "A_Tag_Decription:A_Tag_Decription 2mm",
+                  "fan_line_style": "Black_Thin_Dash",
+                  "fan_half_angle_deg": 45,
+                  "fan_length_cm": 800
+                }
               },
               {
                 "id": "shelter-annot-50",
                 "plan_id": "8c855a65-4a87-4dae-bcbd-439c0a2c6e6c",
                 "label": "Annotate shelter 50",
                 "icon": "shelter-annot-50.png",
-                "kind": "planned",
-                "tooltip": "מתייג ומשלים מידות לפי תקנות פקער למבט של מרחב מוגן. אפשר גם לבחור מספר מבטים לתיוג יחד.",
-                "prompt": "מתייג ומשלים מידות לפי תקנות פקער למבט של מרחב מוגן. אפשר גם לבחור מספר מבטים לתיוג יחד.\n\n(מתוך NEW-BUTTON-BRIEFS — אושר בעיצוב, טרם מומש.)"
+                "kind": "command",
+                "tooltip": "תיוג ומידות ממ\"ד 1:50 — כמו גליון 1-02.3 ב-KRSA: תגית תיאור לכל אביזר, מידות פנים, עובי קירות ושרשראות אביזרים לאורך הקירות. מבט אחד או כמה.",
+                "command": "HoekAI.Ribbon.Mamad.ShelterAnnotate50Command",
+                "params": {
+                  "desc_tag": "A_Tag_Decription:A_Tag_Decription 1.6mm",
+                  "dim_type": "2 cm  Rounded"
+                }
               }
             ]
           }
@@ -2987,5 +3115,6 @@
     ],
     "version_note": "3.9.3: approved ribbon layout + 46 approved icons; Door placing = Apartment Doors, Place shelter Families = Mamad Equip; Stairs pulldown in Stack 5; 5 planned tools shown with their briefs.",
     "layout_source": "Hoek-Claude-Handoff-Approved-2026-09-29 (TOOLBAR-STRUCTURE.md), reconciled with 3.9.3 third round"
-  }
+  },
+  "previousPackageRevision": "3.9.3-reconciled-cdc8147710"
 }

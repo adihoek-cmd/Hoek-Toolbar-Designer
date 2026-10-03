@@ -1,7 +1,13 @@
 // Merge source metadata without claiming a Revit test or overwriting personal annotations.
 export function reconcilePackage(state,seed,baselines){
  if(state.packageRevision===seed.packageRevision)return false;
- const before=structuredClone(state.nodes),known=new Set(baselines.flat().map(n=>n.id));
+ const parts=v=>String(v||'0').split('.').map(Number);const current=parts(state.packageVersion),incoming=parts(seed.packageVersion);
+ for(let i=0;i<3;i++){if((current[i]||0)>(incoming[i]||0))return false;if((current[i]||0)<(incoming[i]||0))break;}
+ const before=structuredClone(state.nodes);
+ // Older installations have not received the Stairs expansion yet. Only their
+ // own known baselines can distinguish a deliberate deletion from a new tool.
+ const applicable=state.packageRevision===seed.previousPackageRevision?baselines:baselines.slice(0,2);
+ const known=new Set(applicable.flat().map(n=>n.id));
  for(const n of state.nodes){const fresh=seed.nodes.find(x=>x.id===n.id);if(!fresh)continue;
   n.source=structuredClone(fresh.source);n.packageIcon=fresh.packageIcon;
   if(fresh.implementation)n.implementation=structuredClone(fresh.implementation);
@@ -22,5 +28,5 @@ export function reconcilePackage(state,seed,baselines){
   siblings.sort((a,b)=>(target.includes(a.id)?target.indexOf(a.id):1e6)-(target.includes(b.id)?target.indexOf(b.id):1e6));
   let i=0;state.nodes=state.nodes.map(n=>n.parent===parent?siblings[i++]:n);
  }
- state.packageRevision=seed.packageRevision;return true;
+ state.packageVersion=seed.packageVersion;state.packageRevision=seed.packageRevision;return true;
 }

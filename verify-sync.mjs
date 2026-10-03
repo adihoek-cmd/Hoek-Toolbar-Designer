@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {mergeWorkspaces,resolveMerge} from './dist/workspace-merge.js';
+const base={schema:1,nodes:[{id:'a',parent:'p',notes:'',status:'testing',icon:'one'},{id:'b',parent:'p',notes:''}]};
+const local=structuredClone(base),remote=structuredClone(base);
+local.nodes[0].notes='Phone note';remote.nodes[0].status='ok';
+let m=mergeWorkspaces(base,local,remote);assert.equal(m.conflicts.length,0);assert.equal(m.state.nodes[0].notes,'Phone note');assert.equal(m.state.nodes[0].status,'ok');
+remote.nodes[0].notes='PC note';m=mergeWorkspaces(base,local,remote);assert.equal(m.conflicts.length,1);assert.equal(resolveMerge(m,['remote']).nodes[0].notes,'PC note');assert.equal(resolveMerge(m,['local']).nodes[0].notes,'Phone note');
+const deleted=structuredClone(base);deleted.nodes.shift();m=mergeWorkspaces(base,deleted,remote);assert(m.conflicts.some(c=>c.path.join('/')==='nodes/a'));assert.equal(resolveMerge(m,m.conflicts.map(()=> 'remote')).nodes.find(n=>n.id==='a').notes,'PC note');
+assert.deepEqual(mergeWorkspaces(base,base,remote).state,remote);assert.deepEqual(base.nodes[0].notes,'');
+console.log('PASS: independent edits merge; same-field and delete/edit conflicts retain both versions; originals remain untouched.');

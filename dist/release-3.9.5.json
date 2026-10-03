@@ -1,0 +1,19 @@
+{
+  "version": "3.9.5",
+  "revision": "3.9.5-62555a6d4020",
+  "review": "Static source inspection, not a Revit runtime test",
+  "updates": {
+    "scopebox-views": "בחירה מפורשת של Scope Boxes; קומות מסוננות לפי אלמנטי בנייה בתחום. לא נמצא סינון מפורש לפי Phase בקוד שנבדק. נדרשת בדיקת Revit מול הכוונה לבנייה מוצעת.",
+    "apt-params": "נוספו חמשת פרמטרי הדירה לקבוצות כמופעים; שמות Balcony לפי קוד החבילה (בבקשה הישנה: Balconey). הגדרות משרד כברירת מחדל; אי-התאמה בסוג הקישור מדווחת ללא המרה. יש לאמת שמות ו-GUID מול קובץ המשרד.",
+    "sections-scopebox": "קיבל פקודה בחבילה במקום כפתור תכנון. יש לבדוק תוצאה ב-Revit.",
+    "floor-by-room": "קיבל פקודה בחבילה במקום כפתור תכנון. יש לבדוק תוצאה ב-Revit.",
+    "shelter-annot-100": "קיבל פקודת אנוטציה בחבילה במקום כפתור תכנון. יש לבדוק ב-Revit.",
+    "shelter-annot-50": "קיבל פקודת אנוטציה בחבילה במקום כפתור תכנון. יש לבדוק ב-Revit.",
+    "apartment-doors": "קוד הצבת דלתות עודכן, כולל כיוון דלת ממ״ד. אין כאן אימות שכל דרישות המשרד נסגרו."
+  },
+  "stillOpen": [
+    "shelter-sheets",
+    "Pipe isolation"
+  ],
+  "parameterSpelling": "Balcony in package; Balconey in prior request"
+}
