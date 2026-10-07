@@ -1,6 +1,6 @@
 // Public web-app configuration. Access is enforced by Firestore rules, never this key.
-// Enable only after authorized-domain and authenticated cross-device tests pass.
-export const cloudEnabled=false;
+// Private owner-only sync. First upload requires an explicit choice on the device.
+export const cloudEnabled=true;
 export const firebaseConfig={
  apiKey:'AIzaSyCuY3OftNNPvDRnMGpXhWaxntjbpySUI9E',
  authDomain:'hoek-ribbon-studio.firebaseapp.com',

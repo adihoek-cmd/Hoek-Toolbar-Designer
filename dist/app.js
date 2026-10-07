@@ -64,7 +64,7 @@ document.querySelector('#theme-grid').onclick=e=>{const b=e.target.closest('[dat
 boot().then(()=>{if(!state)return;cloudController=setupCloud({
  meta:()=>cloudMeta,
  saved:async()=>{await saving;if(saveError)throw saveError;},
- snapshot:async()=>({state:await embedIcons(copy(state)),history:copy(history)}),
+ snapshot:async()=>{const payload=copy({state,history});payload.state=await embedIcons(payload.state);return payload;},
  editing:()=>!!document.querySelector('#editor[open],#themes-dialog[open]'),
  validate,toast,download,backup:()=>$('#backup').click(),
  recover:async()=>{await saving;const payload=copy({state,history,exportedAt:new Date().toISOString()});if(!db)throw Error('נדרש אחסון מקומי תקין לפני חיבור לענן');await new Promise((resolve,reject)=>{const tx=db.transaction('workspace','readwrite');tx.objectStore('workspace').put(payload,'before-cloud-'+Date.now());tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});},

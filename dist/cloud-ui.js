@@ -3,7 +3,7 @@ import {mergeWorkspaces,resolveMerge,equal} from './workspace-merge.js';
 import {cloudEnabled} from './firebase-config.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function setupCloud(a){
- let user,stop,busy=false,timer,blocked=false,lastError='',pending;
+ let user,stop,busy=false,timer,blocked=false,lastError='',pending,session=0;
  const dialog=document.createElement('dialog');dialog.className='cloud-sheet';document.body.append(dialog);
  const button=document.createElement('button');button.id='cloud-status';button.textContent='☁ סנכרון';document.querySelector('.header-actions').prepend(button);
  if(!cloudEnabled){button.textContent='☁ סנכרון בהכנה';button.onclick=()=>shell('<p>עדכון Ribbon 3.9.5 פעיל. הנתונים נשמרים במכשיר הזה.</p><p>חיבור הענן עדיין בבדיקות ואינו מעביר נתונים. לאחר השלמת הגדרות Firebase תתאפשר כניסה ושיתוף פרטי בין המכשירים.</p><p>אפשר להמשיך לעבוד ולייצא גיבוי כרגיל.</p>');return {changed:()=>{}};}
@@ -12,7 +12,7 @@ export function setupCloud(a){
  function shell(body){dialog.innerHTML=`<div class="sheet-head"><h2>סביבת העבודה בענן</h2><button data-dismiss>✕</button></div>${body}`;dialog.querySelector('[data-dismiss]').onclick=()=>dialog.close();if(!dialog.open)dialog.showModal();}
  function overview(){
   shell(`<p>סנכרון פרטי בין הטלפון למחשב. השינויים נשמרים גם במכשיר כשאין חיבור.</p><p dir="auto">${esc(user?.email||'עדיין לא מחוברים')}</p>${lastError?`<p role="alert">${esc(lastError)}</p>`:''}<div class="cloud-actions">${!user?'<button data-login class="primary">כניסה עם Google</button>':`<button data-sync class="primary">סנכרון עכשיו</button><button data-revisions>גרסאות קודמות בענן</button><button data-logout>ניתוק מהענן</button>`}</div><p><small>ניתוק עוצר את הסנכרון. העותק המקומי נשאר בדפדפן הזה. בצעו ייצוא גיבוי לפני עבודה במחשב משותף.</small></p>`);
-  dialog.querySelector('[data-login]')?.addEventListener('click',()=>cloud.login().catch(error));
+  dialog.querySelector('[data-login]')?.addEventListener('click',async e=>{const b=e.currentTarget;b.disabled=true;b.textContent='ממתין לחלון Google…';a.toast('אם חלון הכניסה לא נפתח, פתחו את האפליקציה ב-Chrome או Safari ואפשרו חלונות קופצים.');try{await cloud.login();}catch(e){error(e);overview()}finally{b.disabled=false;b.textContent='כניסה עם Google';}});
   dialog.querySelector('[data-sync]')?.addEventListener('click',()=>{blocked=false;lastError='';dialog.close();sync()});
   dialog.querySelector('[data-logout]')?.addEventListener('click',async()=>{if(busy){a.toast('המתינו לסיום הסנכרון');return;}await cloud.logout();overview()});
   dialog.querySelector('[data-revisions]')?.addEventListener('click',async()=>{try{
@@ -45,11 +45,14 @@ export function setupCloud(a){
   if(!navigator.onLine){status('ממתין לחיבור');return;}
   // Do not replace a state being edited in an open bottom sheet.
   if(a.editing()){schedule();return;}
+  const uid=user.uid,epoch=session;
+  const current=()=>epoch===session&&user?.uid===uid;
   busy=true;status('מסנכרן…');
   try{
-   await a.saved();const remote=await cloud.read(user.uid),meta=a.meta();
-   if(meta?.uid!==user.uid){first(remote);return;}
-   let local=await a.snapshot(),candidate=local;
+   await a.saved();if(!current())return;
+   const remote=await cloud.read(uid),meta=a.meta();if(!current())return;
+   if(meta?.uid!==uid){first(remote);return;}
+   let local=await a.snapshot(),candidate=local;if(!current())return;
    if(remote&&remote.revision!==meta.revision){
     if(!meta.base){first(remote);return;}
     const merge=mergeWorkspaces(meta.base.state,local.state,remote.payload.state);
@@ -60,22 +63,25 @@ export function setupCloud(a){
     if(!equal(local,candidate))await a.recover();
     // An edit can occur while icons load. Never replace a newer local edit.
     if(a.editing()||!equal(await a.snapshot(),local)){schedule();return;}
-    await a.apply(candidate,{uid:user.uid,base:remote.payload,revision:remote.revision});status('מסונכרן');return;
+    if(!current())return;
+    await a.apply(candidate,{uid,base:remote.payload,revision:remote.revision});status('מסונכרן');return;
    }
-   const result=await cloud.commit(user.uid,remote?.revision||0,candidate);
+   if(!current())return;
+   const result=await cloud.commit(uid,remote?.revision||0,candidate);
    const now=await a.snapshot();
-   if(!a.editing()&&equal(now,local)){await a.apply(candidate,{uid:user.uid,base:candidate,revision:result.revision});}
+   if(!current())return;
+   if(!a.editing()&&equal(now,local)){await a.apply(candidate,{uid,base:candidate,revision:result.revision});}
    else{
     // Preserve edits made during the network request; merge them on the next pass.
-    await a.setMeta({uid:user.uid,base:local,revision:remote?.revision||0});schedule();
+    await a.setMeta({uid,base:local,revision:remote?.revision||0});schedule();status('שינויים ממתינים');return;
    }
    status('מסונכרן');lastError='';
-  }catch(e){if(e.code==='hoek/stale'){schedule();}else error(e);}
+  }catch(e){if(current()){if(e.code==='hoek/stale'){schedule();}else error(e);}}
   finally{busy=false;}
  }
  function schedule(){clearTimeout(timer);timer=setTimeout(sync,1800);}
  button.onclick=()=>pending?conflicts(pending.merge,pending.remote,pending.local):overview();
- cloud.authChanged(u=>{stop?.();user=u;blocked=false;pending=null;if(u){status('מחובר');stop=cloud.watch(u.uid,()=>schedule(),error);schedule();}else status('כניסה');});
+ cloud.authChanged(u=>{session++;stop?.();clearTimeout(timer);user=u;blocked=false;pending=null;lastError='';if(u){status('מחובר');stop=cloud.watch(u.uid,()=>schedule(),error);schedule();}else status('כניסה');});
  window.addEventListener('online',schedule);window.addEventListener('offline',()=>status('ממתין לחיבור'));
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule()});
  return {changed:schedule};
