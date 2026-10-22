@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {applyReport,planReport,validateReport,needsRetest,repairStatus,reviewRepair,validateRepairHistory} from './dist/repair-reports.js';
+import {mergeWorkspaces} from './dist/workspace-merge.js';
+const state={schema:1,packageVersion:'3.9.5',nodes:[{id:'tool-a',type:'button',label:'Tool',parent:'backlog',notes:'My newer phone note',fix:'Original fix',status:'fix',priority:'high',icon:'assets/a.png',iconChoice:'choice-a',fixedVersion:'3.9.4'},{id:'tool-b',type:'button',label:'Other',parent:'backlog',notes:'Untouched',fix:'',status:'idea'}],publishSnapshot:{id:'publish-1',nodes:[{id:'tool-a',notes:'Original note',fix:'Original fix'}]}};
+const item={nodeId:'tool-a',result:'fixed',originalNote:'Original note',originalFix:'Original fix',claimedFix:'Changed the calculation',testSteps:['Run command; expect correct total'],testsPerformed:['Build passed; Revit not run'],remainingIssues:[],changedFiles:['Calculation.cs']};
+const report={format:'hoek-repair-report',version:1,reportId:'report-1',publishId:'publish-1',packageVersion:'3.9.6',generatedAt:'2026-10-23T12:00:00Z',items:[item]};
+const before=structuredClone(state),plan=planReport(state,report);assert.equal(plan.entries[0].changedSincePublish,true);assert.equal(plan.entries[0].verifiedOriginal,true);
+let result=applyReport(state,report);assert.deepEqual(state,before);assert.equal(result.count,1);let n=result.state.nodes[0];assert(needsRetest(n));assert.equal(repairStatus(n),'retest');assert.equal(n.status,'testing');assert.equal(n.repairs[0].original.notes,'Original note');assert.equal(n.repairs[0].localAtImport.notes,'My newer phone note');
+for(const key of ['notes','fix','priority','icon','iconChoice','parent','fixedVersion'])assert.equal(n[key],state.nodes[0][key]);assert.deepEqual(result.state.nodes[1],state.nodes[1]);assert.equal(result.state.packageVersion,'3.9.5','Report does not install/update Ribbon source');
+reviewRepair(n,'passed','Tested on project A');assert.equal(n.status,'ok');assert.equal(n.fixedVersion,'3.9.6');assert(!needsRetest(n));
+let repeated=applyReport(result.state,report);assert.equal(repeated.count,0);assert.deepEqual(repeated.state,result.state);
+reviewRepair(n,'failed','Still fails with empty selection');assert.equal(n.status,'fix');assert.equal(n.repairs[0].reviewNote,'Still fails with empty selection');
+const newer={...report,reportId:'report-2',generatedAt:'2026-10-24T12:00:00Z',items:[{...item,claimedFix:'Handled empty selection'}]};result=applyReport(result.state,newer);n=result.state.nodes[0];assert(needsRetest(n));assert.equal(n.repairs.length,2);assert.equal(n.repairs[0].verification,'failed');assert.equal(applyReport(result.state,report).count,0);
+const old={...report,reportId:'old',generatedAt:'2026-10-22T12:00:00Z'};assert.equal(applyReport(result.state,old).count,0);
+assert.throws(()=>applyReport(result.state,{...newer,items:[{...item,claimedFix:'Altered same report'}]}));
+assert.throws(()=>validateReport({...report,items:[item,item]}));assert.throws(()=>validateReport({...report,items:[{...item,testSteps:[]}]}));assert.throws(()=>validateReport({...report,generatedAt:'not a date'}));
+assert.equal(applyReport(state,{...report,items:[{...item,nodeId:'unknown'}]}).count,0);
+for(const outcome of ['partial','not_fixed']){const partial=applyReport(state,{...report,items:[{...item,result:outcome}]}).state.nodes[0];assert(!needsRetest(partial));assert.equal(partial.status,'fix');}
+const legacy=planReport(state,{...report,publishId:''});assert(!legacy.entries[0].verifiedOriginal);
+const misquote=planReport(state,{...report,items:[{...item,originalNote:'wrong quote'}]});assert(misquote.entries[0].quoteMismatch);assert.equal(misquote.entries[0].original.notes,'Original note');
+const restored=JSON.parse(JSON.stringify(result.state));validateRepairHistory(restored.nodes[0]);assert(needsRetest(restored.nodes[0]));
+const pc=structuredClone(state);pc.nodes[0].notes='Independent PC edit';const merged=mergeWorkspaces(state,result.state,pc);assert.equal(merged.conflicts.length,0);assert.equal(merged.state.nodes[0].notes,'Independent PC edit');assert(needsRetest(merged.state.nodes[0]));
+console.log('PASS: original vs current notes; explicit pending verification; preservation; approve/reject; immutable/idempotent reports; older/unmatched/malformed reports; history; backup roundtrip; cloud merge.');
+// Exercise actual application filter, badge and editor-save handlers.
+const app=fs.readFileSync(new URL('./dist/app.js',import.meta.url),'utf8');
+const controls={'#search':{value:''},'#status-filter':{value:'retest'},'#priority-filter':{value:''},'#edit-form':{},'#editor':{close(){}}};
+const c={latestRepair:n=>n.repairs?.at(-1),needsRetest,repairStatus,reviewRepair,copy:structuredClone,esc:s=>String(s),statuses:{testing:'testing',ok:'ok',fix:'fix'},displayStatuses:{retest:'תוקן — יש לבדוק',testing:'testing',ok:'ok',fix:'fix'},$:s=>controls[s],editing:structuredClone(n),children:()=>[],change:(_,fn)=>fn(),reorder:x=>{c.saved=x},toast:()=>{},FormData:class{constructor(target){this.target=target}has(k){return k in this.target}get(k){return this.target[k]??null}}};
+vm.createContext(c);
+vm.runInContext(app.slice(app.indexOf('function matches('),app.indexOf('function visible('))+app.slice(app.indexOf('function badge('),app.indexOf('function card(')),c);
+c.node=n;assert.equal(vm.runInContext('matches(node)',c),true);assert.match(vm.runInContext('badge(node)',c),/תוקן — יש לבדוק/);controls['#status-filter'].value='ok';assert.equal(vm.runInContext('matches(node)',c),false);
+vm.runInContext(app.slice(app.indexOf("$('#edit-form').onsubmit"),app.indexOf("$('#editor-body').onchange")),c);
+controls['#edit-form'].onsubmit({preventDefault(){},target:{label:'Tool',status:'retest',notes:'Saved while pending',order:'1'}});assert.equal(c.saved.status,'testing');assert(needsRetest(c.saved));assert.equal(c.saved.notes,'Saved while pending');
+controls['#edit-form'].onsubmit({preventDefault(){},target:{label:'Tool',status:'ok',order:'1'}});assert.equal(c.saved.status,'ok');assert.equal(c.saved.repairs.at(-1).verification,'passed');
+console.log('PASS: production status filter, retest badge, pending editor save and manual approval.');
