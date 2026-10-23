@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "packageVersion": "3.9.5",
-  "packageRevision": "3.9.5-62555a6d4020",
+  "packageVersion": "3.9.7",
+  "packageRevision": "3.9.7-cfaa6059d7f7",
   "tab": "Hoek AI C2R",
   "nodes": [
     {
@@ -540,7 +540,7 @@
             "icon": "apt-numbering.png",
             "kind": "command",
             "command": "HoekAI.Ribbon.Commands.AptNumberingCommand",
-            "tooltip": "מספור דירות — Clockwise from the start apartment, level by level, per building; Diurit gets XX.1 of the nearest main apartment. Shows the full numbering for approval before writing Apt Num."
+            "tooltip": "מספור דירות — Pick the first apartment (01); number its building or all buildings, clockwise, level by level; other buildings start at the same position; restart or continue the count per building. Diurit gets XX.1 of the nearest main apartment. Shows the full numbering for approval before writing Apt Num."
           },
           {
             "id": "apt-tags",
@@ -571,20 +571,22 @@
       "notes": "",
       "fix": "",
       "fixedVersion": "",
-      "tooltip": "מספור דירות — Clockwise from the start apartment, level by level, per building; Diurit gets XX.1 of the nearest main apartment. Shows the full numbering for approval before writing Apt Num.",
+      "tooltip": "מספור דירות — Pick the first apartment (01); number its building or all buildings, clockwise, level by level; other buildings start at the same position; restart or continue the count per building. Diurit gets XX.1 of the nearest main apartment. Shows the full numbering for approval before writing Apt Num.",
       "source": {
         "id": "apt-numbering",
         "label": "Number Apartments",
         "icon": "apt-numbering.png",
         "kind": "command",
         "command": "HoekAI.Ribbon.Commands.AptNumberingCommand",
-        "tooltip": "מספור דירות — Clockwise from the start apartment, level by level, per building; Diurit gets XX.1 of the nearest main apartment. Shows the full numbering for approval before writing Apt Num."
+        "tooltip": "מספור דירות — Pick the first apartment (01); number its building or all buildings, clockwise, level by level; other buildings start at the same position; restart or continue the count per building. Diurit gets XX.1 of the nearest main apartment. Shows the full numbering for approval before writing Apt Num."
       },
       "packageIcon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAN2SURBVFhH7ddRaBRHGAfw/zeXNOrtOhvsIUI0u1etaB5sNArWB4UrtLRCoT4pioSWiF7BJ0sxxuNU8EkU8dpGBBW00NaWItgWKkGwEDFG86BprWJOG1EITbPZiwZzu58PZmUzub27mCgU/L3t980Of4aZHRZ47f9i8+rUNLU2FYRaKCT5TmpDdJDtbUt21am9ySorAIgtAr1BEaoJVAUwvyrw/ELKCzDqxkD3Gt0wf9Sl+Y9uWK5uuMOatHKatNo1w9xdXR2fp75TSlkBBl0nBgAPhh9+CaaVDFwEYx+DWwh8AsSCQKk8e7c1aR2eNWuhrs4RhtQCACTrW1YSi6j//Mgd3jq9YtonfzrdqbbbP+wD4I19A5Cy1vRI7ATwKRg3Bdy1tn3vjjpONS5Asj7VAKBDrQMAERJHrqbb1HpQVFrvEeE7MBw3MrLqcX/vfXVM0LgATcuaKiu8OVsI/HwFAIBBQ3nxoPVo59GRYL2QmTPjDR7xBSJ0OAM9iUIr5hsXoJStDc1zKV9xLhjQAx34uiv9VXCcJs0mImoFsMkZ6DkV7AWVtQnDUQREcQFOqJ2cnT0G5htg3qH2gia8AkFNy1JvVnroA/NPma4969S+bpjbATrEEW9R7t+7f6l9TH4FimPh/Q4AlBfvqj1faAC9Ov6hLs2MWp+IXH/s1ugGNNWeLzQAs5cAqFGtT0znCJi/gaBLascXGoCYHoFQNdnvvWNnk85/d35R677QACDcBCCkfDLlN2BQaIC8iFwAwC6Jj9TeVCp6DHXDagPjbUcfWYDe3sd+3b8rmDwJiDNg/oNAaQAQEfx9uDN9b8xERRQNEJXxhCA+D+b9jp3diRJ3xTN8nUGt5X7KiwYAAE1aJ4mw0fN4/dBg9vuwu8LHTDoRmtX6qOWZa+krwULJAKipma45lW1EWA7GF47dcxAAq8N8yaUt74PFb8w4LoBv/TqTN5S5trd97OgyxWKLNU2aZ3XDYs0wL2vSWlfoeBqGWbti3genk/Up3lD3eavaLyT0FAT19XXncnb2Y7DXCMZsIpzRpNuvSatdl9bPmrR+1QzzlgvqsfPOegCYURHtV+cppKwAo9ix757I2bVvgWgtgGNEGAawAMQxAl1noHmRvvgzAKgSVTl1gkJK74EJ2rZkVx2EuEpMjZmu9PM98Eq9rJ+Y116Kp/yuKrtOB4NHAAAAAElFTkSuQmCC",
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
+        "detail": "עודכנה בחירת הדירה הראשונה והיקף המספור לפי בניין. נדרשת בדיקת כמה בניינים.",
+        "updatedIn": "3.9.7",
+        "needsRetest": true
       }
     },
     {
@@ -616,7 +618,9 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
+        "detail": "עודכנה הגנה בבחירת מיקום אוטומטי ללא מבט ייחוס. נדרשת בדיקה ב־Revit.",
+        "updatedIn": "3.9.7",
+        "needsRetest": true
       }
     },
     {
@@ -670,9 +674,10 @@
             "icon": "sale-dimensions.png",
             "kind": "command",
             "command": "HoekAI.Ribbon.Commands.SaleDimensionsCommand",
-            "tooltip": "מידות מכר — Place or realign the מידות מכר detail items (50 cm inside the room edge) for all apartment rooms in view or the selection.",
+            "tooltip": "מידות מכר — Place or realign the מידות מכר detail items (50 cm inside the room edge) for all apartment rooms in view or the selection. Loads the family from the office folder when the project lacks it.",
             "params": {
               "family": "מידות מכר",
+              "family_file": "\\\\fs2016\\Autocad\\HoekAI\\families\\מידות מכר.rfa",
               "inset_cm": 50,
               "min_room_cm": 100
             }
@@ -760,16 +765,17 @@
       "notes": "",
       "fix": "",
       "fixedVersion": "",
-      "tooltip": "מידות מכר — Place or realign the מידות מכר detail items (50 cm inside the room edge) for all apartment rooms in view or the selection.",
+      "tooltip": "מידות מכר — Place or realign the מידות מכר detail items (50 cm inside the room edge) for all apartment rooms in view or the selection. Loads the family from the office folder when the project lacks it.",
       "source": {
         "id": "sale-dimensions",
         "label": "Sale Dimensions",
         "icon": "sale-dimensions.png",
         "kind": "command",
         "command": "HoekAI.Ribbon.Commands.SaleDimensionsCommand",
-        "tooltip": "מידות מכר — Place or realign the מידות מכר detail items (50 cm inside the room edge) for all apartment rooms in view or the selection.",
+        "tooltip": "מידות מכר — Place or realign the מידות מכר detail items (50 cm inside the room edge) for all apartment rooms in view or the selection. Loads the family from the office folder when the project lacks it.",
         "params": {
           "family": "מידות מכר",
+          "family_file": "\\\\fs2016\\Autocad\\HoekAI\\families\\מידות מכר.rfa",
           "inset_cm": 50,
           "min_room_cm": 100
         }
@@ -778,7 +784,9 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
+        "detail": "נוספה טעינת משפחת מידות מכר חסרה מתיקיית המשרד. נדרשת בדיקה מקצה לקצה.",
+        "updatedIn": "3.9.7",
+        "needsRetest": true
       }
     },
     {
@@ -810,9 +818,10 @@
           "lower_line_style": "Casework",
           "upper_line_style": "casework-top-dash",
           "fridge_family": "H 2d fridge1|S_2D_fridge",
-          "dishwasher_family": "DW2|S_2D_dish washer",
+          "dishwasher_family": "DW2|S_2D_dish washer|dish washer",
           "sink_family": "H-Kitchen sink|S_2D_kitchen sink",
           "hob_family": "H 2d stove|S_2D_stove",
+          "family_dirs": "\\\\fs2016\\Autocad\\HoekAI\\families\\kitchen|W:\\HoekAI\\families\\kitchen",
           "bi_text_type": "1 mm"
         }
       },
@@ -820,7 +829,9 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
+        "detail": "עודכנה טעינת משפחות מטבח חסרות מתיקיית המשרד. נדרשת בדיקה במודל ללא המשפחות וגם ללא גישה לתיקייה.",
+        "updatedIn": "3.9.7",
+        "needsRetest": true
       }
     },
     {
@@ -849,15 +860,16 @@
             "100",
             "80"
           ],
-          "tile_margin": 3,
-          "toilet_concealed_type": ""
+          "tile_margin": 3
         }
       },
       "packageIcon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAMMSURBVFhH7ZVNSBRxGMafd2ZX091xV9eStS2dlKgORXgIOhQEFogdMjpUB4sOnY069QFlUZfyEIZZ9HGIOiQeUtAgRS3NrMyKvjDMjLaDLtjutNnu/N8Oqaz/zd3ZjW7+YGDmeZ4XHob/OwMssIBVfL4sh0MvkOV/RZGFeEozNbfekGPYg4od39ye0tfZ7uJ1cipdkhbQXNETRHSwevce9fiRw/Dk5q6yq7Z7Xq83W87+F1yekk87qw7w+Ogkj49O8t1bray5dXa4VmyRs+mQ9A2wQIGvsHD2eUNZGZb7lj4mm/l1TjBNSBZkcnJLwvv37ll0/MhhjLwaw8cXn8YeNg9cYsEcm2OQEVX8lxufNUZi9WQkfQOxtF3vQk/TwDIWOAvQudiLgIt24U35cKZUYFdNRTsxykHYTozymXuw2AqIjfWDJ5/KM8mwXICZzXyf55Bg08/MTQwsoVCghxnXQMq2+sHaPnnGCpYLEOhqfnHOG1LJR6AMEOtTrjyNgMVg1uW8VSwVME0zIqCeBAAwvk/L37VIKAxGBDSrpYylAiOfx54vKXb6AaB+sLaPBDZElG8N51+eN5jN9TZBNfKMVeLWUNMKPYpt0RAU0gBAmEJTFIqCKCxnU0JwUER/rgsGv07EynEFnHlFq0kob7Zs2oSVpSWynRYfhj+io7sbrIg1ocDo21hv3gIXzpzGjspK2U6L5pYWHDp67K8FLJ2B/0lcARP2IACEjB+ylTZBwwAAmDDjtiWuQDgw7FdVJdD7pF+20qb3cT9UVZkIB774ZS+uwJ+1F1faH3RwT29aH7c5dD/qxf3OTjaj5hUAQvZVWQAAzVHQD+aqlrb2vIwMO+lFRcjOypJjCZkIBHDz9h0cPVUrmMV7u5pRHQ5P/JJzcVswg9NZulixmTcYqACAzMxMYbfZ5vyC5yMSjdLU1JQCAETUKiK2faHQh3E5h0QFZnC6dAPASyJ0yV4imLEZwNrQ5IhD9lLC6dINp1uvk/VkON163XT5hPztEMoMQfA7WUzKn5khWV5gAZnf/2gg0XJ7MoYAAAAASUVORK5CYII=",
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
+        "detail": "עודכן חישוב עומק ומרחב השימוש באסלה סמויה ביחס לקיר המבני. נדרשת בדיקה מול הדוגמה המקורית.",
+        "updatedIn": "3.9.7",
+        "needsRetest": true
       }
     },
     {
@@ -894,8 +906,8 @@
       "implementation": {
         "state": "partial",
         "verifiedInRevit": false,
-        "detail": "קוד הצבת דלתות עודכן, כולל כיוון דלת ממ״ד. אין כאן אימות שכל דרישות המשרד נסגרו.",
-        "updatedIn": "3.9.5",
+        "detail": "עודכנה הצבת דלת כניסה ובחירת מרווח לדלת שירות בקיר קצר. נדרשת בדיקה, כולל זיהוי דלתות קיימות.",
+        "updatedIn": "3.9.7",
         "needsRetest": true
       }
     },
@@ -1465,7 +1477,16 @@
             "command": "HoekAI.Ribbon.Mamad.MamadEquipCommand",
             "tooltip": "אבזור ממ\"ד — שרוול כניסת אוויר, יציאה, מיזוג, תקשורת ומערכת סינון, לפי טבלה 4, SLV.R2 ו-SLV.R3. ממ\"ד אחד: תצוגה מקדימה (הבא/הקודם/שמור). כמה: הפריסה הטובה לכל אחד. משפחות KRSA.",
             "params": {
-              "default_height_cm": 280
+              "default_height_cm": 280,
+              "pipe_h_cm": 240,
+              "bath_pipe_h_cm": 0,
+              "filter_h_cm": 10,
+              "spacing_cm": 40,
+              "first_offset_cm": 50,
+              "window_sill_cm": 107,
+              "min_window_wall_cm": 120,
+              "families_dir": "",
+              "family_dirs": "\\\\fs2016\\Autocad\\HoekAI\\families\\mamad;W:\\HoekAI\\families\\mamad"
             },
             "plan_id": "715c467d-ca1c-4423-8d4f-4cb2c7f3a6e5"
           },
@@ -1530,7 +1551,16 @@
         "command": "HoekAI.Ribbon.Mamad.MamadEquipCommand",
         "tooltip": "אבזור ממ\"ד — שרוול כניסת אוויר, יציאה, מיזוג, תקשורת ומערכת סינון, לפי טבלה 4, SLV.R2 ו-SLV.R3. ממ\"ד אחד: תצוגה מקדימה (הבא/הקודם/שמור). כמה: הפריסה הטובה לכל אחד. משפחות KRSA.",
         "params": {
-          "default_height_cm": 280
+          "default_height_cm": 280,
+          "pipe_h_cm": 240,
+          "bath_pipe_h_cm": 0,
+          "filter_h_cm": 10,
+          "spacing_cm": 40,
+          "first_offset_cm": 50,
+          "window_sill_cm": 107,
+          "min_window_wall_cm": 120,
+          "families_dir": "",
+          "family_dirs": "\\\\fs2016\\Autocad\\HoekAI\\families\\mamad;W:\\HoekAI\\families\\mamad"
         },
         "plan_id": "715c467d-ca1c-4423-8d4f-4cb2c7f3a6e5"
       },
@@ -1538,7 +1568,9 @@
       "implementation": {
         "state": "partial",
         "verifiedInRevit": false,
-        "detail": "קוד אבזור ממ״ד קיים; השלמת דרישות ההצבה צריכה בדיקה."
+        "detail": "עודכנו הצבת אביזרי ממ״ד ומשפחת הסינון. הסבב האחרון דווח כלא נבדק בהרצה; יש לבדוק תחילה במודל ניסוי.",
+        "updatedIn": "3.9.7",
+        "needsRetest": true
       }
     },
     {
@@ -1724,7 +1756,9 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
+        "detail": "עודכן איסוף נתוני הגיליונות לשיפור זמן פתיחת החלון. נדרשת בדיקה במודל גדול והשוואת התוצרים.",
+        "updatedIn": "3.9.7",
+        "needsRetest": true
       }
     },
     {
@@ -1751,7 +1785,9 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
+        "detail": "עודכנה קריאת מידות מבטים לפי הצורך. נדרשת בדיקה במודל גדול והשוואת התוצרים.",
+        "updatedIn": "3.9.7",
+        "needsRetest": true
       }
     },
     {
@@ -1947,7 +1983,9 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "פקודה קיימת בחבילה; לא נבדקה כאן ב-Revit."
+        "detail": "עודכן שיוך לשוניות למודל. נדרשת בדיקה ממושכת עם כמה מודלים פתוחים.",
+        "updatedIn": "3.9.7",
+        "needsRetest": true
       }
     },
     {
@@ -2576,7 +2614,7 @@
                 "icon": "apt-numbering.png",
                 "kind": "command",
                 "command": "HoekAI.Ribbon.Commands.AptNumberingCommand",
-                "tooltip": "מספור דירות — Clockwise from the start apartment, level by level, per building; Diurit gets XX.1 of the nearest main apartment. Shows the full numbering for approval before writing Apt Num."
+                "tooltip": "מספור דירות — Pick the first apartment (01); number its building or all buildings, clockwise, level by level; other buildings start at the same position; restart or continue the count per building. Diurit gets XX.1 of the nearest main apartment. Shows the full numbering for approval before writing Apt Num."
               },
               {
                 "id": "apt-tags",
@@ -2633,9 +2671,10 @@
                 "icon": "sale-dimensions.png",
                 "kind": "command",
                 "command": "HoekAI.Ribbon.Commands.SaleDimensionsCommand",
-                "tooltip": "מידות מכר — Place or realign the מידות מכר detail items (50 cm inside the room edge) for all apartment rooms in view or the selection.",
+                "tooltip": "מידות מכר — Place or realign the מידות מכר detail items (50 cm inside the room edge) for all apartment rooms in view or the selection. Loads the family from the office folder when the project lacks it.",
                 "params": {
                   "family": "מידות מכר",
+                  "family_file": "\\\\fs2016\\Autocad\\HoekAI\\families\\מידות מכר.rfa",
                   "inset_cm": 50,
                   "min_room_cm": 100
                 }
@@ -2660,9 +2699,10 @@
               "lower_line_style": "Casework",
               "upper_line_style": "casework-top-dash",
               "fridge_family": "H 2d fridge1|S_2D_fridge",
-              "dishwasher_family": "DW2|S_2D_dish washer",
+              "dishwasher_family": "DW2|S_2D_dish washer|dish washer",
               "sink_family": "H-Kitchen sink|S_2D_kitchen sink",
               "hob_family": "H 2d stove|S_2D_stove",
+              "family_dirs": "\\\\fs2016\\Autocad\\HoekAI\\families\\kitchen|W:\\HoekAI\\families\\kitchen",
               "bi_text_type": "1 mm"
             }
           },
@@ -2680,8 +2720,7 @@
                 "100",
                 "80"
               ],
-              "tile_margin": 3,
-              "toilet_concealed_type": ""
+              "tile_margin": 3
             }
           },
           {
@@ -2866,7 +2905,16 @@
                 "command": "HoekAI.Ribbon.Mamad.MamadEquipCommand",
                 "tooltip": "אבזור ממ\"ד — שרוול כניסת אוויר, יציאה, מיזוג, תקשורת ומערכת סינון, לפי טבלה 4, SLV.R2 ו-SLV.R3. ממ\"ד אחד: תצוגה מקדימה (הבא/הקודם/שמור). כמה: הפריסה הטובה לכל אחד. משפחות KRSA.",
                 "params": {
-                  "default_height_cm": 280
+                  "default_height_cm": 280,
+                  "pipe_h_cm": 240,
+                  "bath_pipe_h_cm": 0,
+                  "filter_h_cm": 10,
+                  "spacing_cm": 40,
+                  "first_offset_cm": 50,
+                  "window_sill_cm": 107,
+                  "min_window_wall_cm": 120,
+                  "families_dir": "",
+                  "family_dirs": "\\\\fs2016\\Autocad\\HoekAI\\families\\mamad;W:\\HoekAI\\families\\mamad"
                 },
                 "plan_id": "715c467d-ca1c-4423-8d4f-4cb2c7f3a6e5"
               },
@@ -3116,5 +3164,5 @@
     "version_note": "3.9.3: approved ribbon layout + 46 approved icons; Door placing = Apartment Doors, Place shelter Families = Mamad Equip; Stairs pulldown in Stack 5; 5 planned tools shown with their briefs.",
     "layout_source": "Hoek-Claude-Handoff-Approved-2026-09-29 (TOOLBAR-STRUCTURE.md), reconciled with 3.9.3 third round"
   },
-  "previousPackageRevision": "3.9.3-reconciled-cdc8147710"
+  "previousPackageRevision": "3.9.5-62555a6d4020"
 }

@@ -22,7 +22,7 @@ export function reconcilePackage(state,seed,baselines){
  // Reorder only siblings whose old relative order matches a known baseline.
  for(const parent of new Set(state.nodes.map(n=>n.parent))){
   const prev=before.filter(n=>n.parent===parent).map(n=>n.id);
-  const match=baselines.some(b=>{const ids=b.filter(n=>n.parent===parent).map(n=>n.id),common=new Set(ids.filter(id=>prev.includes(id)));return JSON.stringify(prev.filter(id=>common.has(id)))===JSON.stringify(ids.filter(id=>common.has(id)));});
+  const match=baselines.some(b=>{const ids=b.filter(n=>n.parent===parent).map(n=>n.id),common=new Set(ids.filter(id=>prev.includes(id)));if(prev.some(id=>!ids.includes(id)))return false;return JSON.stringify(prev.filter(id=>common.has(id)))===JSON.stringify(ids.filter(id=>common.has(id)));});
   if(!match)continue;
   const target=seed.nodes.filter(n=>n.parent===parent).map(n=>n.id),siblings=state.nodes.filter(n=>n.parent===parent);
   siblings.sort((a,b)=>(target.includes(a.id)?target.indexOf(a.id):1e6)-(target.includes(b.id)?target.indexOf(b.id):1e6));

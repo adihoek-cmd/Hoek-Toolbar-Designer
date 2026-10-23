@@ -1,17 +1,19 @@
 import {initializeApp} from './vendor/firebase-app.js';
 import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut} from './vendor/firebase-auth.js';
-import {getFirestore,doc,getDocFromServer,onSnapshot,runTransaction,serverTimestamp,collection,query,orderBy,limit,getDocsFromServer} from './vendor/firebase-firestore.js';
+import {initializeFirestore,doc,getDocFromServer,onSnapshot,runTransaction,serverTimestamp,collection,query,orderBy,limit,getDocsFromServer} from './vendor/firebase-firestore.js';
 import {firebaseConfig} from './firebase-config.js';
-const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=initializeFirestore(app,{experimentalForceLongPolling:true});
 export const authChanged=fn=>onAuthStateChanged(auth,fn);
 export const login=()=>signInWithPopup(auth,new GoogleAuthProvider());
 export const logout=()=>signOut(auth);
 const head=uid=>doc(db,'users',uid,'workspaces','main');
 const version=(uid,id)=>doc(db,'users',uid,'workspaces','main','versions',id);
 export function watch(uid,fn,error){return onSnapshot(head(uid),{includeMetadataChanges:true},s=>{if(!s.metadata.fromCache&&!s.metadata.hasPendingWrites)fn(s.exists()?s.data():null)},error)}
+// Bound server reads so blocked connections never look like successful sync.
+async function serverRead(ref){let timer;try{return await Promise.race([getDocFromServer(ref),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Object.assign(Error('החיבור לענן מתעכב. הנתונים שמורים במכשיר; נסו סנכרון מחדש עם חיבור פעיל.'),{code:'hoek/timeout'})),25000)})]);}finally{clearTimeout(timer)}}
 export async function read(uid){
- const h=await getDocFromServer(head(uid));if(!h.exists())return null;
- const meta=h.data(),v=await getDocFromServer(version(uid,meta.head));
+ const h=await serverRead(head(uid));if(!h.exists())return null;
+ const meta=h.data(),v=await serverRead(version(uid,meta.head));
  if(!v.exists())throw Error('Missing cloud revision');
  return {...meta,payload:JSON.parse(v.data().payload)};
 }

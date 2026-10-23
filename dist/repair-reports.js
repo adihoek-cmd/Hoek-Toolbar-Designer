@@ -16,7 +16,7 @@ export function validateReport(input){
   const item={nodeId,result:i.result,originalNote:text(i.originalNote,'originalNote'),originalFix:text(i.originalFix,'originalFix'),claimedFix:required(i.claimedFix,'claimedFix'),testSteps:list(i.testSteps,'testSteps'),testsPerformed:list(i.testsPerformed,'testsPerformed'),remainingIssues:list(i.remainingIssues,'remainingIssues'),changedFiles:list(i.changedFiles,'changedFiles')};
   if(item.result==='fixed'&&!item.testSteps.length)throw Error('נדרשות הוראות בדיקה לתיקון: '+nodeId);
   return item;
- });return report;
+ });if(input.context!==undefined){const encoded=JSON.stringify(input.context);if(!input.context||typeof input.context!=='object'||Array.isArray(input.context)||encoded.length>60000)throw Error('הקשר הדוח אינו תקין');report.context=JSON.parse(encoded);}return report;
 }
 export function planReport(state,input){
  const report=validateReport(input),entries=[];
@@ -41,6 +41,7 @@ export function applyReport(state,input,now=new Date().toISOString()){
   const repair={reportId:plan.report.reportId,publishId:plan.report.publishId,packageVersion:plan.report.packageVersion,generatedAt:plan.report.generatedAt,importedAt:now,reportItem:structuredClone(item),result:item.result,claimedFix:item.claimedFix,testSteps:item.testSteps,testsPerformed:item.testsPerformed,remainingIssues:item.remainingIssues,changedFiles:item.changedFiles,original:entry.original,verifiedOriginal:entry.verifiedOriginal,localAtImport:{notes:n.notes||'',fix:n.fix||'',status:n.status},verification:item.result==='fixed'?'pending':'not_ready',reviewNote:''};
   n.repairs=[...(n.repairs||[]),repair];if(item.result==='fixed')n.status='testing';count++;
  }
+ if(count&&plan.report.context){next.repairReleases=[...(next.repairReleases||[]).filter(r=>r.reportId!==plan.report.reportId),{reportId:plan.report.reportId,packageVersion:plan.report.packageVersion,generatedAt:plan.report.generatedAt,context:structuredClone(plan.report.context)}];}
  return {state:next,count};
 }
 export function reviewRepair(node,outcome,note='',now=new Date().toISOString()){

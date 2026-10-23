@@ -182,7 +182,7 @@
               "icon": "apt-numbering.png",
               "kind": "command",
               "command": "HoekAI.Ribbon.Commands.AptNumberingCommand",
-              "tooltip": "מספור דירות — Clockwise from the start apartment, level by level, per building; Diurit gets XX.1 of the nearest main apartment. Shows the full numbering for approval before writing Apt Num."
+              "tooltip": "מספור דירות — Pick the first apartment (01); number its building or all buildings, clockwise, level by level; other buildings start at the same position; restart or continue the count per building. Diurit gets XX.1 of the nearest main apartment. Shows the full numbering for approval before writing Apt Num."
             },
             {
               "id": "apt-tags",
@@ -239,9 +239,10 @@
               "icon": "sale-dimensions.png",
               "kind": "command",
               "command": "HoekAI.Ribbon.Commands.SaleDimensionsCommand",
-              "tooltip": "מידות מכר — Place or realign the מידות מכר detail items (50 cm inside the room edge) for all apartment rooms in view or the selection.",
+              "tooltip": "מידות מכר — Place or realign the מידות מכר detail items (50 cm inside the room edge) for all apartment rooms in view or the selection. Loads the family from the office folder when the project lacks it.",
               "params": {
                 "family": "מידות מכר",
+                "family_file": "\\\\fs2016\\Autocad\\HoekAI\\families\\מידות מכר.rfa",
                 "inset_cm": 50,
                 "min_room_cm": 100
               }
@@ -266,9 +267,10 @@
             "lower_line_style": "Casework",
             "upper_line_style": "casework-top-dash",
             "fridge_family": "H 2d fridge1|S_2D_fridge",
-            "dishwasher_family": "DW2|S_2D_dish washer",
+            "dishwasher_family": "DW2|S_2D_dish washer|dish washer",
             "sink_family": "H-Kitchen sink|S_2D_kitchen sink",
             "hob_family": "H 2d stove|S_2D_stove",
+            "family_dirs": "\\\\fs2016\\Autocad\\HoekAI\\families\\kitchen|W:\\HoekAI\\families\\kitchen",
             "bi_text_type": "1 mm"
           }
         },
@@ -286,8 +288,7 @@
               "100",
               "80"
             ],
-            "tile_margin": 3,
-            "toilet_concealed_type": ""
+            "tile_margin": 3
           }
         },
         {
@@ -472,7 +473,16 @@
               "command": "HoekAI.Ribbon.Mamad.MamadEquipCommand",
               "tooltip": "אבזור ממ\"ד — שרוול כניסת אוויר, יציאה, מיזוג, תקשורת ומערכת סינון, לפי טבלה 4, SLV.R2 ו-SLV.R3. ממ\"ד אחד: תצוגה מקדימה (הבא/הקודם/שמור). כמה: הפריסה הטובה לכל אחד. משפחות KRSA.",
               "params": {
-                "default_height_cm": 280
+                "default_height_cm": 280,
+                "pipe_h_cm": 240,
+                "bath_pipe_h_cm": 0,
+                "filter_h_cm": 10,
+                "spacing_cm": 40,
+                "first_offset_cm": 50,
+                "window_sill_cm": 107,
+                "min_window_wall_cm": 120,
+                "families_dir": "",
+                "family_dirs": "\\\\fs2016\\Autocad\\HoekAI\\families\\mamad;W:\\HoekAI\\families\\mamad"
               },
               "plan_id": "715c467d-ca1c-4423-8d4f-4cb2c7f3a6e5"
             },

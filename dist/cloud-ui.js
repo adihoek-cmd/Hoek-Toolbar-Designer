@@ -3,7 +3,7 @@ import {mergeWorkspaces,resolveMerge,equal} from './workspace-merge.js';
 import {cloudEnabled} from './firebase-config.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function setupCloud(a){
- let user,stop,busy=false,timer,blocked=false,lastError='',pending,session=0;
+ let user,stop,busy=false,timer,blocked=false,lastError='',pending,initial=null,session=0;
  const dialog=document.createElement('dialog');dialog.className='cloud-sheet';document.body.append(dialog);
  const button=document.createElement('button');button.id='cloud-status';button.textContent='☁ סנכרון';document.querySelector('.header-actions').prepend(button);
  if(!cloudEnabled){button.textContent='☁ סנכרון בהכנה';button.onclick=()=>shell('<p>עדכון Ribbon 3.9.5 פעיל. הנתונים נשמרים במכשיר הזה.</p><p>חיבור הענן עדיין בבדיקות ואינו מעביר נתונים. לאחר השלמת הגדרות Firebase תתאפשר כניסה ושיתוף פרטי בין המכשירים.</p><p>אפשר להמשיך לעבוד ולייצא גיבוי כרגיל.</p>');return {changed:()=>{}};}
@@ -22,11 +22,11 @@ export function setupCloud(a){
   }catch(e){error(e);overview()}});
  }
  function first(remote){
-  blocked=true;
+  blocked=true;initial={remote};status('בחירת עותק ראשוני');
   shell(`<p>${remote?'קיים תכנון בענן. לפני החיבור, בחרו באיזה עותק להתחיל. העותק הנוכחי יישמר כנקודת שחזור במכשיר.':'עדיין אין תכנון בענן. פתחו את הפעולה הזו בטלפון שבו נמצאת העבודה העדכנית ביותר.'}</p><div class="cloud-actions">${remote?'<button data-join class="primary">פתיחת התכנון מהענן</button>':'<button data-publish class="primary">שיתוף התכנון מהמכשיר הזה לענן הפרטי</button>'}<button data-backup>ייצוא גיבוי מקומי</button></div><p>ייבוא גיבוי רגיל מחליף תכנון; עדכון מקור Ribbon יתבצע בנפרד.</p>`);
   dialog.querySelector('[data-backup]').onclick=()=>a.backup();
-  dialog.querySelector('[data-join]')?.addEventListener('click',async()=>{try{a.validate(remote.payload.state);await a.recover();await a.apply(remote.payload,{uid:user.uid,base:remote.payload,revision:remote.revision});blocked=false;dialog.close();schedule();}catch(e){error(e)}});
-  dialog.querySelector('[data-publish]')?.addEventListener('click',async()=>{try{await a.recover();await a.setMeta({uid:user.uid,base:null,revision:0});blocked=false;dialog.close();sync();}catch(e){error(e)}});
+  dialog.querySelector('[data-join]')?.addEventListener('click',async()=>{try{a.validate(remote.payload.state);await a.recover();await a.apply(remote.payload,{uid:user.uid,base:remote.payload,revision:remote.revision});blocked=false;initial=null;dialog.close();schedule();}catch(e){error(e)}});
+  dialog.querySelector('[data-publish]')?.addEventListener('click',async()=>{try{await a.recover();await a.setMeta({uid:user.uid,base:null,revision:0});blocked=false;initial=null;dialog.close();sync();}catch(e){error(e)}});
  }
  function conflicts(merge,remote,local){
   blocked=true;pending={merge,remote,local};status('בחירת שינויים');
@@ -80,8 +80,8 @@ export function setupCloud(a){
   finally{busy=false;}
  }
  function schedule(){clearTimeout(timer);timer=setTimeout(sync,1800);}
- button.onclick=()=>pending?conflicts(pending.merge,pending.remote,pending.local):overview();
- cloud.authChanged(u=>{session++;stop?.();clearTimeout(timer);user=u;blocked=false;pending=null;lastError='';if(u){status('מחובר');stop=cloud.watch(u.uid,()=>schedule(),error);schedule();}else status('כניסה');});
+ button.onclick=()=>pending?conflicts(pending.merge,pending.remote,pending.local):initial?first(initial.remote):overview();
+ cloud.authChanged(u=>{session++;stop?.();clearTimeout(timer);user=u;blocked=false;pending=null;initial=null;lastError='';if(u){status('מחובר');stop=cloud.watch(u.uid,()=>schedule(),error);schedule();}else status('כניסה');});
  window.addEventListener('online',schedule);window.addEventListener('offline',()=>status('ממתין לחיבור'));
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule()});
  return {changed:schedule};
