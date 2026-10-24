@@ -1,5 +1,5 @@
 // Public web-app configuration. Access is enforced by Firestore rules, never this key.
-// Private owner-only sync. First upload requires an explicit choice on the device.
+// Office sync uses authenticated server callables. Initial migration is admin-only.
 export const cloudEnabled=true;
 export const firebaseConfig={
  apiKey:'AIzaSyCuY3OftNNPvDRnMGpXhWaxntjbpySUI9E',
