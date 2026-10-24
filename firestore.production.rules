@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+  function owner(uid) {
+   return request.auth != null && request.auth.uid == uid
+    && request.auth.token.email_verified == true
+    && request.auth.token.email == 'adi.hoek@gmail.com';
+  }
+  // Office access is through authenticated callable functions only.
+  match /offices/{officeId}/{document=**} {
+   allow read, write: if false;
+  }
+  match /users/{uid}/workspaces/main {
+   allow read: if owner(uid);
+   function validHead() {
+    return request.resource.data.keys().hasOnly(['head','revision','updatedAt','schema'])
+     && request.resource.data.schema == 1
+     && request.resource.data.head is string
+     && request.resource.data.head.size() == 36
+     && request.resource.data.revision is int
+     && request.resource.data.updatedAt == request.time
+     && getAfter(/databases/$(database)/documents/users/$(uid)/workspaces/main/versions/$(request.resource.data.head)).data.revision == request.resource.data.revision;
+   }
+   allow create: if owner(uid) && validHead() && request.resource.data.revision == 1;
+   allow update: if owner(uid) && validHead() && request.resource.data.revision == resource.data.revision + 1;
+   match /versions/{version} {
+    allow read: if owner(uid);
+    allow create: if owner(uid)
+     && request.resource.data.keys().hasOnly(['payload','revision','createdAt'])
+     && request.resource.data.payload is string && request.resource.data.payload.size() <= 800000
+     && request.resource.data.revision is int
+     && request.resource.data.createdAt == request.time
+     && getAfter(/databases/$(database)/documents/users/$(uid)/workspaces/main).data.head == version
+     && getAfter(/databases/$(database)/documents/users/$(uid)/workspaces/main).data.revision == request.resource.data.revision;
+   }
+  }
+ }
+}
+
+
