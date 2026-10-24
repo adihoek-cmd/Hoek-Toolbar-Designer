@@ -61,3 +61,9 @@ test('revocation invalidates unused older invitations and audit includes deleted
  await svc.commitWorkspace(request('admin',{expected:1,payload:deleted}));
  const audit=[...records].filter(([p,v])=>p.includes('/audit/')&&v.action==='workspace.commit')[0][1];assert.deepEqual(audit.details.nodeIds,['one']);
 });
+test('small edits in large workspaces produce field-level audit records',()=>{
+ const before=payload();before.state.nodes[0].icon='x'.repeat(500000);
+ const after=clone(before);after.state.nodes[0].notes='updated';
+ const changes=diff(before,after);assert.deepEqual(changes,[{path:['state','nodes','$byId','one','notes'],before:'hello',after:'updated'}]);
+ assert.ok(JSON.stringify(changes).length<200);
+});
