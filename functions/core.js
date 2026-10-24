@@ -20,6 +20,12 @@ export function diff(before,after){
  function visit(a,b,path,depth=0){
   if(JSON.stringify(a)===JSON.stringify(b))return;
   if(depth>30)fail('invalid-argument','Workspace nesting too deep');
+  if(Array.isArray(a)&&Array.isArray(b)&&path.join('.')==='state.nodes'){
+   const before=new Map(a.map(n=>[n.id,n])),after=new Map(b.map(n=>[n.id,n]));
+   visit(a.map(n=>n.id),b.map(n=>n.id),[...path,'$order'],depth+1);
+   for(const id of new Set([...before.keys(),...after.keys()]))visit(before.get(id),after.get(id),[...path,'$byId',id],depth+1);
+   return;
+  }
   if(a&&b&&!Array.isArray(a)&&!Array.isArray(b)&&typeof a==='object'&&typeof b==='object'){
    for(const k of new Set([...Object.keys(a),...Object.keys(b)]))visit(a[k],b[k],[...path,k],depth+1);
   }else changes.push({path,before:a??null,after:b??null});
