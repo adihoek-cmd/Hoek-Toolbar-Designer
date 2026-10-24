@@ -1,6 +1,6 @@
 # Hoek · Ribbon Studio
 
-An offline-first, mobile-friendly planning workspace for Hoek Architects. No build, account, external fonts, CDN, or runtime dependencies. Node.js is needed only for the included local server.
+An offline-first, mobile-friendly planning workspace for Hoek Architects. Local planning works without an account. Office sync requires an invitation and verified sign-in. See [OFFICE-DEPLOYMENT.md](OFFICE-DEPLOYMENT.md) for this branch's server setup, tests and pending production release gates. Node.js is needed for the local server and Firebase development tools.
 
 ## Run
 
