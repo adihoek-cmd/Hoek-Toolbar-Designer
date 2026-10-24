@@ -1,5 +1,26 @@
 {
- "functions":[{"source":"functions","codebase":"office"}],
- "firestore":{"rules":"firestore.office.rules"},
- "emulators":{"auth":{"port":9099},"firestore":{"port":8080},"functions":{"port":5001},"ui":{"enabled":false},"singleProjectMode":true}
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "office"
+    }
+  ],
+  "firestore": {
+    "rules": "firestore.production.rules"
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "functions": {
+      "port": 5001
+    },
+    "ui": {
+      "enabled": false
+    },
+    "singleProjectMode": true
+  }
 }
