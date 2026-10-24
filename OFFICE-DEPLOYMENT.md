@@ -1,5 +1,7 @@
 # Office workspace: implementation and release gate
 
+**Superseded by personal sync.** The user chose one account on multiple devices on Spark. See [PERSONAL-SYNC-RELEASE.md](PERSONAL-SYNC-RELEASE.md). The office backend below is inactive and must not be deployed as part of the personal release.
+
 Status: local implementation; NOT deployed. Branch: `feature/office-shared-workspace`.
 
 ## Production review — 24 October 2026
