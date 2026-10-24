@@ -2,6 +2,18 @@
 
 Status: local implementation; NOT deployed. Branch: `feature/office-shared-workspace`.
 
+## Production review — 24 October 2026
+
+**Billing decision: keep Spark.** The user explicitly declined Blaze on 24 October 2026. Do not enable billing or deploy the current Functions architecture. An alternative trusted backend or a later explicit change of billing decision is required for full office activation.
+
+Browser access is now verified: signed-in account adi.hoek@gmail.com has the project Owner role. Firestore is in me-west1. The current plan is Spark; Cloud Functions deployment requires a user-approved Blaze upgrade. Google sign-in and adihoek-cmd.github.io are enabled/authorized. Email/password is disabled. The only existing Auth user is the legacy Gmail account; the requested office admin adih@hoek.co.il must register and verify before bootstrapping.
+
+The exact published rules (3 October release) have been saved locally under ignored backups/production-review/firestore.deployed.rules. firestore.production.rules preserves every legacy owner/read/write condition and adds an office deny block. firebase.production.json is a separate, explicit release configuration; it does not deploy indexes or remove existing indexes. The new audit index must be created additively. The combined rules are now the emulator test target, with tests for successful legacy atomic sync, cross-user denial and immutable legacy revisions.
+
+The console showed no manual/composite indexes. Legacy cloud head is revision 1, version 20819ec9-6bac-480c-a2b0-c1000f3ee48f, updated 23 October at 23:09:40 Asia/Jerusalem. A complete read-only cloud backup was saved locally to ignored backups/production-review/legacy-cloud-revision-1.json and JSON-validated: 72 nodes, 50 tools, 9 pending retests, 120 history entries and 51 embedded icons. SHA-256 of the saved file: 70969db1892733ca4dea1f806bcc78793cf67abfc16a6b26c281097ebfbe7e5f. The field editor was cancelled without updating Firestore. Actual current device copies remain unverified; this metadata is not proof that current desktop/phone drafts match the cloud. No production data, Auth provider, billing, rules or functions have been changed.
+
+The earlier CLI-only blocker below is historical: browser Owner access resolves project access, but the local CLI and ADC are still unauthenticated. Cloud Shell or an interactive CLI login is needed for the eventual approved deployment.
+
 ## Implemented
 
 - Fixed office `offices/hoek`, with shared head `workspaces/main` and immutable version documents.
