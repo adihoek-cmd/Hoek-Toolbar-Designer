@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "test:emulator": "node scripts/test-office-emulators.mjs"
+  },
+  "devDependencies": {
+    "firebase-tools": "15.34.1"
+  }
+}
