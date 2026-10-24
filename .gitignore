@@ -1,2 +1,8 @@
-.sites-runtime/
 node_modules/
+.sites-runtime/
+functions/node_modules/
+*-debug.log
+.firebase/
+backups/
+.local-config/
+.tools/
