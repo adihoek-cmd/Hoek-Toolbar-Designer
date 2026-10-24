@@ -1,5 +1,5 @@
 // Public web-app configuration. Access is enforced by Firestore rules, never this key.
-// Private owner-only sync. First upload requires an explicit choice on the device.
+// Personal sync uses the existing owner-only Firestore rules on the Spark plan.
 export const cloudEnabled=true;
 export const firebaseConfig={
  apiKey:'AIzaSyCuY3OftNNPvDRnMGpXhWaxntjbpySUI9E',
