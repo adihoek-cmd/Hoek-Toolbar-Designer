@@ -1,4 +1,6 @@
-# Personal sync on Firebase Spark — release candidate
+# Personal sync on Firebase Spark — published
+
+Published on 24 October 2026 after explicit user approval. Production commit: `482170ba7e2f3557e2e01bbce43779f48d04e479`. [Successful Pages deployment](https://github.com/adihoek-cmd/Hoek-Toolbar-Designer/actions/runs/40091954610). All five deployed static files were fetched from the live /dist/ URL and matched the tested source exactly. The live service worker updater completed successfully with build `hoek-542dcf484f29`. Firebase billing, Auth settings, security rules and stored workspace data were not changed by the release.
 
 Decision: one verified Google user, `adi.hoek@gmail.com`, on multiple machines. Keep Firebase Spark and do not enable billing. The requested office/team rollout is superseded.
 
