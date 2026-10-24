@@ -1,6 +1,6 @@
 # Office shared workspace — implementation branch
 
-**Status: NOT DEPLOYED.** This branch is a security-first starting point, not a working shared workspace. Do not merge/deploy until the checklist below is complete. Existing personal sync remains live on main.
+**Status: IMPLEMENTED LOCALLY; NOT DEPLOYED.** See [OFFICE-DEPLOYMENT.md](OFFICE-DEPLOYMENT.md) for implementation, tests, exact blockers and release gates. The original requirements/checklist below remain the acceptance criteria. Existing personal sync remains live on main.
 
 ## Requirements confirmed
 - Owner/admin: adih@hoek.co.il. Identity must be verified through Firebase Authentication and bootstrapped with Firebase Admin SDK; email string alone is not authorization.
