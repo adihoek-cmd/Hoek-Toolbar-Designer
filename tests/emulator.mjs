@@ -12,6 +12,19 @@ async function account(uid,email,verified=true){
 }
 async function invoke(uid,name,data={}){const r=await fetch(`http://127.0.0.1:5001/${project}/us-central1/${name}`,{method:'POST',headers:{'Content-Type':'application/json',...(uid?{Authorization:'Bearer '+tokens[uid]}:{})},body:JSON.stringify({data})});const b=await r.json();if(b.error)throw Object.assign(Error(b.error.message),{code:b.error.status});assert.equal(r.status,200);return b.result;}
 await account('admin','adih@hoek.co.il');await account('guest','guest@example.com');await account('wrong','wrong@example.com');await account('unverified','unverified@example.com',false);
+await account('legacy','adi.hoek@gmail.com');
+const legacyRoot=`projects/${project}/databases/(default)/documents/users/legacy/workspaces/main`;
+const version=crypto.randomUUID();
+const legacyHeaders={Authorization:'Bearer '+tokens.legacy,'Content-Type':'application/json'};
+const atomicWrites={writes:[
+ {update:{name:legacyRoot,fields:{head:{stringValue:version},revision:{integerValue:'1'},schema:{integerValue:'1'}}},updateTransforms:[{fieldPath:'updatedAt',setToServerValue:'REQUEST_TIME'}]},
+ {update:{name:legacyRoot+'/versions/'+version,fields:{payload:{stringValue:'{"state":{"schema":1,"nodes":[]},"history":[]}'},revision:{integerValue:'1'}}},updateTransforms:[{fieldPath:'createdAt',setToServerValue:'REQUEST_TIME'}]}
+]};
+const legacyCommit=await fetch(`http://127.0.0.1:8080/v1/projects/${project}/databases/(default)/documents:commit`,{method:'POST',headers:legacyHeaders,body:JSON.stringify(atomicWrites)});
+assert.equal(legacyCommit.status,200,await legacyCommit.text());
+assert.equal((await fetch('http://127.0.0.1:8080/v1/'+legacyRoot,{headers:legacyHeaders})).status,200,'Legacy owner must retain access');
+assert.equal((await fetch('http://127.0.0.1:8080/v1/'+legacyRoot,{headers:{Authorization:'Bearer '+tokens.guest}})).status,403,'Other members cannot read legacy personal data');
+assert.equal((await fetch('http://127.0.0.1:8080/v1/'+legacyRoot+'/versions/'+version,{method:'PATCH',headers:legacyHeaders,body:JSON.stringify({fields:{payload:{stringValue:'tampered'}}})})).status,403,'Legacy revisions remain immutable');
 await db.doc('offices/hoek/members/admin').set({email:'adih@hoek.co.il',role:'admin',active:true});
 for(const uid of [null,'guest','unverified'])await assert.rejects(invoke(uid,'readWorkspace'));
 const invite=await invoke('admin','createInvite',{email:'guest@example.com'});
@@ -33,4 +46,4 @@ for(const path of ['offices/hoek/workspaces/main','offices/hoek/members/guest','
 await invoke('admin','revokeMember',{uid:'guest'});
 for(const name of ['readWorkspace','listAudit','listRevisions'])await assert.rejects(invoke('guest',name),{code:'PERMISSION_DENIED'});
 await assert.rejects(invoke('guest','commitWorkspace',{expected:2,payload:p('revoked')}),{code:'PERMISSION_DENIED'});
-console.log('PASS: real Auth/Functions/Firestore emulators: callable authentication, verified email, invite race, migration, commit race, server audit, rules tampering, revocation.');
+console.log('PASS: real Auth/Functions/Firestore emulators: legacy owner atomic sync preserved, cross-user legacy denial, immutable legacy revisions, callable authentication, verified email, invite race, migration, commit race, server audit, rules tampering, revocation.');
