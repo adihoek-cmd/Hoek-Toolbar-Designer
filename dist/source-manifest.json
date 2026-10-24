@@ -477,6 +477,8 @@
                 "pipe_h_cm": 240,
                 "bath_pipe_h_cm": 0,
                 "filter_h_cm": 10,
+                "filter_target_cm": 240,
+                "filter_clear_cm": 25,
                 "spacing_cm": 40,
                 "first_offset_cm": 50,
                 "window_sill_cm": 107,

@@ -1,0 +1,9 @@
+{
+  "version": "3.9.8",
+  "revision": "3.9.8-4b65eaeb7eb9",
+  "review": "368 package files verified against MANIFEST. Source changes reviewed; no Revit runtime verification performed.",
+  "updates": {
+    "bathroom-setup": "נוספה יצירת טיפוסי קירות קרמיקה ונישה חסרים; בחירת CNBL הקרוב לעומק המבוקש; מניעת חיפוי כפול בטיפוס רב־שכבתי וחישוב עומק האסלה בהתאם. החומר והגרפיקה מועתקים מטיפוס קיים ודורשים בדיקה.",
+    "mamad-equip": "תוקנה קריאת פרמטרים מספריים שמנעה הפעלת אבזור ממ״ד. נוספו ערכי יעד ומרווח לסינון ותמיכה ב־family_dirs עם חזרה לשדה הישן."
+  }
+}

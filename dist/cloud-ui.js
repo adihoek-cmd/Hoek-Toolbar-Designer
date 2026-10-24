@@ -1,3 +1,4 @@
+import {needsRetest} from './repair-reports.js';
 import * as cloud from './cloud-store.js';
 import {mergeWorkspaces,resolveMerge,equal} from './workspace-merge.js';
 import {cloudEnabled} from './firebase-config.js';
@@ -11,7 +12,8 @@ export function setupCloud(a){
  function error(e){lastError=e.code==='permission-denied'?'אין הרשאת גישה. יש להשלים את הגדרות Firebase.':e.message;status('נדרשת תשומת לב');}
  function shell(body){dialog.innerHTML=`<div class="sheet-head"><h2>סביבת העבודה בענן</h2><button data-dismiss>✕</button></div>${body}`;dialog.querySelector('[data-dismiss]').onclick=()=>dialog.close();if(!dialog.open)dialog.showModal();}
  function overview(){
-  shell(`<p>סנכרון אישי בין המחשב, הטלפון ומחשבים נוספים. התחברו בכל מכשיר לחשבון adi.hoek@gmail.com. השינויים נשמרים גם במכשיר כשאין חיבור.</p><p dir="auto">${esc(user?.email||'עדיין לא מחוברים')}</p>${lastError?`<p role="alert">${esc(lastError)}</p>`:''}<div class="cloud-actions">${!user?'<button data-login class="primary">כניסה עם Google</button>':`<button data-sync class="primary">סנכרון עכשיו</button><button data-revisions>גרסאות קודמות בענן</button><button data-logout>ניתוק מהענן</button>`}</div><p><small>ניתוק עוצר את הסנכרון. העותק המקומי נשאר בדפדפן הזה. בצעו ייצוא גיבוי לפני עבודה במחשב משותף.</small></p>`);
+  const m=a.meta(),shared=m?.uid===user?.uid?m.base?.state:null;
+  shell(`<p>סנכרון אישי בין המחשב, הטלפון ומחשבים נוספים. התחברו בכל מכשיר לחשבון adi.hoek@gmail.com. השינויים נשמרים גם במכשיר כשאין חיבור.</p><p dir="auto">${esc(user?.email||'עדיין לא מחוברים')}</p>${shared?`<p class="cloud-summary">העותק האחרון שסונכרן: גרסת ענן ${esc(m.revision)} · Ribbon ${esc(shared.packageVersion)}<br>${shared.nodes.filter(n=>n.type==='button').length} כלים · ${shared.nodes.filter(needsRetest).length} תוקנו וממתינים לבדיקה</p>`:''}${lastError?`<p role="alert">${esc(lastError)}</p>`:''}<div class="cloud-actions">${!user?'<button data-login class="primary">כניסה עם Google</button>':`<button data-sync class="primary">סנכרון עכשיו</button><button data-revisions>גרסאות קודמות בענן</button><button data-logout>ניתוק מהענן</button>`}</div><p><small>ניתוק עוצר את הסנכרון. העותק המקומי נשאר בדפדפן הזה. בצעו ייצוא גיבוי לפני עבודה במחשב משותף.</small></p>`);
   dialog.querySelector('[data-login]')?.addEventListener('click',async e=>{const b=e.currentTarget;b.disabled=true;b.textContent='ממתין לחלון Google…';a.toast('אם חלון הכניסה לא נפתח, פתחו את האפליקציה ב-Chrome או Safari ואפשרו חלונות קופצים.');try{await cloud.login();}catch(e){error(e);overview()}finally{b.disabled=false;b.textContent='כניסה עם Google';}});
   dialog.querySelector('[data-sync]')?.addEventListener('click',()=>{blocked=false;lastError='';dialog.close();sync()});
   dialog.querySelector('[data-logout]')?.addEventListener('click',async()=>{if(busy){a.toast('המתינו לסיום הסנכרון');return;}await cloud.logout();overview()});

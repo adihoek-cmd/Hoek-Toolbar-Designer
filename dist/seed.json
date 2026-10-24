@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "packageVersion": "3.9.7",
-  "packageRevision": "3.9.7-cfaa6059d7f7",
+  "packageVersion": "3.9.8",
+  "packageRevision": "3.9.8-4b65eaeb7eb9",
   "tab": "Hoek AI C2R",
   "nodes": [
     {
@@ -867,8 +867,8 @@
       "implementation": {
         "state": "implemented",
         "verifiedInRevit": false,
-        "detail": "עודכן חישוב עומק ומרחב השימוש באסלה סמויה ביחס לקיר המבני. נדרשת בדיקה מול הדוגמה המקורית.",
-        "updatedIn": "3.9.7",
+        "detail": "נוספה יצירת טיפוסי קירות קרמיקה ונישה חסרים; בחירת CNBL הקרוב לעומק המבוקש; מניעת חיפוי כפול בטיפוס רב־שכבתי וחישוב עומק האסלה בהתאם. החומר והגרפיקה מועתקים מטיפוס קיים ודורשים בדיקה.",
+        "updatedIn": "3.9.8",
         "needsRetest": true
       }
     },
@@ -1481,6 +1481,8 @@
               "pipe_h_cm": 240,
               "bath_pipe_h_cm": 0,
               "filter_h_cm": 10,
+              "filter_target_cm": 240,
+              "filter_clear_cm": 25,
               "spacing_cm": 40,
               "first_offset_cm": 50,
               "window_sill_cm": 107,
@@ -1555,6 +1557,8 @@
           "pipe_h_cm": 240,
           "bath_pipe_h_cm": 0,
           "filter_h_cm": 10,
+          "filter_target_cm": 240,
+          "filter_clear_cm": 25,
           "spacing_cm": 40,
           "first_offset_cm": 50,
           "window_sill_cm": 107,
@@ -1568,8 +1572,8 @@
       "implementation": {
         "state": "partial",
         "verifiedInRevit": false,
-        "detail": "עודכנו הצבת אביזרי ממ״ד ומשפחת הסינון. הסבב האחרון דווח כלא נבדק בהרצה; יש לבדוק תחילה במודל ניסוי.",
-        "updatedIn": "3.9.7",
+        "detail": "תוקנה קריאת פרמטרים מספריים שמנעה הפעלת אבזור ממ״ד. נוספו ערכי יעד ומרווח לסינון ותמיכה ב־family_dirs עם חזרה לשדה הישן.",
+        "updatedIn": "3.9.8",
         "needsRetest": true
       }
     },
@@ -2909,6 +2913,8 @@
                   "pipe_h_cm": 240,
                   "bath_pipe_h_cm": 0,
                   "filter_h_cm": 10,
+                  "filter_target_cm": 240,
+                  "filter_clear_cm": 25,
                   "spacing_cm": 40,
                   "first_offset_cm": 50,
                   "window_sill_cm": 107,
@@ -3164,5 +3170,5 @@
     "version_note": "3.9.3: approved ribbon layout + 46 approved icons; Door placing = Apartment Doors, Place shelter Families = Mamad Equip; Stairs pulldown in Stack 5; 5 planned tools shown with their briefs.",
     "layout_source": "Hoek-Claude-Handoff-Approved-2026-09-29 (TOOLBAR-STRUCTURE.md), reconciled with 3.9.3 third round"
   },
-  "previousPackageRevision": "3.9.5-62555a6d4020"
+  "previousPackageRevision": "3.9.7-cfaa6059d7f7"
 }
