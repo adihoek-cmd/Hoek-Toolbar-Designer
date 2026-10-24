@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // All office workspace writes, membership changes and audit entries go
+    // through privileged Cloud Functions. Never trust browser-provided roles.
+    match /offices/{officeId}/{document=**} {
+      allow read, write: if false;
+    }
+    // Legacy personal workspaces remain governed by their existing deployed
+    // rules until migration is complete; do not deploy this file as-is without
+    // reviewing and incorporating the legacy rules.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
