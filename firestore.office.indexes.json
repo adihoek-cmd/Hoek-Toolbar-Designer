@@ -1,0 +1,1 @@
+{"indexes":[{"collectionGroup":"audit","queryScope":"COLLECTION","fields":[{"fieldPath":"actor.uid","order":"ASCENDING"},{"fieldPath":"createdAt","order":"DESCENDING"},{"fieldPath":"__name__","order":"DESCENDING"}]}],"fieldOverrides":[]}
