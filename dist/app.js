@@ -1,3 +1,4 @@
+import {setupRibbonDelivery} from './ribbon-delivery-ui.js';
 import {setupClaudeBridge} from './claude-bridge-ui.js';
 import { setupRepairs } from './repair-ui.js';
 import { latestRepair, needsRetest, repairStatus, reviewRepair, validateRepairHistory } from './repair-reports.js';
@@ -12,7 +13,7 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const statuses={testing:'◉ לבדיקה',ok:'✓ נבדק ותקין',fix:'! דורש תיקון',progress:'◷ בטיפול',idea:'✧ רעיון'};
 const displayStatuses={...statuses,retest:'↻ תוקן — יש לבדוק'};
 const priorities={high:'גבוהה',normal:'רגילה',low:'נמוכה'};
-let cloudController,cloudMeta=null,saveError=null;
+let deliveryController,cloudController,cloudMeta=null,saveError=null;
 let state,seed,packageBaselines=[],db,view='designer',panel='panel-0',editing,undo=[],redo=[],history=[],saving=Promise.resolve(),drag,installEvent;
 const id=()=>crypto.randomUUID(),copy=x=>structuredClone(x),children=p=>state.nodes.filter(n=>n.parent===p),find=i=>state.nodes.find(n=>n.id===i),safeIcon=s=>typeof s==='string'&&(/^(assets\/[A-Za-z0-9_.-]+\.(png|svg)|data:image\/(png|jpeg|webp|svg\+xml);base64,[A-Za-z0-9+/=]+)$/.test(s))?s:'app-icon.svg';
 function toast(s){$('#toast').textContent=s;$('#toast').classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('#toast').classList.remove('show'),3500)}
@@ -34,7 +35,7 @@ if(view==='designer'){$('#content').innerHTML=children('ribbon').filter(n=>panel
 else if(view==='icons')$('#content').innerHTML=galleryHTML(state.nodes.filter(n=>['button','dropdown'].includes(n.type)).filter(n=>(panel==='all'||panelOf(n)===panel)&&matches(n)),state.nodes);
 else if(view==='history')$('#content').innerHTML=history.map(h=>`<div class="history-row"><span>${esc(h.label)}</span><time>${new Date(h.time).toLocaleString('he-IL')}</time></div>`).join('')||'<div class="empty"><b>דף חדש.</b>השינויים שלך יופיעו כאן.</div>';
 else{let items=buttons.filter(n=>view==='backlog'?isIdea(n):(needsRetest(n)||['testing','fix','progress'].includes(n.status))).filter(matches);if(view==='testing')items.sort((a,b)=>(a.priority==='high'?-1:0)-(b.priority==='high'?-1:0));$('#content').innerHTML=`<div class="list">${items.map(n=>card(n,true)).join('')}</div>`+(items.length?'':`<div class="empty"><b>${view==='backlog'?'מה חסר בסרגל שלך?':'אין כלים שממתינים כאן.'}</b>${view==='backlog'?'הוסיפו רעיון ושמרו אותו להמשך.':'שנו את הסינון או חזרו לעיצוב הסרגל.'}</div>`)}
-syncTheme(state);
+syncTheme(state);deliveryController?.refresh();
 }
 const opts=(map,value)=>Object.entries(map).map(([k,v])=>`<option value="${esc(k)}" ${k===value?'selected':''}>${esc(v)}</option>`).join('');
 function destinations(n){return [{id:'backlog',label:'רעיונות / Backlog'},...state.nodes.filter(x=>['panel','stack','dropdown'].includes(x.type)&&x.id!==n.id&&x.parent!==n.id)].filter(x=>n.type==='button'?true:n.type==='panel'?false:n.type==='separator'?find(x.id)?.type==='dropdown':canMove(n,x.id))}
@@ -74,7 +75,7 @@ boot().then(()=>{if(!state)return;cloudController=setupCloud({
  recover:async()=>{await saving;const payload=copy({state,history,exportedAt:new Date().toISOString()});if(!db)throw Error('נדרש אחסון מקומי תקין לפני חיבור לענן');await new Promise((resolve,reject)=>{const tx=db.transaction('workspace','readwrite');tx.objectStore('workspace').put(payload,'before-cloud-'+Date.now());tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});},
  setMeta:async value=>{cloudMeta=value;persist();await saving;if(saveError)throw saveError;},
  apply:async(payload,meta)=>{validate(payload.state);const changed=!equal(state,payload.state)||!equal(history,payload.history);if(!changed&&equal(cloudMeta,meta))return;state=copy(payload.state);reconcilePackage(state,seed,packageBaselines);validate(state);history=copy(payload.history||[]);cloudMeta=copy(meta);if(changed){undo=[];redo=[];}persist();render();await saving;if(saveError)throw saveError;}
-});setupClaudeBridge();setupRepairs({state:()=>state,replace:s=>{state=s},change,toast});if(!state.themeIntroSeen)openThemes();});
+});deliveryController=setupRibbonDelivery(()=>state);deliveryController.refresh();setupClaudeBridge();setupRepairs({state:()=>state,replace:s=>{state=s},change,toast});if(!state.themeIntroSeen)openThemes();});
 
 document.querySelector('#update-app').onclick=async()=>{await saving;location.href='update.html?from=menu';};
 

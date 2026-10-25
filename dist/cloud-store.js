@@ -1,6 +1,6 @@
 import {initializeApp} from './vendor/firebase-app.js';
 import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut} from './vendor/firebase-auth.js';
-import {initializeFirestore,doc,getDocFromServer,onSnapshot,runTransaction,serverTimestamp,collection,query,orderBy,limit,getDocsFromServer} from './vendor/firebase-firestore.js';
+import {initializeFirestore,doc,getDocFromServer,onSnapshot,runTransaction,serverTimestamp,collection,query,where,orderBy,limit,getDocsFromServer} from './vendor/firebase-firestore.js';
 import {firebaseConfig} from './firebase-config.js';
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=initializeFirestore(app,{experimentalForceLongPolling:true});
 export const authChanged=fn=>onAuthStateChanged(auth,fn);
@@ -39,3 +39,5 @@ export async function revisions(uid){
  const q=query(collection(head(uid),'versions'),orderBy('revision','desc'),limit(20));
  return (await getDocsFromServer(q)).docs.map(d=>({id:d.id,...d.data()}));
 }
+
+export async function readRevision(uid,revision){const q=query(collection(head(uid),'versions'),where('revision','==',revision),limit(1));const docs=(await getDocsFromServer(q)).docs;if(!docs.length)throw Error('Source cloud revision not found');return JSON.parse(docs[0].data().payload);}

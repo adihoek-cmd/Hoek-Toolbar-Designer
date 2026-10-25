@@ -70,7 +70,7 @@ Replace all example values. `result` must be `fixed`, `partial`, or `not_fixed`.
 - Pull after push and verify every reportId is in the intended nodes' repairs. Include resulting cloud revision in the handoff.
 
 ## Scope of this connection
-This version synchronizes planning data outward and repair reports inward. It does not upload DLLs, install Revit, auto-replace user-selected icons, add arbitrary new tools or replace the full source Ribbon manifest. For a new release also prepare MANIFEST.json, toolbar.manifest.json, icons and the deploy package; supply them for the separate source-package update process. In the report include release metadata and all actual repaired commands. Do not update the app's package baseline merely because a report references a newer version.
+This version synchronizes planning data outward and repair reports plus actual Ribbon delivery snapshots inward. See RIBBON-DELIVERY.md for hoek-ribbon-delivery v1 and the same push command. It does not upload DLLs, install Revit, auto-replace user-selected icons, add arbitrary new tools or replace the full source Ribbon manifest. For a new release also prepare MANIFEST.json, toolbar.manifest.json, icons and the deploy package; supply them for the separate source-package update process. In the report include release metadata and all actual repaired commands. Do not update the app's package baseline merely because a report references a newer version.
 
 ## Completion checklist for Claude
 1. Pull latest cloud workspace and record revision.
@@ -81,3 +81,6 @@ This version synchronizes planning data outward and repair reports inward. It do
 6. Pull again and verify cloud revision and report IDs.
 7. Tell Adi what changed, what still needs testing, where the installer is, and the verified cloud revision.
 8. Stop the bridge with Ctrl+C when finished; disconnect in the app.
+
+## Actual Ribbon layout acknowledgment
+Pull now includes planningSnapshot. Follow [RIBBON-DELIVERY.md](RIBBON-DELIVERY.md) to push the complete as-built layout with exact app IDs, order, source cloud revision and snapshot digest. This creates a separate delivered baseline and marks matching current plans as implemented without overwriting newer user edits. The previous paragraph about not replacing the full source manifest refers to installation/source migration, not this delivery comparison.
