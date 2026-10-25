@@ -1,2 +1,5 @@
 .sites-runtime/
 node_modules/
+
+.hoek-bridge/
+claude-workspace/

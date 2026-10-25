@@ -1,0 +1,22 @@
+import * as cloud from './cloud-store.js';
+import {prepareClaudeUpdate} from './claude-sync.js';
+export function setupClaudeBridge(){
+ let active=false,timer,base,key,user,last='לא מחובר';
+ cloud.authChanged(u=>{user=u;if(!u)stop()});
+ const d=document.createElement('dialog');d.className='cloud-sheet';document.body.append(d);
+ const b=document.createElement('button');b.textContent='Claude Code · חיבור וסנכרון';document.querySelector('#import-repairs').before(b);
+ const params=new URLSearchParams(location.hash.slice(1)),port=params.get('claudePort'),nonce=params.get('claudeKey');
+ if(port&&nonce){sessionStorage.setItem('hoek-claude-link',JSON.stringify({port,key:nonce}));history.replaceState(null,'',location.pathname+location.search);}
+ function show(){d.innerHTML='<div class="sheet-head"><h2>חיבור Claude Code</h2><button data-close>✕</button></div><p>הגשר המקומי מאפשר לקלוד למשוך את התכנון והאייקונים מהענן ולשלוח דוחות תיקון. סיסמאות ומפתחות Firebase אינם נמסרים לו. השאירו חלון זה פתוח במחשב שבו הגשר פועל.</p><p id="bridge-status"></p><button data-connect>חיבור לגשר המקומי</button><button data-stop>ניתוק הגשר</button><p><a href="CLAUDE-CODE-SYNC.md" download>הנחיות מלאות לקלוד · MD</a></p>';d.querySelector('#bridge-status').textContent=last;d.querySelector('[data-close]').onclick=()=>d.close();d.querySelector('[data-stop]').onclick=()=>{stop();show()};d.querySelector('[data-connect]').onclick=connect;if(!d.open)d.showModal();}
+ function status(v){last=v;const el=d.querySelector('#bridge-status');if(el)el.textContent=v;}
+ function stop(){active=false;clearTimeout(timer);status('הגשר מנותק');}
+ async function request(path,data){const r=await fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify(data||{}),signal:AbortSignal.timeout(15000)});if(!r.ok)throw Error('Local bridge HTTP '+r.status);return r.json();}
+ async function connect(){try{if(!user)throw Error('התחברו קודם לענן באמצעות Google.');const cfg=JSON.parse(sessionStorage.getItem('hoek-claude-link')||'null');if(!cfg||!/^\d{4,5}$/.test(cfg.port)||+cfg.port>65535||!/^[a-f0-9]{64}$/.test(cfg.key))throw Error('הפעילו את הגשר ופתחו את הקישור שהוא מציג באותו מחשב.');base='http://127.0.0.1:'+cfg.port;key=cfg.key;await request('/hello');active=true;status('מחובר · ממתין לפקודות Claude Code');poll();}catch(e){status(e.message)}}
+ async function execute(job){const uid=user?.uid;if(!uid)throw Error('Not signed in');
+  if(job.kind==='pull'){const remote=await cloud.read(uid);if(!remote)throw Error('No cloud workspace. Sync your phone first.');return {format:'hoek-claude-workspace',version:1,cloudRevision:remote.revision,exportedAt:new Date().toISOString(),...remote.payload};}
+  if(job.kind!=='push')throw Error('Unknown command');
+  for(let attempt=0;attempt<3;attempt++){if(user?.uid!==uid||!active)throw Error('Connection closed');const remote=await cloud.read(uid);if(!remote)throw Error('No cloud workspace');const next=await prepareClaudeUpdate(remote.payload,job.report);if(!next.count)return {revision:remote.revision,count:0,alreadyApplied:true};if(user?.uid!==uid||!active)throw Error('Connection closed');try{const saved=await cloud.commit(uid,remote.revision,next.payload);const verified=await cloud.read(uid);if(verified.revision<saved.revision||!next.report.items.every(i=>verified.payload.state.nodes.find(n=>n.id===i.nodeId)?.repairs?.some(r=>r.reportId===next.report.reportId)))throw Error('Write verification failed; pull before retrying');return {revision:saved.revision,count:next.count,verified:true};}catch(e){if(e.code!=='hoek/stale'||attempt===2)throw e;}}
+ }
+ async function poll(){if(!active)return;try{const {job}=await request('/next');if(job){status(job.kind==='pull'?'קורא תכנון מהענן…':'שומר דוח תיקונים בענן…');let result,error;try{result=await execute(job)}catch(e){error=e.message}await request('/result',{id:job.id,result,error});status(error?'הפעולה נכשלה: '+error:'מחובר · הפעולה הושלמה');}}catch(e){stop();status('החיבור הופסק: '+e.message);return;}if(active)timer=setTimeout(poll,1500);}
+ b.onclick=()=>{document.querySelector('#menu').close();show()};if(port&&nonce)show();
+}

@@ -1,3 +1,4 @@
+import {setupClaudeBridge} from './claude-bridge-ui.js';
 import { setupRepairs } from './repair-ui.js';
 import { latestRepair, needsRetest, repairStatus, reviewRepair, validateRepairHistory } from './repair-reports.js';
 import { setupCloud } from './cloud-ui.js';
@@ -73,7 +74,7 @@ boot().then(()=>{if(!state)return;cloudController=setupCloud({
  recover:async()=>{await saving;const payload=copy({state,history,exportedAt:new Date().toISOString()});if(!db)throw Error('נדרש אחסון מקומי תקין לפני חיבור לענן');await new Promise((resolve,reject)=>{const tx=db.transaction('workspace','readwrite');tx.objectStore('workspace').put(payload,'before-cloud-'+Date.now());tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});},
  setMeta:async value=>{cloudMeta=value;persist();await saving;if(saveError)throw saveError;},
  apply:async(payload,meta)=>{validate(payload.state);const changed=!equal(state,payload.state)||!equal(history,payload.history);if(!changed&&equal(cloudMeta,meta))return;state=copy(payload.state);reconcilePackage(state,seed,packageBaselines);validate(state);history=copy(payload.history||[]);cloudMeta=copy(meta);if(changed){undo=[];redo=[];}persist();render();await saving;if(saveError)throw saveError;}
-});setupRepairs({state:()=>state,replace:s=>{state=s},change,toast});if(!state.themeIntroSeen)openThemes();});
+});setupClaudeBridge();setupRepairs({state:()=>state,replace:s=>{state=s},change,toast});if(!state.themeIntroSeen)openThemes();});
 
 document.querySelector('#update-app').onclick=async()=>{await saving;location.href='update.html?from=menu';};
 
