@@ -23,6 +23,13 @@ export async function read(uid){
  const payload=JSON.parse(v.data().payload);cached={uid,head:meta.head,revision:meta.revision,payload:structuredClone(payload)};
  return {...meta,payload};
 }
+// getDocFromServer joins an existing listener on the same document (this tab's watch) and resolves with
+// that listener's last server view, which can still predate a transaction committed a moment ago.
+// Keep reading from the server until the expected revision arrives, so a read-back never reports a stale cloud.
+export async function readAtLeast(uid,revision,timeout=20000){
+ const end=Date.now()+timeout;
+ for(;;){const r=await read(uid);if(!r||r.revision>=revision||Date.now()>=end)return r;await new Promise(f=>setTimeout(f,500));}
+}
 export async function commit(uid,expected,payload){
  const body=JSON.stringify(payload);
  if(new TextEncoder().encode(body).length>800000)throw Error('הגיבוי גדול מדי לסנכרון בגרסה זו (800KB). ייצאו גיבוי; הנתונים נשארים במכשיר.');
