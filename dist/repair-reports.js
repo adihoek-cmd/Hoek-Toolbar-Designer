@@ -15,6 +15,8 @@ export function validateReport(input){
   const nodeId=required(i.nodeId,'nodeId',160);if(ids.has(nodeId))throw Error('כלי מופיע פעמיים בדוח: '+nodeId);ids.add(nodeId);
   const item={nodeId,result:i.result,originalNote:text(i.originalNote,'originalNote'),originalFix:text(i.originalFix,'originalFix'),claimedFix:required(i.claimedFix,'claimedFix'),testSteps:list(i.testSteps,'testSteps'),testsPerformed:list(i.testsPerformed,'testsPerformed'),remainingIssues:list(i.remainingIssues,'remainingIssues'),changedFiles:list(i.changedFiles,'changedFiles')};
   if(item.result==='fixed'&&!item.testSteps.length)throw Error('נדרשות הוראות בדיקה לתיקון: '+nodeId);
+  if(i.changeSummary!==undefined)item.changeSummary=required(i.changeSummary,'changeSummary',500);
+  if(i.fixedInVersion!==undefined){item.fixedInVersion=required(i.fixedInVersion,'fixedInVersion',80);if(!/^\d+\.\d+\.\d+$/.test(item.fixedInVersion))throw Error('Invalid fixedInVersion');const a=item.fixedInVersion.split('.').map(Number),b=report.packageVersion.split('.').map(Number);let cmp=0;for(let j=0;j<3&&!cmp;j++)cmp=a[j]-b[j];if(cmp>0)throw Error('Fix version exceeds package version');}
   return item;
  });if(input.context!==undefined){const encoded=JSON.stringify(input.context);if(!input.context||typeof input.context!=='object'||Array.isArray(input.context)||encoded.length>60000)throw Error('הקשר הדוח אינו תקין');report.context=JSON.parse(encoded);}return report;
 }
@@ -38,7 +40,7 @@ export function planReport(state,input){
 export function applyReport(state,input,now=new Date().toISOString()){
  const plan=planReport(state,input),next=structuredClone(state);let count=0;
  for(const entry of plan.entries){if(entry.reason)continue;const n=next.nodes.find(n=>n.id===entry.nodeId),item=entry.item;
-  const repair={reportId:plan.report.reportId,publishId:plan.report.publishId,packageVersion:plan.report.packageVersion,generatedAt:plan.report.generatedAt,importedAt:now,reportItem:structuredClone(item),result:item.result,claimedFix:item.claimedFix,testSteps:item.testSteps,testsPerformed:item.testsPerformed,remainingIssues:item.remainingIssues,changedFiles:item.changedFiles,original:entry.original,verifiedOriginal:entry.verifiedOriginal,localAtImport:{notes:n.notes||'',fix:n.fix||'',status:n.status},verification:item.result==='fixed'?'pending':'not_ready',reviewNote:''};
+  const repair={reportId:plan.report.reportId,publishId:plan.report.publishId,packageVersion:plan.report.packageVersion,generatedAt:plan.report.generatedAt,importedAt:now,reportItem:structuredClone(item),result:item.result,fixedInVersion:item.fixedInVersion||plan.report.packageVersion,changeSummary:item.changeSummary||'',claimedFix:item.claimedFix,testSteps:item.testSteps,testsPerformed:item.testsPerformed,remainingIssues:item.remainingIssues,changedFiles:item.changedFiles,original:entry.original,verifiedOriginal:entry.verifiedOriginal,localAtImport:{notes:n.notes||'',fix:n.fix||'',status:n.status},verification:item.result==='fixed'?'pending':'not_ready',reviewNote:''};
   n.repairs=[...(n.repairs||[]),repair];if(item.result==='fixed')n.status='testing';count++;
  }
  if(count&&plan.report.context){next.repairReleases=[...(next.repairReleases||[]).filter(r=>r.reportId!==plan.report.reportId),{reportId:plan.report.reportId,packageVersion:plan.report.packageVersion,generatedAt:plan.report.generatedAt,context:structuredClone(plan.report.context)}];}
@@ -48,7 +50,7 @@ export function reviewRepair(node,outcome,note='',now=new Date().toISOString()){
  const repair=latestRepair(node);if(!repair||repair.result!=='fixed'||!['passed','failed','pending'].includes(outcome))throw Error('אין תיקון מתאים לבדיקה');
  repair.verification=outcome;repair.reviewNote=text(note,'reviewNote');repair.reviewedAt=now;
  node.status=outcome==='passed'?'ok':outcome==='failed'?'fix':'testing';
- if(outcome==='passed')node.fixedVersion=repair.packageVersion;
+ if(outcome==='passed')node.fixedVersion=repair.fixedInVersion||repair.packageVersion;
 }
 export function validateRepairHistory(node){
  if(node.repairs===undefined)return;
@@ -61,3 +63,4 @@ export function validateRepairHistory(node){
   for(const k of ['testSteps','testsPerformed','remainingIssues','changedFiles'])list(r[k],k);
  }
 }
+

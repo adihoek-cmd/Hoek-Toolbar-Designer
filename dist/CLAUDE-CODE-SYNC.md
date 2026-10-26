@@ -84,3 +84,11 @@ This version synchronizes planning data outward and repair reports plus actual R
 
 ## Actual Ribbon layout acknowledgment
 Pull now includes planningSnapshot. Follow [RIBBON-DELIVERY.md](RIBBON-DELIVERY.md) to push the complete as-built layout with exact app IDs, order, source cloud revision and snapshot digest. This creates a separate delivered baseline and marks matching current plans as implemented without overwriting newer user edits. The previous paragraph about not replacing the full source manifest refers to installation/source migration, not this delivery comparison.
+
+
+## Per-button version and concise change summary
+For each changed button in actual.nodes, Claude MUST send both changedInVersion (e.g. "3.9.9") and changeSummary (1–500 characters, preferably one short Hebrew sentence describing the actual change). changedInVersion is the version where that specific change first shipped, and must not exceed packageVersion. Preserve these fields on unchanged buttons in subsequent full deliveries. Omit both only if no verified change history is known; never invent history. These fields appear in the button card and editor and do not affect layout matching.
+
+For behavioral fixes, also push hoek-repair-report. Each changed item should include fixedInVersion and changeSummary alongside the full claimedFix, originalNote, originalFix and testSteps. fixedInVersion is the first version containing the fix; packageVersion is the reported package. Existing reports without these fields remain supported: the card displays packageVersion and an excerpt of claimedFix. A report never automatically marks a button tested/OK.
+
+Example item additions: {"fixedInVersion":"3.9.9","changeSummary":"תוקן חישוב המידות ונשמר מיקום הכפתור בקבוצת התכנון."}. For actual.nodes use changedInVersion instead of fixedInVersion.

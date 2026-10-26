@@ -66,3 +66,11 @@
 ## איך אקלוט את המסירה באפליקציה
 
 בתפריט ⋯ אבחר ״ייבוא דוח תיקונים מקלוד״ ואבחר את קובץ ה־JSON. האפליקציה מציגה תצוגה מקדימה; רק אישור הקליטה מוסיף את הדיווחים. כלים שדווחו כ־`fixed` יקבלו סימן ״תוקן — יש לבדוק״. בלחיצה על דוח התיקון אוכל לראות את ההערה המקורית, טענת התיקון והוראות הבדיקה, ואז לאשר ״בדקתי ותקין״ או ״עדיין דורש תיקון״. ייבוא הדוח אינו מתקין את התוסף ב־Revit.
+
+
+## Per-button version and concise change summary
+For each changed button in actual.nodes, Claude MUST send both changedInVersion (e.g. "3.9.9") and changeSummary (1–500 characters, preferably one short Hebrew sentence describing the actual change). changedInVersion is the version where that specific change first shipped, and must not exceed packageVersion. Preserve these fields on unchanged buttons in subsequent full deliveries. Omit both only if no verified change history is known; never invent history. These fields appear in the button card and editor and do not affect layout matching.
+
+For behavioral fixes, also push hoek-repair-report. Each changed item should include fixedInVersion and changeSummary alongside the full claimedFix, originalNote, originalFix and testSteps. fixedInVersion is the first version containing the fix; packageVersion is the reported package. Existing reports without these fields remain supported: the card displays packageVersion and an excerpt of claimedFix. A report never automatically marks a button tested/OK.
+
+Example item additions: {"fixedInVersion":"3.9.9","changeSummary":"תוקן חישוב המידות ונשמר מיקום הכפתור בקבוצת התכנון."}. For actual.nodes use changedInVersion instead of fixedInVersion.
