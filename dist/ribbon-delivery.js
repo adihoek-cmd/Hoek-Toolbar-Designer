@@ -30,3 +30,17 @@ export async function prepareRibbonDelivery(payload,input,source){
  const next=structuredClone(payload);next.state.ribbonDeployment={...normalized,hash,requested:snapshot,receivedAt:new Date().toISOString(),verification:'reported-build-not-runtime-tested'};next.state.ribbonDeliveries=[...(next.state.ribbonDeliveries||[]),{deliveryId:input.deliveryId,packageVersion:input.packageVersion,generatedAt:input.generatedAt,hash}];if(next.state.ribbonDeliveries.length>500)throw Error('Delivery history limit reached');next.history=[{label:'נקלט מבנה סרגל שבוצע: '+input.packageVersion,time:new Date().toISOString()},...(next.history||[])].slice(0,120);
  return {payload:next,count:1,deliveryId:input.deliveryId};
 }
+// Explicit owner actions only: a delivery never changes the plan by itself.
+// Copy the built name, tooltip and command onto a planned button (the icon cannot be adopted: only its hash is delivered).
+export function adoptBuilt(state,deployment,id){
+ const n=state.nodes.find(x=>x.id===id&&x.type==='button'),a=deployment.nodes.find(x=>x.id===id&&x.type==='button');if(!n||!a)throw Error('הכלי לא נמצא בתכנון ובגרסה');
+ n.label=a.label;n.tooltip=a.tooltip;n.source={...(n.source||{}),command:a.command};return n;
+}
+// Add a built button that is not in the plan at its built place (ideas list when that group is not planned), marked for testing.
+export function addBuilt(state,deployment,id){
+ const a=deployment.nodes.find(x=>x.id===id&&x.type==='button');if(!a||state.nodes.some(x=>x.id===id))throw Error('הכלי כבר בתכנון או אינו בגרסה');
+ const p=state.nodes.find(x=>x.id===a.parent&&['panel','stack','dropdown'].includes(x.type)),parent=p?a.parent:'backlog';
+ const node={id:a.id,type:'button',parent,label:a.label,icon:'',status:'testing',priority:'normal',notes:'',fix:'',tooltip:a.tooltip,fixedVersion:'',source:{command:a.command,delivery:deployment.deliveryId}};
+ const siblings=state.nodes.filter(x=>x.parent===parent),before=p&&siblings[a.order];
+ before?state.nodes.splice(state.nodes.indexOf(before),0,node):siblings.length?state.nodes.splice(state.nodes.indexOf(siblings.at(-1))+1,0,node):state.nodes.push(node);return node;
+}
