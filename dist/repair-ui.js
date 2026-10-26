@@ -32,10 +32,11 @@ export function setupRepairs(a){
   if(document.querySelector('#editor[open]')){
    dialog.querySelectorAll('[data-review],#repair-review-note').forEach(el=>el.disabled=true);
    const hint=document.createElement('p');hint.className='repair-warning';hint.textContent='לשמירת תוצאת בדיקה, סגרו את הדוח ושמרו תחילה את כרטיס העריכה. לאחר מכן פתחו את דוח התיקון מהסרגל.';dialog.append(hint);
-  }else dialog.querySelectorAll('[data-review]').forEach(b=>b.onclick=()=>{const note=dialog.querySelector('#repair-review-note').value;a.change('בדיקת תיקון: '+n.label,()=>reviewRepair(a.state().nodes.find(x=>x.id===id),b.dataset.review,note));detail(id);});
+  }else dialog.querySelectorAll('[data-review]').forEach(b=>b.onclick=()=>{const note=dialog.querySelector('#repair-review-note').value;const outcome=b.dataset.review;try{a.change('בדיקת תיקון: '+n.label,()=>reviewRepair(a.state().nodes.find(x=>x.id===id),outcome,note));const current=a.state().nodes.find(x=>x.id===id);if(latestRepair(current)?.verification!==outcome||latestRepair(current)?.reviewNote!==note)return;dialog.close();a.toast(outcome==='passed'?'✓ הבדיקה אושרה — הכלי מסומן תקין':outcome==='failed'?'הכלי סומן כדורש תיקון':'הכלי הוחזר לבדיקה');}catch(e){a.toast(e.message)}});
  }
  input.onchange=async()=>{try{const f=input.files[0];if(!f)return;if(f.size>2*1024*1024)throw Error('דוח התיקונים גדול מדי (עד 2MB)');preview(await normalizeIncomingReport(JSON.parse(await f.text())));}catch(e){a.toast(e.message)}finally{input.value=''}};
  document.querySelector('#import-repairs').onclick=()=>{document.querySelector('#menu').close();input.click()};
  document.addEventListener('click',e=>{const b=e.target.closest('[data-repair]');if(b)detail(b.dataset.repair)});
  return {detail};
 }
+
