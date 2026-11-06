@@ -48,7 +48,7 @@ export function applyReport(state,input,now=new Date().toISOString()){
 }
 export function reviewRepair(node,outcome,note='',now=new Date().toISOString()){
  const repair=latestRepair(node);if(!repair||repair.result!=='fixed'||!['passed','failed','pending'].includes(outcome))throw Error('אין תיקון מתאים לבדיקה');
- repair.verification=outcome;repair.reviewNote=text(note,'reviewNote');repair.reviewedAt=now;
+ repair.hiddenFromRibbon=outcome==='passed';repair.verification=outcome;repair.reviewNote=text(note,'reviewNote');repair.reviewedAt=now;
  node.status=outcome==='passed'?'ok':outcome==='failed'?'fix':'testing';
  if(outcome==='passed')node.fixedVersion=repair.fixedInVersion||repair.packageVersion;
 }
