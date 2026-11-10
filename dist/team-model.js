@@ -3,7 +3,7 @@ export const OWNER_EMAIL='adi.hoek@gmail.com';
 export const editable=['label','tooltip','priority','icon'];
 const clone=x=>structuredClone(x),same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 export function normalizeEmail(s){s=String(s||'').trim().toLowerCase();if(!/^[^\s/@]+@[^\s/@]+\.[^\s/@]+$/.test(s)||s.length>254)throw Error('כתובת מייל לא תקינה');return s;}
-export function safeTeamIcon(s){return typeof s==='string'&&s.length<=140000&&/^(assets\/[A-Za-z0-9_.-]+\.(png|svg)|data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+)$/.test(s);}
+export function safeTeamIcon(s){return typeof s==='string'&&s.length<=140000&&/^(assets\/[A-Za-z0-9_.-]+\.(png|svg)|data:image\/(png|jpeg|webp|svg\+xml);base64,[A-Za-z0-9+/=]+)$/.test(s);}
 export function sharedSnapshot(payload,revision){
  return {revision,packageVersion:payload.state.ribbonDeployment?.packageVersion||payload.state.packageVersion,nodes:payload.state.nodes.map(n=>Object.fromEntries(['id','type','parent','order','label','tooltip','priority','status','icon'].filter(k=>n[k]!==undefined&&(k!=='icon'||safeTeamIcon(n[k]))).map(k=>[k,n[k]])))};
 }

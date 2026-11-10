@@ -1,7 +1,9 @@
-import {auth,db,read} from './cloud-store.js';
-import {sendSignInLinkToEmail,isSignInWithEmailLink,signInWithEmailLink} from './vendor/firebase-auth.js';
-import {doc,collection,getDocFromServer,getDocsFromServer,setDoc,query,where,limit,runTransaction,serverTimestamp} from './vendor/firebase-firestore.js';
+import {initializeApp} from './vendor/firebase-app.js';
+import {firebaseConfig} from './firebase-config.js';
+import {getAuth,sendSignInLinkToEmail,isSignInWithEmailLink,signInWithEmailLink} from './vendor/firebase-auth.js';
+import {getFirestore,doc,collection,getDocFromServer,getDocsFromServer,setDoc,query,where,limit,runTransaction,serverTimestamp} from './vendor/firebase-firestore.js';
 import {normalizeEmail,sharedSnapshot,validateProposal,applyProposal,OWNER_EMAIL} from './team-model.js';
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const team=doc(db,'teams','hoek'),members=collection(team,'members'),proposals=collection(team,'proposals'),snapshot=doc(team,'published','current');
 export const owner=u=>u?.email?.toLowerCase()===OWNER_EMAIL&&u.emailVerified;
 export async function sendLink(email){email=normalizeEmail(email);await sendSignInLinkToEmail(auth,email,{url:new URL('team.html',location.href).href.split('?')[0],handleCodeInApp:true});sessionStorage.setItem('hoek-team-email',email);}

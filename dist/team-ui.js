@@ -1,5 +1,5 @@
 import * as cloud from './cloud-store.js';
-import * as team from './team-store.js';
+import * as team from './team-store.js?team=20261110b';
 import {editable,safeTeamIcon,validateProposal} from './team-model.js';
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let user,isOwner=false,snapshot,selected,proposedIcon='',pendingId,epoch=0;
