@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+  function teamAdmin() {
+   return request.auth != null && request.auth.token.email_verified == true
+    && request.auth.token.email == 'adi.hoek@gmail.com';
+  }
+  function teamMember() {
+   return request.auth != null && request.auth.token.email_verified == true
+    && exists(/databases/$(database)/documents/teams/hoek/members/$(request.auth.token.email.lower()))
+    && get(/databases/$(database)/documents/teams/hoek/members/$(request.auth.token.email.lower())).data.active == true;
+  }
+  match /teams/hoek {
+   allow get: if teamAdmin() || teamMember();
+   allow create, update: if teamAdmin()
+    && request.resource.data.keys().hasOnly(['ownerUid','updatedAt'])
+    && request.resource.data.ownerUid == request.auth.uid
+    && request.resource.data.updatedAt == request.time;
+   match /members/{email} {
+    allow get: if teamAdmin() || (request.auth != null && request.auth.token.email_verified == true && request.auth.token.email.lower() == email);
+    allow list: if teamAdmin();
+    allow create, update: if teamAdmin()
+     && request.resource.data.keys().hasOnly(['email','active','updatedAt'])
+     && request.resource.data.email == email && email.size() <= 254
+     && request.resource.data.active is bool && request.resource.data.updatedAt == request.time;
+   }
+   match /published/current {
+    allow get: if teamAdmin() || teamMember();
+    allow create, update: if teamAdmin()
+     && request.resource.data.keys().hasOnly(['payload','revision','updatedAt'])
+     && request.resource.data.payload is string && request.resource.data.payload.size() <= 800000
+     && request.resource.data.revision is int && request.resource.data.updatedAt == request.time;
+   }
+   match /proposals/{id} {
+    allow read: if teamAdmin() || (teamMember() && resource.data.authorUid == request.auth.uid);
+    allow create: if teamMember()
+     && request.resource.data.keys().hasOnly(['authorUid','authorEmail','baseRevision','payload','status','createdAt'])
+     && request.resource.data.authorUid == request.auth.uid
+     && request.resource.data.authorEmail == request.auth.token.email.lower()
+     && request.resource.data.status == 'pending'
+     && request.resource.data.payload is string && request.resource.data.payload.size() <= 180000
+     && request.resource.data.baseRevision is int
+     && request.resource.data.baseRevision == get(/databases/$(database)/documents/teams/hoek/published/current).data.revision
+     && request.resource.data.createdAt == request.time;
+    allow update: if teamAdmin() && resource.data.status == 'pending'
+     && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','reviewNote','reviewedAt','reviewerUid','appliedRevision'])
+     && request.resource.data.status in ['approved','rejected']
+     && request.resource.data.reviewNote is string && request.resource.data.reviewNote.size() <= 6000
+     && request.resource.data.reviewerUid == request.auth.uid && request.resource.data.reviewedAt == request.time
+     && (request.resource.data.status == 'rejected' ||
+       (request.resource.data.appliedRevision == getAfter(/databases/$(database)/documents/users/$(request.auth.uid)/workspaces/main).data.revision
+       && request.resource.data.appliedRevision == get(/databases/$(database)/documents/users/$(request.auth.uid)/workspaces/main).data.revision + 1));
+   }
+  }
+  function owner(uid) {
+   return request.auth != null && request.auth.uid == uid
+    && request.auth.token.email_verified == true
+    && request.auth.token.email == 'adi.hoek@gmail.com';
+  }
+  match /users/{uid}/workspaces/main {
+   allow read: if owner(uid);
+   function validHead() {
+    return request.resource.data.keys().hasOnly(['head','revision','updatedAt','schema'])
+     && request.resource.data.schema == 1
+     && request.resource.data.head is string
+     && request.resource.data.head.size() == 36
+     && request.resource.data.revision is int
+     && request.resource.data.updatedAt == request.time
+     && getAfter(/databases/$(database)/documents/users/$(uid)/workspaces/main/versions/$(request.resource.data.head)).data.revision == request.resource.data.revision;
+   }
+   allow create: if owner(uid) && validHead() && request.resource.data.revision == 1;
+   allow update: if owner(uid) && validHead() && request.resource.data.revision == resource.data.revision + 1;
+   match /versions/{version} {
+    allow read: if owner(uid);
+    allow create: if owner(uid)
+     && request.resource.data.keys().hasOnly(['payload','revision','createdAt'])
+     && request.resource.data.payload is string && request.resource.data.payload.size() <= 800000
+     && request.resource.data.revision is int
+     && request.resource.data.createdAt == request.time
+     && getAfter(/databases/$(database)/documents/users/$(uid)/workspaces/main).data.head == version
+     && getAfter(/databases/$(database)/documents/users/$(uid)/workspaces/main).data.revision == request.resource.data.revision;
+   }
+  }
+ }
+}

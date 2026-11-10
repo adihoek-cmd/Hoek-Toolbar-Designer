@@ -3,3 +3,8 @@ node_modules/
 
 .hoek-bridge/
 claude-workspace/
+.team-tests/
+
+
+firestore-debug.log
+firebase-debug.log

@@ -48,3 +48,7 @@ export async function revisions(uid){
 }
 
 export async function readRevision(uid,revision){const q=query(collection(head(uid),'versions'),where('revision','==',revision),limit(1));const docs=(await getDocsFromServer(q)).docs;if(!docs.length)throw Error('Source cloud revision not found');return JSON.parse(docs[0].data().payload);}
+
+// Shared Firebase instance; team permissions remain enforced by Firestore rules.
+export {auth,db};
+

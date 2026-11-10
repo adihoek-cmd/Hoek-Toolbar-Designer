@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {applyProposal,sharedSnapshot,validateProposal,normalizeEmail} from './dist/team-model.js';
+const base={state:{schema:1,packageVersion:'3.9.8',ribbonDeployment:{packageVersion:'3.9.14'},nodes:[{id:'p',type:'panel',parent:'ribbon',order:0,label:'Panel'},{id:'a',type:'button',parent:'p',order:0,label:'A',tooltip:'old',priority:'normal',status:'ok',notes:'PRIVATE',fix:'PRIVATE FIX',repairs:[{claimedFix:'PRIVATE REPORT'}],icon:'assets/a.png'},{id:'b',type:'button',parent:'p',order:1,label:'B',priority:'normal'}]},history:[{label:'PRIVATE HISTORY'}]};
+const shared=sharedSnapshot(base,5);assert.equal(shared.packageVersion,'3.9.14');assert(!JSON.stringify(shared).includes('PRIVATE'));
+const p={kind:'edit',nodeId:'a',base:{label:'A',parent:'p',order:0},changes:{label:'New',parent:'p',order:1},comment:'Suggestion'};
+const next=applyProposal(base,p,'id','member@example.com');assert.equal(base.state.nodes[1].label,'A');assert.equal(next.state.nodes[1].label,'New');assert.equal(next.state.nodes[1].order,1);assert.equal(next.state.nodes[2].order,0);assert(next.state.nodes[1].notes.startsWith('PRIVATE'));assert.deepEqual(next.state.nodes[1].repairs,base.state.nodes[1].repairs);
+const conflict=structuredClone(base);conflict.state.nodes[1].label='Owner edit';assert.throws(()=>applyProposal(conflict,p,'id','x'),/התנגשות/);
+assert.throws(()=>validateProposal({...p,changes:{repairs:[]}}));assert.throws(()=>validateProposal({...p,changes:{icon:'javascript:alert(1)'}}));assert.throws(()=>validateProposal({...p,changes:{parent:'p'}}));
+assert.throws(()=>applyProposal(base,{...p,changes:{parent:'missing',order:0}},'id','x'));
+const idea=applyProposal(base,{kind:'idea',nodeId:'',base:{},changes:{label:'Idea'},comment:'why'},'idea','x');assert.equal(idea.state.nodes.at(-1).parent,'backlog');assert.equal(idea.state.nodes.at(-1).status,'idea');assert.throws(()=>applyProposal(idea,{kind:'idea',nodeId:'',base:{},changes:{label:'Idea'},comment:''},'idea','x'));
+assert.equal(normalizeEmail(' WORK@Example.com '),'work@example.com');assert.throws(()=>normalizeEmail('bad/address@example.com'));
+console.log('PASS: shared privacy projection, proposal field validation, immutable original, conflicts, move ordering, comments, ideas and email normalization.');
